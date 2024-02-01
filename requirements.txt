@@ -16,4 +16,5 @@ six==1.16.0
 SQLAlchemy==2.0.25
 typing_extensions==4.9.0
 tzdata==2023.4
+waitress==2.1.2
 Werkzeug==3.0.1
