@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    
+    <div class="box">
+        <h3>Competitions:</h3>
+        <table class="table">
+            {% for comp in comps %}
+            <tr>
+                 <td>{{ comp }} </td>
+                <td>
+                    <a class="button" href="{{ url_for('main.comp_page', comp= comp) }}">show</a>
+                </td>
+                {% if current_user.is_authenticated %}
+                <td>
+                <a class="button" href="{{url_for('main.edit_comp', comp= comp)}}">edit</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if current_user.is_authenticated %} 
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST", action="/competitions" enctype="multipart/form-data">
+            <input type="text" name="compname" placeholder="compname" class="input">
+            <input type="file", name="csvfile" class="input">
+            <button class="button">submit</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

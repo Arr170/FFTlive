@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav class="navbar">
+    <form>
+        <button class="button" type="submit">back</button>
+    </form>
+</nav>
+<div class="box">
+    <table class="table">
+        <thead>
+            <tr>
+                {% for col in cols %}
+                <th>{{col}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for col in row %}
+                <td>{{col}}</td>
+                {% endfor %}
+                <td>
+                    <form action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
+                    <button class="button is-danger is-outlined">
+                        <span>Delete</span>
+                    </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
