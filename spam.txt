@@ -1,11 +1,36 @@
-<form action="create_event" method="POST">
-                                    <button class="dropdown-item">Create event</button>
-                                </form>
-                                <form action="sort_by_col" method="POST">
-                                    <button class="dropdown-item">Sort by</button>
-                                </form>
-
-
-
-
-action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}"
+<nav class="navbar is-primary">
+            <div class="container">
+                <a class="navbar-burger">
+                    <span></span>
+                    <span></span>
+                </a>
+                <div id="navbarMenuHeroA" class="navbar-menu">
+                    <div class="navbar-end">
+                        <a href="{{ url_for('main.index') }}" class="navbar-item has-text-grey">
+                            Home
+                        </a>
+                        <a href="{{url_for('main.competitions')}}" class="navbar-item">
+                            Competitions
+                        </a>
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('main.profile') }}" class="navbar-item">
+                            Profile
+                        </a>
+                        {% endif %}
+                        {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.login') }}" class="navbar-item">
+                            Login
+                        </a>
+                        <a href="{{ url_for('auth.signup') }}" class="navbar-item">
+                            Sign Up
+                        </a>
+                        {% endif %}
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+                            Logout
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
