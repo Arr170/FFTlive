@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<nav class="navbar">
-    <form>
-        <button class="button" type="submit">back</button>
-    </form>
-</nav>
-<div class="box">
-    <table class="table">
-        <thead>
+<div class="field is-left">
+    <div class="buttons is-primary">
+        <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
+    </div>
+</div>
+<div class="">
+    <table class="table has-background-light is-fullwidth">
+        <thead class="has-background-light">
             <tr>
                 {% for col in cols %}
-                <th>{{col}}</th>
+                <th>
+                    <div>
+                        {{col}}
+                    </div>
+                    <div class="buttons has-addons">
+                        <button class="button is-small is-outlined is-info is-rounded">Sort</button>
+                        <button class="button is-small is-outlined is-info is-rounded">Make</button>
+                    </div>
+                </th>
                 {% endfor %}
             </tr>
         </thead>
@@ -19,10 +27,24 @@
             {% for row in rows %}
             <tr>
                 {% for col in row %}
-                <td>{{col}}</td>
+                    {% if col == 'YES' %}
+                    <td>
+                        <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-success">
+                            <span>{{col}}</span>
+                        </button>
+                    </td>
+                    {% elif col == 'NO' %}
+                    <td>
+                        <button id="{{row[0]}}"  name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-danger">
+                            <span>{{col}}</span>
+                        </button>
+                    </td>
+                    {% else %}
+                    <td>{{col}}</td>
+                    {% endif %}
                 {% endfor %}
                 <td>
-                    <form action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
+                    <form onsubmit="return confirm('Delete competitor?')" action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
                     <button class="button is-danger is-outlined">
                         <span>Delete</span>
                     </button>
@@ -34,5 +56,25 @@
     </table>
 </div>
 
+
+<script>
+    function ChangePrsnState(id, compname){
+        
+        fetch('/change_prsn_state',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: id,
+                compname: compname
+            })
+        }).then(function(response){
+            console.log(response)
+            location.reload()
+        })
+    }
+</script>
 {% endblock %}
+
 

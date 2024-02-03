@@ -1,0 +1,11 @@
+<form action="create_event" method="POST">
+                                    <button class="dropdown-item">Create event</button>
+                                </form>
+                                <form action="sort_by_col" method="POST">
+                                    <button class="dropdown-item">Sort by</button>
+                                </form>
+
+
+
+
+action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}"
