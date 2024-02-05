@@ -39,6 +39,7 @@ def competitions_post():
         os.mkdir(os.path.join("./project/comps/", name))
         file = pandas.read_csv(file)
         file["Paid"]="NO"
+        file['E-mail'] = file['E-mail'].str.lower()
         #file["arrived"]="NO"
         file.to_csv(os.path.join("./project/comps/", name, "competitors"), index_label='ID')#save file
     except Exception as e:
@@ -85,24 +86,53 @@ def dlt_person():
     return redirect(url_for('main.edit_comp', comp = compname))
 
 
-@main.route('/change_prsn_state', methods=['POST'])
+@main.route('/change_prsn_state', methods=['POST'])#changing state of paid indicator
 @login_required
 def change_prsn_state():
     try:
         data = request.json
         id = data.get('id')
         compname = data.get('compname')
-        print(id, compname)
         df = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col=False)
-        print(df.loc[int(id), 'Name'])
-        if df.loc[int(id), "Paid"] == 'YES': 
-            df.loc[int(id), "Paid"] = 'NO' 
+        person = df[df["ID"]==int(id)]
+        #print(df[['Name', "ID", 'Paid']][df['ID']==int(id)],'\n',person['Paid'].values)
+        if person['Paid'].values == 'YES': 
+            df.loc[df["ID"]==int(id), 'Paid'] = 'NO' 
         else:
-            df.loc[int(id), "Paid"] = 'YES'
-        print(df)
+            df.loc[df["ID"]==int(id), 'Paid'] = 'YES'
         df.to_csv(os.path.join('./project/comps/', compname, 'competitors'), index=False)
     except Exception as e:
-        print(e)
+        print('Error',e)
 
     
+    return "ok"
+
+@main.route('/sort_by', methods=['POST'])
+@login_required
+def sort_by():
+    data = request.json
+    compname = data.get('compname')
+    label = data.get('label')
+    df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col=False)
+    df = df.sort_values(by=label)
+    df.to_csv(os.path.join('./project/comps/', compname, 'competitors'), index=False)
+
+    return "ok"
+
+@main.route('/make_event', methods=["POST"])
+@login_required
+def make_event():
+    try:
+        data = request.json
+        compname = data.get('compname')
+        label = data.get('label')
+        df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col=False)
+        new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
+        new_df=new_df[["ID", "Name"]][df[label]=='Ano']
+        new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '0.00'
+        os.mkdir(os.path.join('./project/comps/', compname, label))
+        new_df.to_csv(os.path.join('./project/comps/', compname, label, '1'), index=False)
+    except Exception as e:
+        print('Error:', e)
+        
     return "ok"

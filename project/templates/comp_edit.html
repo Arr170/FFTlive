@@ -1,60 +1,70 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="field is-left">
-    <div class="buttons is-primary">
-        <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
-    </div>
-</div>
+
 <div class="">
-    <table class="table has-background-light is-fullwidth">
-        <thead class="has-background-light">
-            <tr>
-                {% for col in cols %}
-                <th>
-                    <div>
-                        {{col}}
-                    </div>
-                    <div class="buttons has-addons">
-                        <button class="button is-small is-outlined is-info is-rounded">Sort</button>
-                        <button class="button is-small is-outlined is-info is-rounded">Make</button>
-                    </div>
-                </th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in rows %}
-            <tr>
-                {% for col in row %}
-                    {% if col == 'YES' %}
+    <div class="field is-left">
+        <div class="buttons is-primary">
+            <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <div class="table-container">
+        <table class="table has-background-light is-fullwidth">
+            <thead class="has-background-light">
+                <tr>
+                    {% for col in cols %}
+                    <th>
+                        <div>
+                            {{col}}
+                        </div>
+                        <div class="buttons has-addons">
+                            <button onclick="SortBy(this.id, this.name)" id="{{col}}" name="{{compname}}" class="button is-small is-outlined is-info is-rounded">Sort</button>
+                            <button onclick="MakeEvent(this.id, this.name)" id="{{col}}" name="{{compname}}" class="button is-small is-outlined is-info is-rounded">Make</button>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    {% for col in row %}
+                        {% if col == 'YES' %}
+                        <td>
+                            <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-success">
+                                <span>{{col}}</span>
+                            </button>
+                        </td>
+                        {% elif col == 'NO' %}
+                        <td>
+                            <button id="{{row[0]}}"  name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-danger">
+                                <span>{{col}}</span>
+                            </button>
+                        </td>
+                        {% else %}
+                        <td>{{col}}</td>
+                        {% endif %}
+                    {% endfor %}
                     <td>
-                        <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-success">
-                            <span>{{col}}</span>
+                        <form onsubmit="return confirm('Delete competitor?')" action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
+                        <button class="button is-danger is-outlined">
+                            <span>Delete</span>
                         </button>
+                        </form>
                     </td>
-                    {% elif col == 'NO' %}
-                    <td>
-                        <button id="{{row[0]}}"  name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-danger">
-                            <span>{{col}}</span>
-                        </button>
-                    </td>
-                    {% else %}
-                    <td>{{col}}</td>
-                    {% endif %}
+                </tr>
                 {% endfor %}
-                <td>
-                    <form onsubmit="return confirm('Delete competitor?')" action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
-                    <button class="button is-danger is-outlined">
-                        <span>Delete</span>
-                    </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
+
 
 
 <script>
@@ -67,6 +77,38 @@
             },
             body: JSON.stringify({
                 id: id,
+                compname: compname
+            })
+        }).then(function(response){
+            console.log(response)
+            location.reload()
+        })
+    }
+
+    function SortBy(label, compname){
+        fetch('/sort_by', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                label:label,
+                compname: compname
+            })
+        }).then(function(response){
+            console.log(response)
+            location.reload()
+        })
+    }
+
+    function MakeEvent(label, compname){
+        fetch('/make_event', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                label:label,
                 compname: compname
             })
         }).then(function(response){
