@@ -1,9 +1,22 @@
-{% extends "base.html %"}
+{% extends "base.html" %}
 
 {% block content %}
 <div class="field is-left">
     <div class="buttons is-primary">
         <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
+    </div>
+</div>
+<div class="box has-background-light ">
+    <div class="table-container">
+    <table class="table has-background-light is-fullwidth ">
+        <thead class="has-text-centered">
+            <tr class="has-text-centered">
+                {% for event in events %}
+                <th>{{event}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
     </div>
 </div>
 {% endblock %}

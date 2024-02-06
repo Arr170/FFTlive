@@ -1,36 +1,34 @@
-<nav class="navbar is-primary">
-            <div class="container">
-                <a class="navbar-burger">
-                    <span></span>
-                    <span></span>
-                </a>
-                <div id="navbarMenuHeroA" class="navbar-menu">
-                    <div class="navbar-end">
-                        <a href="{{ url_for('main.index') }}" class="navbar-item has-text-grey">
-                            Home
-                        </a>
-                        <a href="{{url_for('main.competitions')}}" class="navbar-item">
-                            Competitions
-                        </a>
-                        {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('main.profile') }}" class="navbar-item">
-                            Profile
-                        </a>
-                        {% endif %}
-                        {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('auth.login') }}" class="navbar-item">
-                            Login
-                        </a>
-                        <a href="{{ url_for('auth.signup') }}" class="navbar-item">
-                            Sign Up
-                        </a>
-                        {% endif %}
-                        {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('auth.logout') }}" class="navbar-item">
-                            Logout
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </nav>
+<div class="table-container">
+    <table class="table has-background-light">
+        <thead class="has-background-light">
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>Best</th>
+                <th>Ao5</th>
+            </tr>
+        </thead>
+        <tbody class="has-text-grey">
+            {% for n in number %}
+            <tr>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+                <td>{{n}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,20 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<div class="">
     <div class="field is-left">
         <div class="buttons is-primary">
             <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
         </div>
     </div>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="notification is-danger">
-            {{ messages[0] }}
-        </div>
-    {% endif %}
-    {% endwith %}
+    <div class="box has-background-light is-fullwidth">
     <div class="table-container">
         <table class="table has-background-light">
             <thead class="has-background-light">
@@ -24,7 +16,7 @@
                         <div>
                             {{col}}
                         </div>
-                        <div class="buttons has-addons">
+                        <div class="buttons">
                             <button onclick="SortBy(this.id, this.name)" id="{{col}}" name="{{compname}}" class="button is-small is-outlined is-info is-rounded">Sort</button>
                             <button onclick="MakeEvent(this.id, this.name)" id="{{col}}" name="{{compname}}" class="button is-small is-outlined is-info is-rounded">Make</button>
                         </div>
@@ -63,6 +55,7 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
     </div>
 
 
@@ -117,6 +110,8 @@
         })
     }
 </script>
+
+
 {% endblock %}
 
 

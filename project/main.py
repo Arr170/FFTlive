@@ -41,7 +41,7 @@ def competitions_post():
         file["Paid"]="NO"
         file['E-mail'] = file['E-mail'].str.lower()
         #file["arrived"]="NO"
-        file.to_csv(os.path.join("./project/comps/", name, "competitors"), index_label='ID')#save file
+        file.to_csv(os.path.join("./project/comps/", name, "competitors.csv"), index_label='ID')#save file
     except Exception as e:
         print(e)
         flash('Something went wrong!')
@@ -58,13 +58,16 @@ def dlt_comp():
 
 @main.route('/comp_page')
 def comp_page():
-    return 'comp_page'
+    compname = str(request.args.get('comp'))
+    all = os.listdir(os.path.join("./project/comps", compname))
+    events = [entry for entry in all if not entry.endswith('.csv')]
+    return render_template('comp_page.html', events=events)
 
 @main.route('/edit_comp')
 @login_required
 def edit_comp():
     compname = str(request.args.get('comp'))
-    data = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'))
+    data = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'))
     cols = []
     for col in data: cols.append(col)
     dict_ = data.to_dict('split')
@@ -77,10 +80,10 @@ def dlt_person():
     print('delete triggered')
     id=int(request.args.get('id'))
     compname = str(request.args.get('compname'))
-    data = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col='ID')
+    data = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col='ID')
     #data = pandas.DataFrame(data)
     print(id, data)
-    data.drop(id).to_csv(os.path.join('./project/comps/', compname, 'competitors'))
+    data.drop(id).to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'))
     #data.save(os.path.join('./project/comps/', compname, 'competitors'))
     #print(data)
     return redirect(url_for('main.edit_comp', comp = compname))
@@ -93,14 +96,14 @@ def change_prsn_state():
         data = request.json
         id = data.get('id')
         compname = data.get('compname')
-        df = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col=False)
+        df = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
         person = df[df["ID"]==int(id)]
         #print(df[['Name', "ID", 'Paid']][df['ID']==int(id)],'\n',person['Paid'].values)
         if person['Paid'].values == 'YES': 
             df.loc[df["ID"]==int(id), 'Paid'] = 'NO' 
         else:
             df.loc[df["ID"]==int(id), 'Paid'] = 'YES'
-        df.to_csv(os.path.join('./project/comps/', compname, 'competitors'), index=False)
+        df.to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index=False)
     except Exception as e:
         print('Error',e)
 
@@ -113,9 +116,9 @@ def sort_by():
     data = request.json
     compname = data.get('compname')
     label = data.get('label')
-    df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col=False)
+    df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
     df = df.sort_values(by=label)
-    df.to_csv(os.path.join('./project/comps/', compname, 'competitors'), index=False)
+    df.to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index=False)
 
     return "ok"
 
@@ -126,13 +129,14 @@ def make_event():
         data = request.json
         compname = data.get('compname')
         label = data.get('label')
-        df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors'), index_col=False)
+        df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
         new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
         new_df=new_df[["ID", "Name"]][df[label]=='Ano']
         new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '0.00'
         os.mkdir(os.path.join('./project/comps/', compname, label))
-        new_df.to_csv(os.path.join('./project/comps/', compname, label, '1'), index=False)
+        new_df.to_csv(os.path.join('./project/comps/', compname, label, '1.csv'), index=False)
     except Exception as e:
         print('Error:', e)
         
     return "ok"
+
