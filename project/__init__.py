@@ -9,7 +9,7 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = 'a82ead125a1141a6520afa4d9eb3946d1c657af7dcf3e0553433521aa41ba253'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://arzi:at2gYh8Y2YbKJpqS9gFNeNHOz5mxpvYY@dpg-cmrp5na1hbls73fqgpk0-a.frankfurt-postgres.render.com/fftlivedb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
     db.init_app(app)
 
@@ -23,8 +23,6 @@ def create_app():
     def load_user(user_id):
         # since the user_id is just the primary key of our user table, use it in the query for the user
         return User.query.get(int(user_id))
-
-    from . import models
 
     with app.app_context():
         db.create_all()
