@@ -61,7 +61,10 @@ def comp_page():
     compname = str(request.args.get('comp'))
     all = os.listdir(os.path.join("./project/comps", compname))
     events = [entry for entry in all if not entry.endswith('.csv')]
-    return render_template('comp_page.html', events=events)
+    rounds = []
+    for event in events:
+        rounds.append(os.listdir(os.path.join('./project/comps/', compname, event)))
+    return render_template('comp_page.html', events=events, rounds = rounds)
 
 @main.route('/edit_comp')
 @login_required

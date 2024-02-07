@@ -16,6 +16,19 @@
                 {% endfor %}
             </tr>
         </thead>
+        <tbody>
+            <tr>
+                {% for round in rounds %}
+                <td>
+                    {% for stage in round %}
+                    <div>
+                        <a class="button is-link is-outlined">round {{stage}}</a> 
+                    </div>
+                    {% endfor %}
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
     </table>
     </div>
 </div>

@@ -5,32 +5,34 @@
     
     <div class="box has-background-light">
         <h3>Competitions:</h3>
-        <table class="table has-background-light">
-            {% for comp in comps %}
-            <tr>
-                 <td>{{ comp }} </td>
-                <td>
-                    <a class="button is-info is-outlined" href="{{ url_for('main.comp_page', comp= comp) }}">
-                        <span>show</span>
+        <div class="table-container">
+            <table class="table has-background-light">
+                {% for comp in comps %}
+                <tr>
+                    <td>{{ comp }} </td>
+                    <td>
+                        <a class="button is-info is-outlined" href="{{ url_for('main.comp_page', comp= comp) }}">
+                            <span>show</span>
+                        </a>
+                    </td>
+                    {% if current_user.is_authenticated %}
+                    <td>
+                    <a class="button is-danger is-outlined" href="{{url_for('main.edit_comp', comp= comp)}}">
+                        <span>edit</span>
                     </a>
-                </td>
-                {% if current_user.is_authenticated %}
-                <td>
-                <a class="button is-danger is-outlined" href="{{url_for('main.edit_comp', comp= comp)}}">
-                    <span>edit</span>
-                </a>
-                </td>
-                <td>
-                    <form onsubmit="return confirm('Delete comp?')" action="{{ url_for('main.dlt_comp', compname = comp)}}" method="post">
-                    <button class="button is-danger is-outlined">
-                        <span>Delete</span>
-                    </button>
-                    </form>
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </table>
+                    </td>
+                    <td>
+                        <form onsubmit="return confirm('Delete comp?')" action="{{ url_for('main.dlt_comp', compname = comp)}}" method="post">
+                        <button class="button is-danger is-outlined">
+                            <span>Delete</span>
+                        </button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
     {% if current_user.is_authenticated %} 
     <div class="box">
