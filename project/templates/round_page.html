@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="field is-left">
+    <div class="buttons is-primary">
+        <button onclick="history.back()" class="button is-outlined is-white">back</button>
+    </div>
+</div>
+<div class="box has-background-light ">
+    <div class="table-container">
+        <table class="table has-background-light is-fullwidth">
+            <thead class="has-background-light`">
+                <tr>
+                    <th class="has-text-centered">  </th>
+                    <th class="has-text-centered">Name</th>
+                    <th class="has-text-centered is-hidden-mobile">1</th>
+                    <th class="has-text-centered is-hidden-mobile">2</th>
+                    <th class="has-text-centered is-hidden-mobile">3</th>
+                    <th class="has-text-centered is-hidden-mobile">4</th>
+                    <th class="has-text-centered is-hidden-mobile">5</th>
+                    <th class="has-text-centered">Best</th>
+                    <th class="has-text-centered">Ao5</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr >
+                    <td class="has-text-centered">
+                        {{row[0]}}
+                    </td>
+                    <td class="has-text-centered">
+                        <button class="button is-link is-outlined is-fullwidth">
+                            {{row[2]}}
+                        </button>
+                    </td>
+                    <td class="has-text-centered is-hidden-mobile">
+                        {% if row[3] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[3]}}
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered is-hidden-mobile">
+                        {% if row[4] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[4]}}
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered is-hidden-mobile">
+                        {% if row[5] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[5]}}
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered is-hidden-mobile">
+                        {% if row[6] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[6]}}
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered is-hidden-mobile">
+                        {% if row[7] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[7]}}
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered">
+                        {% if row[8] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[8]}}
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered">
+                        {% if row[9] == 99 %}
+                            0.00
+                        {% else %}    
+                        {{row[9]}}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

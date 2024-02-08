@@ -63,8 +63,11 @@ def comp_page():
     events = [entry for entry in all if not entry.endswith('.csv')]
     rounds = []
     for event in events:
-        rounds.append(os.listdir(os.path.join('./project/comps/', compname, event)))
-    return render_template('comp_page.html', events=events, rounds = rounds)
+        round_list = os.listdir(os.path.join('./project/comps/', compname, event))
+        round_list = [x.split('.')[0] for x in round_list]
+        box = [event, round_list]#contains:[event name, array of round numbers]
+        rounds.append(box)
+    return render_template('comp_page.html', events=events, rounds = rounds, compname=compname)
 
 @main.route('/edit_comp')
 @login_required
@@ -135,7 +138,7 @@ def make_event():
         df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
         new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
         new_df=new_df[["ID", "Name"]][df[label]=='Ano']
-        new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '0.00'
+        new_df[["1", "2", "3", "4", "5", "Best", "Ao5", "Ao5s"]] = 99 #Ao5 is for storing in seconds
         os.mkdir(os.path.join('./project/comps/', compname, label))
         new_df.to_csv(os.path.join('./project/comps/', compname, label, '1.csv'), index=False)
     except Exception as e:
@@ -143,3 +146,20 @@ def make_event():
         
     return "ok"
 
+@main.route('/round_page', methods=['GET'])
+def round_page():
+    compname = request.args.get('compname')
+    event = request.args.get('event')
+    round = request.args.get('round')
+    data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
+    data.insert(0, 'pos', range(0, 0 + len(data)))
+    
+    data.Ao5 = data.Ao5.astype(float)
+    data.sort_values(by='Ao5s')
+    cols = []
+    
+    for col in data: cols.append(col)
+    print(cols) 
+    dict_ = data.to_dict('split')
+
+    return render_template('round_page.html', cols = cols, rows = dict_['data'])

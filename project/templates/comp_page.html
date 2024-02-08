@@ -20,9 +20,9 @@
             <tr>
                 {% for round in rounds %}
                 <td>
-                    {% for stage in round %}
+                    {% for stage in round[1] %}
                     <div>
-                        <a class="button is-link is-outlined">round {{stage}}</a> 
+                        <a class="button is-link is-outlined" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
                     </div>
                     {% endfor %}
                 </td>
