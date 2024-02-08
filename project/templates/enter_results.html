@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{%block content %}
+<div class="columns">
+    <div class = "column is-one-third">
+        <form>
+            <input class="input is-normal" type="text" name="name" placeholder="Name" autofocus="">
+        </form>
+    </div>
+    <div class="column">
+        <div class="box has-background-light ">
+            <div class="table-container">
+            <table class="table has-background-light is-fullwidth ">
+                <thead class="has-text-centered">
+                    <tr class="has-text-centered">
+                        {% for event in events %}
+                        <th>{{event}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for round in rounds %}
+                        <td>
+                            {% for stage in round[1] %}
+                            <div>
+                                <a class="button is-link is-outlined" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                            </div>
+                            {% endfor %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

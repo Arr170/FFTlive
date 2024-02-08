@@ -162,4 +162,12 @@ def round_page():
     print(cols) 
     dict_ = data.to_dict('split')
 
-    return render_template('round_page.html', cols = cols, rows = dict_['data'])
+    return render_template('round_page.html', cols = cols, rows = dict_['data'], compname=compname, event=event)
+
+@main.route('/enter_results', methods=['GET', 'POST'])
+@login_required
+def enter_results():
+    if request.method == 'GET':
+        return render_template('enter_results.html')
+    if request.method == 'POST':
+        None

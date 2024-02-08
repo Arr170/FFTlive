@@ -3,12 +3,20 @@
 <div class="field is-left">
     <div class="buttons is-primary">
         <button onclick="history.back()" class="button is-outlined is-white">back</button>
+        {%if current_user.is_authenticated %}
+            <a class="button is-danger" href="{{url_for('main.enter_results')}}">edit</a>
+        {% endif %}
     </div>
+    
 </div>
 <div class="box has-background-light ">
     <div class="table-container">
         <table class="table has-background-light is-fullwidth">
             <thead class="has-background-light`">
+                <div class="box has-text-centered has-background-grey has-text-black">
+                    <h1 class="is-size-4 has-text-weight-bold">{{event}}</h1>
+                </div>
+                
                 <tr>
                     <th class="has-text-centered">  </th>
                     <th class="has-text-centered">Name</th>
