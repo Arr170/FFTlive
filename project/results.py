@@ -1,11 +1,12 @@
 class Result:
     def __init__(self, first, second, third, fourth, fifth):
-        self.first = first
-        self.second = second
-        self.third = third
-        self.fourth = fourth
-        self.fifth = fifth
+        # self.first = first
+        # self.second = second
+        # self.third = third
+        # self.fourth = fourth
+        # self.fifth = fifth
         self.results = [first, second, third, fourth, fifth]
+        self.result = self.average()
 
     def best(self, results_in_sec):
         best = 600
@@ -44,17 +45,23 @@ class Result:
                     solve = float(sec)
                     total += solve
                     results_in_sec.append(solve)
-        if DNFs < 2 :
-            total = total - self.best(results_in_sec) - self.worst(results_in_sec)
+        self.best_solve = self.best(results_in_sec)
+        if not DNFs :
+            total = total - self.best_solve - self.worst(results_in_sec)
+            return str(self.truncate(total/3, 2))
+        elif DNFs < 2:
+            total = total - self.best_solve
             return str(self.truncate(total/3, 2))
         else:
-            return str('DNF')
+            return str('999')
 
-    def to_string(self, time):
-        if time == 'DNF':
+    def formated(self, time):#returning str representing avg in mm:ss.ff
+        print(time)
+        if time == '999':
             return 'DNF'
         minutes = int(float(time)/60)
-        seconds = float(time) - minutes*60
+        seconds = self.truncate(float(time) - minutes*60, 2)
+        print(minutes, seconds, float(time)-minutes*60)
         if minutes:
             return(f'{minutes}:{seconds}')
         return(str(seconds))
@@ -67,7 +74,7 @@ class Result:
 
 
 if __name__ == '__main__':
-    a = Result('1:00.00', '3:00.00', '2:22.00', '34.34', '11.11')
+    a = Result('54.00', '47.93', '59.11', '53.70', '55.20')
     b = a.average()
-    c = a.to_string(b)
-    print('a',len(c))
+    c = a.formated(b)
+    print(a.best_solve, b, c)

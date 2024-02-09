@@ -4,7 +4,7 @@
     <div class="buttons is-primary">
         <button onclick="history.back()" class="button is-outlined is-white">back</button>
         {%if current_user.is_authenticated %}
-            <a class="button is-danger" href="{{url_for('main.enter_results')}}">edit</a>
+            <a class="button is-danger" href="{{url_for('main.enter_results', compname = compname, round = round, event = event)}}">edit</a>
         {% endif %}
     </div>
     
@@ -14,7 +14,7 @@
         <table class="table has-background-light is-fullwidth">
             <thead class="has-background-light`">
                 <div class="box has-text-centered has-background-grey has-text-black">
-                    <h1 class="is-size-4 has-text-weight-bold">{{event}}</h1>
+                    <h1 class="is-size-4 has-text-weight-bold">{{event}} {{round}}. round</h1>
                 </div>
                 
                 <tr>
@@ -33,7 +33,7 @@
                 {% for row in rows %}
                 <tr >
                     <td class="has-text-centered">
-                        {{row[0]}}
+                        {{row[0]}}.
                     </td>
                     <td class="has-text-centered">
                         <button class="button is-link is-outlined is-fullwidth">
@@ -41,49 +41,49 @@
                         </button>
                     </td>
                     <td class="has-text-centered is-hidden-mobile">
-                        {% if row[3] == 99 %}
+                        {% if row[3] == 999 %}
                             0.00
                         {% else %}    
                         {{row[3]}}
                         {% endif %}
                     </td>
                     <td class="has-text-centered is-hidden-mobile">
-                        {% if row[4] == 99 %}
+                        {% if row[4] == 999 %}
                             0.00
                         {% else %}    
                         {{row[4]}}
                         {% endif %}
                     </td>
                     <td class="has-text-centered is-hidden-mobile">
-                        {% if row[5] == 99 %}
+                        {% if row[5] == 999 %}
                             0.00
                         {% else %}    
                         {{row[5]}}
                         {% endif %}
                     </td>
                     <td class="has-text-centered is-hidden-mobile">
-                        {% if row[6] == 99 %}
+                        {% if row[6] == 999 %}
                             0.00
                         {% else %}    
                         {{row[6]}}
                         {% endif %}
                     </td>
                     <td class="has-text-centered is-hidden-mobile">
-                        {% if row[7] == 99 %}
+                        {% if row[7] == 999 %}
                             0.00
                         {% else %}    
                         {{row[7]}}
                         {% endif %}
                     </td>
                     <td class="has-text-centered">
-                        {% if row[8] == 99 %}
+                        {% if row[8] == 999 %}
                             0.00
                         {% else %}    
                         {{row[8]}}
                         {% endif %}
                     </td>
                     <td class="has-text-centered">
-                        {% if row[9] == 99 %}
+                        {% if row[9] == 999 %}
                             0.00
                         {% else %}    
                         {{row[9]}}

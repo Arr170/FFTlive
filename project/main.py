@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 import os, pandas, shutil
+from project.results import Result
 from . import db
 
 
@@ -138,7 +139,7 @@ def make_event():
         df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
         new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
         new_df=new_df[["ID", "Name"]][df[label]=='Ano']
-        new_df[["1", "2", "3", "4", "5", "Best", "Ao5", "Ao5s"]] = 99 #Ao5 is for storing in seconds
+        new_df[["1", "2", "3", "4", "5", "Best", "Ao5", "Ao5s"]] = 999 #Ao5 is for storing in seconds
         os.mkdir(os.path.join('./project/comps/', compname, label))
         new_df.to_csv(os.path.join('./project/comps/', compname, label, '1.csv'), index=False)
     except Exception as e:
@@ -152,22 +153,63 @@ def round_page():
     event = request.args.get('event')
     round = request.args.get('round')
     data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
-    data.insert(0, 'pos', range(0, 0 + len(data)))
+    data.insert(0, 'pos', range(1, 1 + len(data)))
     
     data.Ao5 = data.Ao5.astype(float)
-    data.sort_values(by='Ao5s')
+    data = data.sort_values(by='Ao5s')
     cols = []
     
     for col in data: cols.append(col)
-    print(cols) 
     dict_ = data.to_dict('split')
 
-    return render_template('round_page.html', cols = cols, rows = dict_['data'], compname=compname, event=event)
+    return render_template('round_page.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round=round)
 
 @main.route('/enter_results', methods=['GET', 'POST'])
 @login_required
 def enter_results():
     if request.method == 'GET':
-        return render_template('enter_results.html')
+        #getting data for table
+        compname = request.args.get('compname')
+        event = request.args.get('event')
+        round = request.args.get('round')
+        data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
+        data.insert(0, 'pos', range(1, 1 + len(data)))
+        
+        data.Ao5s = data.Ao5s.astype(float)
+        data = data.sort_values(by='Ao5s')
+        cols = []
+        print(data)
+        
+        for col in data: cols.append(col)
+        dict_ = data.to_dict('split')
+        return render_template('enter_results.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round = round)
     if request.method == 'POST':
-        None
+        data = request.form
+        name = data.get('input_name')
+        id = data.get('input_id')
+        first = data.get('input_solve1')
+        second = data.get('input_solve2')
+        third = data.get('input_solve3')
+        fourth = data.get('input_solve4')
+        fifth = data.get('input_solve5')
+        compname = data.get('compname')
+        event = data.get('event')
+        round = data.get('round')
+        print(data)
+        print(compname, event, round)
+        df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
+        result = Result(first, second, third, fourth, fifth)
+        df.loc[df["ID"]==int(id), '1'] = str(first)
+        df.loc[df["ID"]==int(id), '2'] = str(second)
+        df.loc[df["ID"]==int(id), '3'] = str(third)
+        df.loc[df["ID"]==int(id), '4'] = str(fourth)
+        df.loc[df["ID"]==int(id), '5'] = str(fifth)
+        df.loc[df["ID"]==int(id), 'Best'] = str(result.best_solve)
+        df.loc[df["ID"]==int(id), 'Ao5'] = str(result.formated(result.result))
+        df.loc[df["ID"]==int(id), 'Ao5s'] = str(result.result)
+        df.to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index=False)
+
+    
+
+        print(event)
+        return "ok"
