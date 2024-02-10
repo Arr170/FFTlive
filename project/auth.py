@@ -27,11 +27,11 @@ def login_post():
     login_user(user, remember=remember)
     return redirect(url_for('main.profile'))
 
-@auth.route('/signup')
+@auth.route('/signupnot4you')
 def signup():
     return render_template('signup.html')
 
-@auth.route('/signup', methods=['POST'])
+@auth.route('/signupnot4you', methods=['POST'])
 def signup_post():
     email = request.form.get('email')
     name = request.form.get('name')

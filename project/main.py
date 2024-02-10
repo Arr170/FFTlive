@@ -84,15 +84,13 @@ def edit_comp():
 @main.route('/dlt_person', methods=['POST'])#deleting person from csv
 @login_required
 def dlt_person():
-    print('delete triggered')
-    id=int(request.args.get('id'))
-    compname = str(request.args.get('compname'))
-    data = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col='ID')
-    #data = pandas.DataFrame(data)
-    print(id, data)
-    data.drop(id).to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'))
-    #data.save(os.path.join('./project/comps/', compname, 'competitors'))
-    #print(data)
+    id=request.args.get('id')
+    compname = request.args.get('compname')
+    df = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col="ID")
+    print(df.index)
+    new = df.drop(int(id))
+    new.to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'))
+
     return redirect(url_for('main.edit_comp', comp = compname))
 
 
@@ -175,9 +173,7 @@ def enter_results():
         data.Ao5s = data.Ao5s.astype(float)
         data = data.sort_values(['Ao5s','Best'])
         data.insert(0, 'pos', range(1, 1 + len(data)))
-        cols = []
-        print(data)
-        
+        cols = []        
         for col in data: cols.append(col)
         dict_ = data.to_dict('split')
         return render_template('enter_results.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round = round)
@@ -193,8 +189,6 @@ def enter_results():
         compname = data.get('compname')
         event = data.get('event')
         round = data.get('round')
-        print(data)
-        print(compname, event, round)
         df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
         result = Result(first, second, third, fourth, fifth)
         df.loc[df["ID"]==int(id), '1'] = str(first)
@@ -207,7 +201,33 @@ def enter_results():
         df.loc[df["ID"]==int(id), 'Ao5s'] = str(result.result)
         df.to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index=False)
 
-    
-
-        print(event)
         return "ok"
+    
+@main.route('/make_next', methods=['POST'])
+@login_required
+def make_next():
+    data = request.json
+    compname = data.get('compname')
+    event = data.get('event')
+    round = data.get('round')
+    num = int(data.get('num'))
+    df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
+    last = int(len(df)*num/len(df))
+    new_df=df.head(last)
+    new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
+    new_df["Ao5s"]=999
+    new_df.to_csv(os.path.join('./project/comps/', compname, event, str(int(round)+1)+'.csv'), index=False)
+    return 'ok'
+
+@main.route('/delete_from_round', methods=['POST'])
+@login_required
+def delete_from_round():
+    data = request.json
+    compname = data.get('compname')
+    event = data.get('event')
+    round = data.get('round')
+    id = int(data.get('id'))
+    df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col='ID')
+    df.drop(id).to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
+    return 'ok'
+    

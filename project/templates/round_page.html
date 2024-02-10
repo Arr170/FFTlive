@@ -67,13 +67,13 @@
 
 <div class="box has-background-light">
     <div class="table-container">
-        <table class="table has-background-light is-fullwidth">
+        <table class="table has-background-light is-fullwidth table-cell-border">
             <thead class="has-background-light`">
                 <div class="box has-text-centered has-background-grey has-text-black">
                     <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">{{event}} {{round}}. round</h1>
                 </div>
                 
-                <tr class="is-size-6-mobile">
+                <tr class="is-size-7-mobile">
                     <th class="has-text-centered">  </th>
                     <th class="has-text-centered">Name</th>
                     <th class="has-text-centered is-hidden-mobile">1</th>
@@ -81,7 +81,7 @@
                     <th class="has-text-centered is-hidden-mobile">3</th>
                     <th class="has-text-centered is-hidden-mobile">4</th>
                     <th class="has-text-centered is-hidden-mobile">5</th>
-                    <th class="has-text-centered">Best</th>
+                    <th class="has-text-centered is-hidden-mobile">Best</th>
                     <th class="has-text-centered">Ao5</th>
                 </tr>
             </thead>
@@ -92,7 +92,7 @@
                         {{row[0]}}.
                     </td>
                     <td class="has-text-centered">
-                        <button class="button is-link is-outlined is-fullwidth" onclick="toggleOverlay('{{row[2]}}', '{{row[3]}}','{{row[4]}}', '{{row[5]}}', '{{row[6]}}', '{{row[7]}}', '{{row[9]}}', '{{row[0]}}')">
+                        <button class="button is-link is-outlined is-fullwidth is-small" onclick="toggleOverlay('{{row[2]}}', '{{row[3]}}','{{row[4]}}', '{{row[5]}}', '{{row[6]}}', '{{row[7]}}', '{{row[9]}}', '{{row[0]}}')">
                             {{row[2]}}
                         </button>
                     </td>
@@ -114,7 +114,7 @@
                     <td class="has-text-centered is-hidden-mobile">
                         {{row[7]}}
                     </td>
-                    <td class="has-text-centered">
+                    <td class="has-text-centered is-hidden-mobile">
                         {{row[8]}}
                     </td>
                     <td class="has-text-centered">
@@ -148,7 +148,6 @@
 
     function toggleOverlay(name, first, second, third, fourth, fifth, ao5, pos) {
         var overlay = document.getElementsByClassName("overlay-container")[0];
-        console.log(name, first)
         if(overlay.style.display === "none"){
             overlay.style.display = "flex"
             document.getElementById('overlay-name').innerHTML = pos+'. '+name

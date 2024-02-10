@@ -39,11 +39,11 @@
                         <tr>
                             <th class="has-text-centered">  </th>
                             <th class="has-text-centered">Name</th>
-                            <th class="has-text-centered is-hidden-mobile">1</th>
-                            <th class="has-text-centered is-hidden-mobile">2</th>
-                            <th class="has-text-centered is-hidden-mobile">3</th>
-                            <th class="has-text-centered is-hidden-mobile">4</th>
-                            <th class="has-text-centered is-hidden-mobile">5</th>
+                            <th class="has-text-centered">1</th>
+                            <th class="has-text-centered">2</th>
+                            <th class="has-text-centered">3</th>
+                            <th class="has-text-centered">4</th>
+                            <th class="has-text-centered">5</th>
                             <th class="has-text-centered">Best</th>
                             <th class="has-text-centered">Ao5</th>
                         </tr>
@@ -59,19 +59,19 @@
                                     {{row[2]}}
                                 </button>
                             </td>
-                            <td class="has-text-centered is-hidden-mobile">   
+                            <td class="has-text-centered">   
                                 {{row[3]}}
                             </td>
-                            <td class="has-text-centered is-hidden-mobile">
+                            <td class="has-text-centered">
                                 {{row[4]}}
                             </td>
-                            <td class="has-text-centered is-hidden-mobile">
+                            <td class="has-text-centered">
                                 {{row[5]}}
                             </td>
-                            <td class="has-text-centered is-hidden-mobile">
+                            <td class="has-text-centered">
                                 {{row[6]}}
                             </td>
-                            <td class="has-text-centered is-hidden-mobile">
+                            <td class="has-text-centered">
                                 {{row[7]}}
                             </td>
                             <td class="has-text-centered">
@@ -95,18 +95,18 @@
                     <div class="column is-one-half">
                         <div class="columns">
                             <div class="column is-2">
-                                <button onclick="history.back()" class="button is-warning is-fullwidth">back</button>
+                                <a href="{{url_for('main.comp_page', comp=compname)}}" class="button is-warning is-fullwidth">all events</a>
                             </div>
                             <div class="column is-2">
-                                <button onclick="addCompetitor(this)" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add competitor</button>
+                                <button onclick="addCompetitor(this)" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add</button>
                             </div>
                         </div>
                         <div class="columns">
                             <div class="column is-2">
-                                <input type="number" class="input is-normal" value="75">
+                                <input type="number" class="input is-normal" value="75" id="to_next">
                             </div>
                             <div class="column is-2">
-                                <button class="button is-fullwidth" onclick="creatNextRount()"  data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">create</button>
+                                <button class="button is-fullwidth" onclick="createNextRound(this)"  data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">create</button>
                             </div>
                         </div>
                     </div>
@@ -182,9 +182,48 @@
     }
 
     async function deleteCompetitor(data){
-        const competitorId = data.getAttribute('data-id')
-        console.log(competitorId)
+        const id = data.getAttribute('data-id')
+        const compname = data.getAttribute('data-compname')
+        const event = data.getAttribute('data-event')
+        const round = data.getAttribute('data-round')
+        fetch('/delete_from_round', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id:id,
+                compname:compname,
+                round:round,
+                event:event
+            })
+        }).then(function(response){
+            console.log(response)
+            document.getElementById('result_form').reset()
+            location.reload()
+        })
     }
     
+    function createNextRound(btn){
+        const num = document.getElementById('to_next').value
+        const event = btn.getAttribute('data-event')
+        const round = btn.getAttribute('data-round')
+        const compname = btn.getAttribute('data-compname')
+        fetch('/make_next', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                num:num,
+                compname:compname,
+                round:round,
+                event:event
+            })
+        }).then(function(response){
+            console.log(response)
+            location.reload()
+        })
+    }
 </script>
 {% endblock %}
