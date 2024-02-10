@@ -15,11 +15,19 @@
         </form>
         </div>
         <div class="block">
-            <button type="submit" form="result_form" class="button is-grey is-outlined mt-2" id="submit_button">Submit</button>
+            <button type="submit" form="result_form" class="button is-warning is-outlined mt-2" id="submit_button">Submit</button>
         </div>
+        
         
     </div>
     <div class="column">
+       
+                    
+                
+                
+            
+
+
         <div class="box has-background-light ">
             <div class="table-container">
                 <table class="table has-background-light is-fullwidth">
@@ -51,59 +59,58 @@
                                     {{row[2]}}
                                 </button>
                             </td>
-                            <td class="has-text-centered is-hidden-mobile">
-                                {% if row[3] == 999 or row[3] == '999' %}
-                                    0.00
-                                {% else %}    
+                            <td class="has-text-centered is-hidden-mobile">   
                                 {{row[3]}}
-                                {% endif %}
                             </td>
                             <td class="has-text-centered is-hidden-mobile">
-                                {% if row[4] == 999 or row[4] == '999'%}
-                                    0.00
-                                {% else %}    
                                 {{row[4]}}
-                                {% endif %}
                             </td>
                             <td class="has-text-centered is-hidden-mobile">
-                                {% if row[5] == 999 or row[5] == '999' %}
-                                    0.00
-                                {% else %}    
                                 {{row[5]}}
-                                {% endif %}
                             </td>
                             <td class="has-text-centered is-hidden-mobile">
-                                {% if row[6] == 999 or row[6] == '999' %}
-                                    0.00
-                                {% else %}    
                                 {{row[6]}}
-                                {% endif %}
                             </td>
                             <td class="has-text-centered is-hidden-mobile">
-                                {% if row[7] == 999 or row[7] == '999' %}
-                                    0.00
-                                {% else %}    
                                 {{row[7]}}
-                                {% endif %}
                             </td>
                             <td class="has-text-centered">
-                                {% if row[8] == 999 or row[8]=='999' %}
-                                    0.00
-                                {% else %}    
                                 {{row[8]}}
-                                {% endif %}
                             </td>
                             <td class="has-text-centered">
-                                {% if row[9] == 999 or row[9] == '999' %}
-                                    0.00
-                                {% else %}    
                                 {{row[9]}}
-                                {% endif %}
+                            </td>
+                            <td>
+                                <button data-id="{{row[1]}}" class="button is-danger is-outlined" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}" onclick="deleteCompetitor(this)">delete</button>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="field">
+            <div class="block">
+                <div class="columns">
+                    <div class="column is-one-half">
+                        <div class="columns">
+                            <div class="column is-2">
+                                <button onclick="history.back()" class="button is-warning is-fullwidth">back</button>
+                            </div>
+                            <div class="column is-2">
+                                <button onclick="addCompetitor(this)" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add competitor</button>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column is-2">
+                                <input type="number" class="input is-normal" value="75">
+                            </div>
+                            <div class="column is-2">
+                                <button class="button is-fullwidth" onclick="creatNextRount()"  data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -112,7 +119,7 @@
 <script>
     function rowClick(data){
         
-        if(data.getAttribute('data-first') === '999.0' || data.getAttribute('data-first') === '999'){
+        if(data.getAttribute('data-first') === '__._'){
             console.log(data.getAttribute('data-first'))
             document.getElementById('input_name').value = data.getAttribute('data-competitorName')
             document.getElementById('input_id').value = data.getAttribute('data-competitorId')
@@ -121,6 +128,7 @@
             document.getElementById('input_solve3').value = data.getAttribute('')
             document.getElementById('input_solve4').value = data.getAttribute('')
             document.getElementById('input_solve5').value = data.getAttribute('')  
+            document.getElementById('input_solve1').focus()
         }else{
             document.getElementById('input_name').value = data.getAttribute('data-competitorName')
             document.getElementById('input_id').value = data.getAttribute('data-competitorId')
@@ -171,6 +179,11 @@
             form.reset()
             location.reload()
         })
+    }
+
+    async function deleteCompetitor(data){
+        const competitorId = data.getAttribute('data-id')
+        console.log(competitorId)
     }
     
 </script>

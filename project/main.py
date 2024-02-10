@@ -139,7 +139,8 @@ def make_event():
         df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
         new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
         new_df=new_df[["ID", "Name"]][df[label]=='Ano']
-        new_df[["1", "2", "3", "4", "5", "Best", "Ao5", "Ao5s"]] = 999 #Ao5 is for storing in seconds
+        new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
+        new_df["Ao5s"]=999
         os.mkdir(os.path.join('./project/comps/', compname, label))
         new_df.to_csv(os.path.join('./project/comps/', compname, label, '1.csv'), index=False)
     except Exception as e:
@@ -152,13 +153,11 @@ def round_page():
     compname = request.args.get('compname')
     event = request.args.get('event')
     round = request.args.get('round')
-    data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
-    data.insert(0, 'pos', range(1, 1 + len(data)))
-    
-    data.Ao5 = data.Ao5.astype(float)
+    data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))    
+    data.Ao5s = data.Ao5s.astype(float)
     data = data.sort_values(by='Ao5s')
     cols = []
-    
+    data.insert(0, 'pos', range(1, 1 + len(data)))
     for col in data: cols.append(col)
     dict_ = data.to_dict('split')
 
@@ -173,10 +172,9 @@ def enter_results():
         event = request.args.get('event')
         round = request.args.get('round')
         data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
-        data.insert(0, 'pos', range(1, 1 + len(data)))
-        
         data.Ao5s = data.Ao5s.astype(float)
-        data = data.sort_values(by='Ao5s')
+        data = data.sort_values(['Ao5s','Best'])
+        data.insert(0, 'pos', range(1, 1 + len(data)))
         cols = []
         print(data)
         
