@@ -8,6 +8,11 @@ from . import db
 
 main = Blueprint('main', __name__)
 
+if(os.environ['IS_PROD']==1):
+    COMP_PATH = '/project/comps'
+else:
+    COMP_PATH = './project/comps'
+
 @main.route('/')
 def index():
     return render_template('index.html')
@@ -19,7 +24,7 @@ def profile():
 
 @main.route('/competitions', methods=['GET'])
 def competitions():
-    comp_list = os.listdir("./project/comps")
+    comp_list = os.listdir(COMP_PATH)
     return render_template('competitions.html', comps = comp_list)
 
 @main.route('/competitions', methods=['POST'])
@@ -32,21 +37,20 @@ def competitions_post():
         if os.path.splitext(file.filename)[-1] != '.csv':#check for file extention
             flash('Wrong file format!')
             return redirect(url_for('main.competitions'))
-        comp_list = os.listdir("./project/comps")
+        comp_list = os.listdir(COMP_PATH)
         for comp in comp_list:#check for existing names
             if name == str(comp):
                 flash('Competition already exists!')
                 return redirect(url_for('main.competitions'))
-        os.mkdir(os.path.join("./project/comps/", name))
+        os.mkdir(os.path.join("COMP_PATH", name))
         file = pandas.read_csv(file)
         file["Paid"]="NO"
         file['E-mail'] = file['E-mail'].str.lower()
         #file["arrived"]="NO"
-        file.to_csv(os.path.join("./project/comps/", name, "competitors.csv"), index_label='ID')#save file
+        file.to_csv(os.path.join(COMP_PATH, name, "competitors.csv"), index_label='ID')#save file
     except Exception as e:
         print(e)
         flash('Something went wrong!')
-    #file.save(os.path.join("./project/comps/", name, "competitors"))
 
     return redirect(url_for('main.competitions'))
     
@@ -54,17 +58,17 @@ def competitions_post():
 @login_required
 def dlt_comp():
     compname = request.args.get('compname')
-    shutil.rmtree(os.path.join('./project/comps/', compname))
+    shutil.rmtree(os.path.join(COMP_PATH, compname))
     return redirect(url_for('main.competitions'))
 
 @main.route('/comp_page')
 def comp_page():
     compname = str(request.args.get('comp'))
-    all = os.listdir(os.path.join("./project/comps", compname))
+    all = os.listdir(os.path.join(COMP_PATH, compname))
     events = [entry for entry in all if not entry.endswith('.csv')]
     rounds = []
     for event in events:
-        round_list = os.listdir(os.path.join('./project/comps/', compname, event))
+        round_list = os.listdir(os.path.join(COMP_PATH, compname, event))
         round_list = [x.split('.')[0] for x in round_list]
         box = [event, round_list]#contains:[event name, array of round numbers]
         rounds.append(box)
@@ -74,7 +78,7 @@ def comp_page():
 @login_required
 def edit_comp():
     compname = str(request.args.get('comp'))
-    data = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'))
+    data = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'))
     cols = []
     for col in data: cols.append(col)
     dict_ = data.to_dict('split')
@@ -86,10 +90,10 @@ def edit_comp():
 def dlt_person():
     id=request.args.get('id')
     compname = request.args.get('compname')
-    df = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col="ID")
+    df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col="ID")
     print(df.index)
     new = df.drop(int(id))
-    new.to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'))
+    new.to_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'))
 
     return redirect(url_for('main.edit_comp', comp = compname))
 
@@ -101,14 +105,14 @@ def change_prsn_state():
         data = request.json
         id = data.get('id')
         compname = data.get('compname')
-        df = pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
+        df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
         person = df[df["ID"]==int(id)]
         #print(df[['Name', "ID", 'Paid']][df['ID']==int(id)],'\n',person['Paid'].values)
         if person['Paid'].values == 'YES': 
             df.loc[df["ID"]==int(id), 'Paid'] = 'NO' 
         else:
             df.loc[df["ID"]==int(id), 'Paid'] = 'YES'
-        df.to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index=False)
+        df.to_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index=False)
     except Exception as e:
         print('Error',e)
 
@@ -121,9 +125,9 @@ def sort_by():
     data = request.json
     compname = data.get('compname')
     label = data.get('label')
-    df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
+    df=pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
     df = df.sort_values(by=label)
-    df.to_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index=False)
+    df.to_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index=False)
 
     return "ok"
 
@@ -134,13 +138,13 @@ def make_event():
         data = request.json
         compname = data.get('compname')
         label = data.get('label')
-        df=pandas.read_csv(os.path.join('./project/comps/', compname, 'competitors.csv'), index_col=False)
+        df=pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
         new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
         new_df=new_df[["ID", "Name"]][df[label]=='Ano']
         new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
         new_df["Ao5s"]=999
-        os.mkdir(os.path.join('./project/comps/', compname, label))
-        new_df.to_csv(os.path.join('./project/comps/', compname, label, '1.csv'), index=False)
+        os.mkdir(os.path.join(COMP_PATH, compname, label))
+        new_df.to_csv(os.path.join(COMP_PATH, compname, label, '1.csv'), index=False)
     except Exception as e:
         print('Error:', e)
         
@@ -151,7 +155,7 @@ def round_page():
     compname = request.args.get('compname')
     event = request.args.get('event')
     round = request.args.get('round')
-    data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))    
+    data = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))    
     cols = []
     data.insert(0, 'pos', range(1, 1 + len(data)))
     for col in data: cols.append(col)
@@ -167,7 +171,7 @@ def enter_results():
         compname = request.args.get('compname')
         event = request.args.get('event')
         round = request.args.get('round')
-        df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
+        df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))
         df.insert(0, 'pos', range(1, 1 + len(df)))
         cols = []        
         for col in df: cols.append(col)
@@ -185,7 +189,7 @@ def enter_results():
         compname = data.get('compname')
         event = data.get('event')
         round = data.get('round')
-        df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
+        df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col=False)
         result = Result(first, second, third, fourth, fifth)
         df.loc[df["ID"]==int(id), '1'] = str(first)
         df.loc[df["ID"]==int(id), '2'] = str(second)
@@ -197,7 +201,7 @@ def enter_results():
         df.loc[df["ID"]==int(id), 'Ao5s'] = str(result.result)
         df.Ao5s = df.Ao5s.astype(float)
         df = df.sort_values(['Ao5s','Best'])
-        df.to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index=False)
+        df.to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index=False)
 
         return "ok"
     
@@ -209,13 +213,13 @@ def make_next():
     event = data.get('event')
     round = data.get('round')
     num = int(data.get('num'))
-    df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
+    df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col=False)
     last = int(len(df)*num/len(df))
     new_df=df.head(last)
     new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
     new_df["Ao5s"]=999
     new_df["to_next"]=False 
-    new_df.to_csv(os.path.join('./project/comps/', compname, event, str(int(round)+1)+'.csv'), index=False)
+    new_df.to_csv(os.path.join(COMP_PATH, compname, event, str(int(round)+1)+'.csv'), index=False)
     return 'ok'
 
 @main.route('/delete_from_round', methods=['POST'])
@@ -226,8 +230,8 @@ def delete_from_round():
     event = data.get('event')
     round = data.get('round')
     id = int(data.get('id'))
-    df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col='ID')
-    df.drop(id).to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
+    df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col='ID')
+    df.drop(id).to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))
     return 'ok'
     
 @main.route('/new_competitor_round', methods=['POST'])
@@ -240,9 +244,9 @@ def new_competitor_round():
     event = data.get('event')
     round = data.get('round')
     print(data, '############')
-    df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
+    df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col=False)
     add_df = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
     print(add_df)
     df = pandas.concat([df,add_df], ignore_index=True)
-    df.to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index=False)
+    df.to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index=False)
     return "ok"
