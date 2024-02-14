@@ -42,7 +42,7 @@ def competitions_post():
             if name == str(comp):
                 flash('Competition already exists!')
                 return redirect(url_for('main.competitions'))
-        os.mkdir(os.path.join("COMP_PATH", name))
+        os.mkdir(os.path.join(COMP_PATH, name))
         file = pandas.read_csv(file)
         file["Paid"]="NO"
         file['E-mail'] = file['E-mail'].str.lower()
