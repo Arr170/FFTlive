@@ -15,11 +15,10 @@
         <div class="block">
         <form  onkeydown="return event.key != 'Enter'" action="JavaScript:sendForm()" id="result_form" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">
             <label>Name:</label><input required onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}" class="input is-normal" type="text" name="input_name" id="input_name" placeholder="Name">
-            <label>ID:</label><input autofocus required onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve1').focus()}}" class="input is-normal" type="text" name="input_id" id="input_id" placeholder="id">
-            <label>1:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){
+            <label>ID:</label><input autofocus required onkeydown="{if(event.keyCode == 13){
                 fillById()
-                document.getElementById('input_solve2').focus()
-            }}" class="input is-normal" type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">            
+                document.getElementById('input_solve1').focus()}}" class="input is-normal" type="text" name="input_id" id="input_id" placeholder="id">
+            <label>1:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" class="input is-normal" type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">            
             <label>2:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" class="input is-normal" type="text" name="input_solve2" id="input_solve2" placeholder="0:00.00">            
             <label>3:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" class="input is-normal" type="text" name="input_solve3" id="input_solve3" placeholder="0:00.00">
             <label>4:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" class="input is-normal" type="text" name="input_solve4" id="input_solve4" placeholder="0:00.00">
@@ -270,7 +269,18 @@
     }
 
     function fillById(){
-        console.log('id')
+        const id = document.getElementById('input_id').value
+        fetch('/name_by_id', {
+            method:'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ID:id
+            })
+        }).then(function(response){
+            
+        })
     }
 </script>
 

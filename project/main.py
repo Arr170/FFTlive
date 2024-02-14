@@ -8,7 +8,7 @@ from . import db
 
 main = Blueprint('main', __name__)
 
-if(os.environ['IS_PROD']==1):
+if(os.environ['IS_PROD']=='1'):
     COMP_PATH = '/project/comps'
 else:
     COMP_PATH = './project/comps'
