@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 
 {%block content %}
+<div class="overlay-container">
+    <div class="box">
+            <label>Name:</label>
+            <input type="text"class="input" id="new_competitor_name">
+            <label>ID:</label>
+            <input type="text" class="input" id="new_competitor_id">
+            <button onclick="addCompetitor(this)">submit</button>
+    </div>
+</div>
 <div class="columns">
-    <div class = "column is-one-third">
+    <div class = "column is-one-fourth">
         <div class="block">
-        <form onkeydown="return event.key != 'Enter'" action="JavaScript:sendForm()" id="result_form" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">
+        <form  onkeydown="return event.key != 'Enter'" action="JavaScript:sendForm()" id="result_form" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">
             <label>Name:</label><input required onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}" class="input is-normal" type="text" name="input_name" id="input_name" placeholder="Name">
             <label>ID:</label><input autofocus required onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve1').focus()}}" class="input is-normal" type="text" name="input_id" id="input_id" placeholder="id">
             <label>1:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" class="input is-normal" type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">            
@@ -30,7 +39,7 @@
 
         <div class="box has-background-light ">
             <div class="table-container">
-                <table class="table has-background-light is-fullwidth">
+                <table class="table has-background-light">
                     <thead class="has-background-light`">
                         <div class="box has-text-centered has-background-grey has-text-black">
                             <h1 class="is-size-4 has-text-weight-bold">{{event}} {{round}}. round</h1>
@@ -50,7 +59,7 @@
                     </thead>
                     <tbody>
                         {% for row in rows %}
-                        <tr  data-competitorId="{{row[1]}}" data-competitorName="{{row[2]}}" data-first="{{row[3]}}" data-second="{{row[4]}}" data-third="{{row[5]}}" data-fourth="{{row[6]}}" data-fifth="{{row[7]}}" onclick="rowClick(this)">
+                        <tr class="" data-competitorId="{{row[1]}}" data-competitorName="{{row[2]}}" data-first="{{row[3]}}" data-second="{{row[4]}}" data-third="{{row[5]}}" data-fourth="{{row[6]}}" data-fifth="{{row[7]}}" onclick="rowClick(this)">
                             <td name="position" class="has-text-centered">
                                 {{row[0]}}.
                             </td>
@@ -98,7 +107,7 @@
                                 <a href="{{url_for('main.comp_page', comp=compname)}}" class="button is-warning is-fullwidth">all events</a>
                             </div>
                             <div class="column is-2">
-                                <button onclick="addCompetitor(this)" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add</button>
+                                <button onclick="toggleOverlay()" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add</button>
                             </div>
                         </div>
                         <div class="columns">
@@ -164,14 +173,14 @@
         }
     }
 
-    async function sendForm(){
+    function sendForm(){
         const form = document.getElementById('result_form')
         const data = new FormData(form)
         data.append("event", form.getAttribute('data-event'))
         data.append("compname", form.getAttribute('data-compname'))
         data.append("round", form.getAttribute('data-round'))
         console.log(form.getAttribute('data-round'))
-        await fetch("/enter_results", {
+        fetch("/enter_results", {
             method: 'POST',
             body: data
         }).then(function(response){
@@ -186,7 +195,7 @@
         const compname = data.getAttribute('data-compname')
         const event = data.getAttribute('data-event')
         const round = data.getAttribute('data-round')
-        fetch('/delete_from_round', {
+        await fetch('/delete_from_round', {
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
@@ -225,5 +234,56 @@
             location.reload()
         })
     }
+
+    function toggleOverlay(){
+        var overlay = document.getElementsByClassName("overlay-container")[0]
+        if(overlay.style.display === 'none' || !overlay.style.display){
+            overlay.style.display = "flex"
+        }
+        else{
+            overlay.style.display = 'none'
+        }
+    }
+
+    function addCompetitor(){
+        const url_str = new URLSearchParams(window.location.search)
+        console.log(document.getElementById('new_competitor_id').value, document.getElementById('new_competitor_name').value)
+        fetch('/new_competitor_round', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ID:document.getElementById('new_competitor_id').value,
+                Name:document.getElementById('new_competitor_name').value,
+                compname:url_str.get('compname'),
+                round:url_str.get('round'),
+                event:url_str.get('event')
+            })
+        }).then(function(response){
+            console.log(response)
+            location.reload()
+        })
+    }
 </script>
+
+<style>
+    .overlay-container {
+        display: none;
+        z-index: 1000;
+        width: 85%;
+        height: 50%;
+        position: fixed;
+        justify-content: center;
+        align-items:center;
+
+    }
+
+    .overlay-content{
+        z-index: 1000;
+        font-size: 50px;
+        position: absolute;
+    }
+
+</style>
 {% endblock %}

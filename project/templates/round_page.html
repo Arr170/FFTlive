@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class=" overlay-container is-fullheigh is-fullwidth">
+<div class="overlay-container">
     <div class="box has-background-light is-fullwidth is-fullheigh">
         <table class="table has-background-light">
             <thead>
@@ -70,7 +70,7 @@
         <table class="table has-background-light is-fullwidth table-cell-border">
             <thead class="has-background-light`">
                 <div class="box has-text-centered has-background-grey has-text-black">
-                    <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">{{event}} {{round}}. round</h1>
+                    <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">{{event}} - {{round}}. round</h1>
                 </div>
                 
                 <tr class="is-size-7-mobile">
@@ -87,8 +87,12 @@
             </thead>
             <tbody>
                 {% for row in rows %}
-                <tr class="is-size-6-mobile" >
+                <tr class="is-size-6-mobile " >
+                    {% if row[11] %}
+                    <td class="has-text-centered has-background-success">
+                    {% else %}
                     <td class="has-text-centered">
+                       {% endif %} 
                         {{row[0]}}.
                     </td>
                     <td class="has-text-centered">
@@ -143,12 +147,15 @@
         font-size: 50px;
         position: absolute;
     }
+
 </style>
 <script>
 
     function toggleOverlay(name, first, second, third, fourth, fifth, ao5, pos) {
+        console.log('button clicked')
         var overlay = document.getElementsByClassName("overlay-container")[0];
-        if(overlay.style.display === "none"){
+        console.log(overlay.style)
+        if(overlay.style.display === "none" || !overlay.style.display){
             overlay.style.display = "flex"
             document.getElementById('overlay-name').innerHTML = pos+'. '+name
             document.getElementById('overlay-1').innerHTML = first
@@ -157,11 +164,14 @@
             document.getElementById('overlay-4').innerHTML = fourth
             document.getElementById('overlay-5').innerHTML = fifth
             document.getElementById('overlay-ao').innerHTML = ao5
+            
         }
         else{
+            console.log('False')
             overlay.style.display = "none"
         }
         
-        }
+    }
+
 </script>
 {% endblock %}

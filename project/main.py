@@ -152,8 +152,6 @@ def round_page():
     event = request.args.get('event')
     round = request.args.get('round')
     data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))    
-    data.Ao5s = data.Ao5s.astype(float)
-    data = data.sort_values(by='Ao5s')
     cols = []
     data.insert(0, 'pos', range(1, 1 + len(data)))
     for col in data: cols.append(col)
@@ -169,13 +167,11 @@ def enter_results():
         compname = request.args.get('compname')
         event = request.args.get('event')
         round = request.args.get('round')
-        data = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
-        data.Ao5s = data.Ao5s.astype(float)
-        data = data.sort_values(['Ao5s','Best'])
-        data.insert(0, 'pos', range(1, 1 + len(data)))
+        df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
+        df.insert(0, 'pos', range(1, 1 + len(df)))
         cols = []        
-        for col in data: cols.append(col)
-        dict_ = data.to_dict('split')
+        for col in df: cols.append(col)
+        dict_ = df.to_dict('split')
         return render_template('enter_results.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round = round)
     if request.method == 'POST':
         data = request.form
@@ -199,6 +195,8 @@ def enter_results():
         df.loc[df["ID"]==int(id), 'Best'] = str(result.best_solve)
         df.loc[df["ID"]==int(id), 'Ao5'] = str(result.formated(result.result))
         df.loc[df["ID"]==int(id), 'Ao5s'] = str(result.result)
+        df.Ao5s = df.Ao5s.astype(float)
+        df = df.sort_values(['Ao5s','Best'])
         df.to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index=False)
 
         return "ok"
@@ -216,6 +214,7 @@ def make_next():
     new_df=df.head(last)
     new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
     new_df["Ao5s"]=999
+    new_df["to_next"]=False 
     new_df.to_csv(os.path.join('./project/comps/', compname, event, str(int(round)+1)+'.csv'), index=False)
     return 'ok'
 
@@ -231,3 +230,19 @@ def delete_from_round():
     df.drop(id).to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'))
     return 'ok'
     
+@main.route('/new_competitor_round', methods=['POST'])
+@login_required
+def new_competitor_round():
+    data = request.json
+    id = data.get('ID')
+    name = data.get('Name')
+    compname = data.get('compname')
+    event = data.get('event')
+    round = data.get('round')
+    print(data, '############')
+    df = pandas.read_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index_col=False)
+    add_df = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
+    print(add_df)
+    df = pandas.concat([df,add_df], ignore_index=True)
+    df.to_csv(os.path.join('./project/comps/', compname, event, round+'.csv'), index=False)
+    return "ok"
