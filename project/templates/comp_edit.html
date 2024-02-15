@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="overlay-container">
+        <div class="box">
+                <label>Name:</label>
+                <input type="text"class="input" id="new_competitor_name">
+                <button class="button is-link" onclick="addCompetitor(this)">submit</button>
+        </div>
+    </div>
     <div class="field is-left">
         <div class="buttons is-primary">
             <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
+            <button onclick="toggleOverlay()" class="button is-info" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add competitor</button>
+
         </div>
     </div>
     <div class="box has-background-light is-fullwidth">
@@ -109,8 +118,54 @@
             location.reload()
         })
     }
+    function toggleOverlay(){
+        var overlay = document.getElementsByClassName("overlay-container")[0]
+        if(overlay.style.display === 'none' || !overlay.style.display){
+            overlay.style.display = "flex"
+        }
+        else{
+            overlay.style.display = 'none'
+        }
+    }
+
+    function addCompetitor(){
+        const url_str = new URLSearchParams(window.location.search)
+        fetch('/new_competitor_comp', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Name:document.getElementById('new_competitor_name').value,
+                compname:url_str.get('comp')
+            })
+        }).then(function(response){
+            console.log(response)
+            document.getElementsByClassName("overlay-container")[0].style.display = 'none'
+            location.reload()
+        })
+    }
 </script>
 
+<style>
+    .overlay-container {
+        display: none;
+        z-index: 1000;
+        width: 85%;
+        height: 50%;
+        position: fixed;
+        justify-content: center;
+        align-items:center;
+
+    }
+
+    .overlay-content{
+        z-index: 1000;
+        font-size: 50px;
+        position: absolute;
+    }
+
+</style>
 
 {% endblock %}
 

@@ -7,7 +7,7 @@
             <input type="text"class="input" id="new_competitor_name">
             <label>ID:</label>
             <input type="text" class="input" id="new_competitor_id">
-            <button onclick="addCompetitor(this)">submit</button>
+            <button class="button is-link" onclick="addCompetitor(this)">submit</button>
     </div>
 </div>
 <div class="columns">
@@ -18,11 +18,11 @@
             <label>ID:</label><input autofocus required onkeydown="{if(event.keyCode == 13){
                 fillById()
                 document.getElementById('input_solve1').focus()}}" class="input is-normal" type="text" name="input_id" id="input_id" placeholder="id">
-            <label>1:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" class="input is-normal" type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">            
-            <label>2:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" class="input is-normal" type="text" name="input_solve2" id="input_solve2" placeholder="0:00.00">            
-            <label>3:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" class="input is-normal" type="text" name="input_solve3" id="input_solve3" placeholder="0:00.00">
-            <label>4:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" class="input is-normal" type="text" name="input_solve4" id="input_solve4" placeholder="0:00.00">
-            <label>5:</label><input required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('submit_button').focus()}}" class="input is-normal" type="text" name="input_solve5" id="input_solve5" placeholder="0:00.00">
+            <label>1:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" class="input is-normal" type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">            
+            <label>2:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" class="input is-normal" type="text" name="input_solve2" id="input_solve2" placeholder="0:00.00">            
+            <label>3:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" class="input is-normal" type="text" name="input_solve3" id="input_solve3" placeholder="0:00.00">
+            <label>4:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" class="input is-normal" type="text" name="input_solve4" id="input_solve4" placeholder="0:00.00">
+            <label>5:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('submit_button').focus()}}" class="input is-normal" type="text" name="input_solve5" id="input_solve5" placeholder="0:00.00">
         </form>
         </div>
         <div class="block">
@@ -48,7 +48,8 @@
                         </div>
                         
                         <tr>
-                            <th class="has-text-centered">  </th>
+                            <th class="has-text-centered">Pos</th>
+                            <th class="has-text-centered">ID</th>
                             <th class="has-text-centered">Name</th>
                             <th class="has-text-centered">1</th>
                             <th class="has-text-centered">2</th>
@@ -64,6 +65,9 @@
                         <tr class="" data-competitorId="{{row[1]}}" data-competitorName="{{row[2]}}" data-first="{{row[3]}}" data-second="{{row[4]}}" data-third="{{row[5]}}" data-fourth="{{row[6]}}" data-fifth="{{row[7]}}" onclick="rowClick(this)">
                             <td name="position" class="has-text-centered">
                                 {{row[0]}}.
+                            </td>
+                            <td name="position" class="has-text-centered">
+                                {{row[1]|int}}
                             </td>
                             <td class="has-text-centered">
                                 <button class="button is-link is-outlined is-fullwidth">
@@ -264,11 +268,13 @@
             })
         }).then(function(response){
             console.log(response)
+            document.getElementsByClassName("overlay-container")[0].style.display = 'none'
             location.reload()
         })
     }
 
     function fillById(){
+        const url_str = new URLSearchParams(window.location.search)
         const id = document.getElementById('input_id').value
         fetch('/name_by_id', {
             method:'POST',
@@ -276,10 +282,15 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ID:id
+                ID:id,
+                compname:url_str.get('compname'),
+                round:url_str.get('round'),
+                event:url_str.get('event')
             })
-        }).then(function(response){
-            
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('input_name').value = data[0]['Name']
         })
     }
 </script>

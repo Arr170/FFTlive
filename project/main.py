@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 import os, pandas, shutil
 from project.results import Result
@@ -243,10 +243,33 @@ def new_competitor_round():
     compname = data.get('compname')
     event = data.get('event')
     round = data.get('round')
-    print(data, '############')
     df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col=False)
     add_df = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
-    print(add_df)
     df = pandas.concat([df,add_df], ignore_index=True)
     df.to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index=False)
     return "ok"
+
+@main.route('/new_competitor_comp', methods=['POST'])
+@login_required
+def new_competitor_comp():
+    data = request.json
+    name = data.get('Name')
+    compname = data.get('compname')
+    df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
+
+
+    return "ok"
+
+@main.route('/name_by_id', methods=['POST'])
+@login_required
+def name_by_id():
+    data = request.json
+    id = data.get('ID')
+    compname = data.get('compname')
+    event = data.get('event')
+    round = data.get('round')
+    df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col=False)
+    print(df[df['ID']==int(id)].to_json(orient='records'))
+    return df[df['ID']==int(id)].to_json(orient='records')
+
+
