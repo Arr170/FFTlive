@@ -1,10 +1,5 @@
 class Result:
     def __init__(self, first, second, third, fourth, fifth):
-        # self.first = first
-        # self.second = second
-        # self.third = third
-        # self.fourth = fourth
-        # self.fifth = fifth
         self.results = [first, second, third, fourth, fifth]
         self.result = self.average()
 
@@ -48,10 +43,10 @@ class Result:
         self.best_solve = self.best(results_in_sec)
         if not DNFs :
             total = total - self.best_solve - self.worst(results_in_sec)
-            return str(self.truncate(total/3, 2))
+            return str(round(total/3, 2))
         elif DNFs < 2:
             total = total - self.best_solve
-            return str(self.truncate(total/3, 2))
+            return str(round(total/3, 2))
         else:
             return str('999')
 
@@ -60,16 +55,12 @@ class Result:
         if time == '999':
             return 'DNF'
         minutes = int(float(time)/60)
-        seconds = self.truncate(float(time) - minutes*60, 2)
+        seconds = round(float(time) - minutes*60, 2)
         print(minutes, seconds, float(time)-minutes*60)
         if minutes:
             return(f'{minutes}:{seconds}')
         return(str(seconds))
     
-    def truncate(self, n, decimals=0):
-        multiplier = 10 ** decimals
-        return int(n * multiplier) / multiplier
-
         
 
 

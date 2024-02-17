@@ -21,9 +21,17 @@
                 {% for round in rounds %}
                 <td>
                     {% for stage in round[1] %}
-                    <div>
-                        <a class="button is-link is-outlined" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
-                    </div>
+
+                        {% if 'groups' in stage %}
+                        <div style="margin: 2px;">
+                            <a class="button is-success" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                        </div>
+                        {% else %}
+                        <div style="margin: 2px;">
+                            <a class="button is-link" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                        </div>
+                        {% endif %}
+
                     {% endfor %}
                 </td>
                 {% endfor %}

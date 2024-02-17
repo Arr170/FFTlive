@@ -70,6 +70,7 @@ def comp_page():
     for event in events:
         round_list = os.listdir(os.path.join(COMP_PATH, compname, event))
         round_list = [x.split('.')[0] for x in round_list]
+        round_list.sort()
         box = [event, round_list]#contains:[event name, array of round numbers]
         rounds.append(box)
     return render_template('comp_page.html', events=events, rounds = rounds, compname=compname)
@@ -150,6 +151,29 @@ def make_event():
         
     return "ok"
 
+@main.route('/create_groups', methods=['POST'])
+@login_required
+def create_groups():
+    data = request.json
+    compname = data.get('compname')
+    event = data.get('event')
+    round = data.get('round')
+    round_df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))
+    groups_df = round_df[['ID', 'Name']]
+    groups_df['Group'] = 0
+    count = len(groups_df)
+    if(count < 25):
+        groups_df.loc[0:count/2, 'Group'] = 1
+        groups_df.loc[count/2:count, 'Group'] = 2
+    else:
+        groups_df.loc[0:count/3, 'Group'] = 1
+        groups_df.loc[count/3:count*2/3, 'Group'] = 2
+        groups_df.loc[count*2/3:count, 'Group'] = 3
+    print(groups_df)
+    groups_df.to_csv(os.path.join(COMP_PATH, compname, event, round+' groups'+'.csv'))
+
+    return "ok"
+
 @main.route('/round_page', methods=['GET'])
 def round_page():
     compname = request.args.get('compname')
@@ -214,7 +238,9 @@ def make_next():
     round = data.get('round')
     num = int(data.get('num'))
     df = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index_col=False)
-    last = int(len(df)*num/len(df))
+    df.loc[:(num-1), 'to_next'] = True
+    df.to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index=False)
+    last = int(num)
     new_df=df.head(last)
     new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
     new_df["Ao5s"]=999

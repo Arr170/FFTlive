@@ -4,8 +4,22 @@
     <div class="overlay-container">
         <div class="box">
                 <label>Name:</label>
-                <input type="text"class="input" id="new_competitor_name">
+                <input type="text" class="input" id="new_competitor_name">
+            </br>
+                <label>{{cols[3]}}</label>
+                <input type="checkbox" id="event_1">
+            </br>
+                <label>{{cols[4]}}</label>
+                <input type="checkbox" id="event_2">
+            </br>
+                <label>{{cols[5]}}</label>
+                <input type="checkbox" id="event_3">
+            </br>
+                <label>{{cols[6]}}</label>
+                <input type="checkbox" id="event_4">
+            </br>
                 <button class="button is-link" onclick="addCompetitor(this)">submit</button>
+                <button class="button is-danger" onclick="toggleOverlay()">cancel</button>
         </div>
     </div>
     <div class="field is-left">

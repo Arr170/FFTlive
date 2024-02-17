@@ -39,9 +39,9 @@
             
 
 
-        <div class="box has-background-light ">
-            <div class="table-container">
-                <table class="table has-background-light">
+        <div class="box has-background-light" >
+            <div class="table-container" >
+                <table class="table has-background-light" >
                     <thead class="has-background-light`">
                         <div class="box has-text-centered has-background-grey has-text-black">
                             <h1 class="is-size-4 has-text-weight-bold">{{event}} {{round}}. round</h1>
@@ -115,10 +115,13 @@
                             <div class="column is-2">
                                 <button onclick="toggleOverlay()" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add</button>
                             </div>
+                            <div class="column is-2">
+                                <button onclick="createGroups()" class="button is-info is-fullwidth">create groups</button>
+                            </div>
                         </div>
                         <div class="columns">
                             <div class="column is-2">
-                                <input type="number" class="input is-normal" value="75" id="to_next">
+                                <input type="number" class="input is-normal" value="10" id="to_next">
                             </div>
                             <div class="column is-2">
                                 <button class="button is-fullwidth" onclick="createNextRound(this)"  data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">create</button>
@@ -137,7 +140,7 @@
         if(data.getAttribute('data-first') === '__._'){
             console.log(data.getAttribute('data-first'))
             document.getElementById('input_name').value = data.getAttribute('data-competitorName')
-            document.getElementById('input_id').value = data.getAttribute('data-competitorId')
+            document.getElementById('input_id').value = data.getAttribute('data-competitorId')|0
             document.getElementById('input_solve1').value = data.getAttribute('')
             document.getElementById('input_solve2').value = data.getAttribute('')
             document.getElementById('input_solve3').value = data.getAttribute('')
@@ -146,7 +149,7 @@
             document.getElementById('input_solve1').focus()
         }else{
             document.getElementById('input_name').value = data.getAttribute('data-competitorName')
-            document.getElementById('input_id').value = data.getAttribute('data-competitorId')
+            document.getElementById('input_id').value = data.getAttribute('data-competitorId')|0
             document.getElementById('input_solve1').value = data.getAttribute('data-first')
             document.getElementById('input_solve2').value = data.getAttribute('data-second')
             document.getElementById('input_solve3').value = data.getAttribute('data-third')
@@ -292,6 +295,22 @@
         .then(data => {
             document.getElementById('input_name').value = data[0]['Name']
         })
+    }
+
+    function createGroups(){
+        const url_str = new URLSearchParams(window.location.search)
+        fetch('/create_groups', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                compname:url_str.get('compname'),
+                round:url_str.get('round'),
+                event:url_str.get('event')
+            })
+        })
+        .then(response => location.reload())
     }
 </script>
 
