@@ -13,21 +13,14 @@ if(os.environ['IS_PROD']=='1'):
 else:
     COMP_PATH = './project/comps'
 
-@main.route('/')
-def index():
-    return render_template('index.html')
 
-@main.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html', name = current_user.name)
 
-@main.route('/competitions', methods=['GET'])
+@main.route('/', methods=['GET'])
 def competitions():
     comp_list = os.listdir(COMP_PATH)
     return render_template('competitions.html', comps = comp_list)
 
-@main.route('/competitions', methods=['POST'])
+@main.route('/', methods=['POST'])
 @login_required
 def competitions_post():
     
@@ -288,7 +281,7 @@ def new_competitor_comp():
     print()
     compname = data.get('compname')
     df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
-    id = len(df) + 1
+    id = len(df) + 2
     cols = []
     for col in df: cols.append(col)#column names
 
