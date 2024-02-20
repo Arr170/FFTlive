@@ -151,6 +151,10 @@
             },
             body: JSON.stringify({
                 Name:document.getElementById('new_competitor_name').value,
+                event_1:document.getElementById('event_1').checked,
+                event_2:document.getElementById('event_2').checked,
+                event_3:document.getElementById('event_3').checked,
+                event_4:document.getElementById('event_4').checked,
                 compname:url_str.get('comp')
             })
         }).then(function(response){

@@ -81,7 +81,7 @@ def edit_comp():
     compname = str(request.args.get('comp'))
     data = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'))
     cols = []
-    for col in data: cols.append(col)
+    for col in data: cols.append(col)#column names
     dict_ = data.to_dict('split')
     #print(pandas.DataFrame(data))
     return render_template('comp_edit.html', cols = cols, rows = dict_['data'], compname=compname)
@@ -279,10 +279,23 @@ def new_competitor_round():
 @login_required
 def new_competitor_comp():
     data = request.json
+    print(data)
+    event_1 = 'Ano' if data.get('event_1') else 'Ne'
+    event_2 = 'Ano' if data.get('event_2') else 'Ne'
+    event_3 = 'Ano' if data.get('event_3') else 'Ne'
+    event_4 = 'Ano' if data.get('event_4') else 'Ne'
     name = data.get('Name')
+    print()
     compname = data.get('compname')
     df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
+    id = len(df) + 1
+    cols = []
+    for col in df: cols.append(col)#column names
 
+    add_df=pandas.DataFrame([[id, name, 'Mail', event_1, event_2, event_3, event_4, 'YES']], columns=cols)
+
+    df = pandas.concat([df,add_df], ignore_index=True)
+    df.to_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index=False)
 
     return "ok"
 
