@@ -6,6 +6,34 @@
         <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
     </div>
 </div>
+{%for round in rounds%}
+</br>
+    <div class="dropdown is-hoverable">
+        <div class="dropdown-trigger">
+        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+            <span>{{round[0]}}</span>
+        </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+                {% for stage in round[1] %}
+
+                    {% if 'groups' in stage %}
+                    <div style="margin: 2px;" class="dropdown-item">
+                        <a class="button is-success" href="{{url_for('main.groups', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                    </div>
+                    {% else %}
+                    <div style="margin: 2px;" class="dropdown-item">
+                        <a class="button is-link" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                    </div>
+                    {% endif %}
+
+                {% endfor %}
+        </div>
+        </div>
+    </div>
+{% endfor %}
+<!--
 <div class="box has-background-light ">
     <div class="table-container">
     <table class="table has-background-light is-fullwidth ">
@@ -40,4 +68,5 @@
     </table>
     </div>
 </div>
+-->
 {% endblock %}
