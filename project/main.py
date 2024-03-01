@@ -180,6 +180,18 @@ def round_page():
 
     return render_template('round_page.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round=round)
 
+@main.route('/groups', methods=['GET'])
+def groups():
+    compname = request.args.get('compname')
+    event = request.args.get('event')
+    round = request.args.get('round')
+    data = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))    
+    cols = []
+    for col in data: cols.append(col)
+    dict_ = data.to_dict('split')
+
+    return render_template('groups.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round=round)
+
 @main.route('/enter_results', methods=['GET', 'POST'])
 @login_required
 def enter_results():
