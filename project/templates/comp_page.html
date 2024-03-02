@@ -6,33 +6,47 @@
         <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
     </div>
 </div>
-{%for round in rounds%}
-</br>
-    <div class="dropdown is-hoverable">
-        <div class="dropdown-trigger">
-        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-            <span>{{round[0]}}</span>
-        </button>
-        </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-        <div class="dropdown-content">
-                {% for stage in round[1] %}
+<h2 class="is-size-2 has-text-centered has-text-weight-bold has-text-grey">{{compname}}</h2>
 
-                    {% if 'groups' in stage %}
-                    <div style="margin: 2px;" class="dropdown-item">
-                        <a class="button is-success" href="{{url_for('main.groups', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
-                    </div>
-                    {% else %}
-                    <div style="margin: 2px;" class="dropdown-item">
-                        <a class="button is-link" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
-                    </div>
-                    {% endif %}
+<div class="box has-text-black">
 
-                {% endfor %}
+    {%for round in rounds%}
+    </br>
+        <div class="dropdown is-hoverable is-flex">
+            <button class="button is-large is-fullwidth is-info is-outlined" aria-haspopup="true" aria-controls="dropdown-menu">
+                {{round[0]}}
+            </button>
+           
+            <div class="dropdown-menu is-fullwidth" id="dropdown-menu" role="menu">
+                </br>
+                <div class="dropdown-content is-fullwidth">
+                        {% for stage in round[1] %}
+
+                            {% if 'groups' in stage %}
+                            <div style="margin: 2px;" class="dropdown-item">
+                                <a class="button is-success is-fullwidth" href="{{url_for('main.groups', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                            </div>
+                            {% else %}
+                            <div style="margin: 2px;" class="dropdown-item">
+                                <a class="button is-link is-fullwidth" href="{{url_for('main.round_page', event=round[0], round=stage, compname=compname)}}">round {{stage}}</a> 
+                            </div>
+                            {% endif %}
+
+                        {% endfor %}
+                </div>
+            </div>
         </div>
-        </div>
-    </div>
 {% endfor %}
+</div>
+<style>
+.dropdown-menu{
+  width:100%;
+  position: absolute;
+  float: left;
+  left: 0;
+  clear: right;
+}
+</style>
 <!--
 <div class="box has-background-light ">
     <div class="table-container">

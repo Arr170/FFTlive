@@ -20,7 +20,7 @@ def competitions():
     comp_list = os.listdir(COMP_PATH)
     return render_template('competitions.html', comps = comp_list)
 
-@main.route('/', methods=['POST'])
+@main.route('/competitions', methods=['POST'])
 @login_required
 def competitions_post():
     

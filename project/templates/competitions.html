@@ -3,12 +3,17 @@
 {% block content %}
 <div>
     
-    <div class="box has-background-light">
-        <h3>Competitions:</h3>
+    <div class="box has-background-light has-text-centered">
         <div class="table-container">
-            <table class="table has-background-light">
+            <table class="table has-background-light has-text-centered is-fullwidth">
+                <thead>
+                    <div class="box has-text-centered has-background-grey has-text-black">
+                        <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">Competitions:</h1>
+                    </div>
+                </thead>
+                <tbody >
                 {% for comp in comps %}
-                <tr>
+                <tr class="is-fullwidth">
                     <td>{{ comp }} </td>
                     <td>
                         <a class="button is-info is-outlined" href="{{ url_for('main.comp_page', comp= comp) }}">
@@ -31,6 +36,7 @@
                     {% endif %}
                 </tr>
                 {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>

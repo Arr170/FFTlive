@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="overlay-container">
-    <div class="box has-background-light is-fullwidth is-fullheigh">
-        <table class="table has-background-light">
+    <div class="box has-background-light is-fullwidth is-fullheigh" style="width: 100%;">
+        <table class="table has-background-light is-fullwidth has-text-centered">
             <thead>
                
                 <tr class="is-justify-content-center">
@@ -50,9 +50,7 @@
                 </tr>
             </tfoot>
         </table>
-        <button class="button is-small is-outlined is-danger is-fullwidth" onclick="toggleOverlay()">
-            back
-         </button>
+        <button class="button is-danger is-fullwidth" onclick="toggleOverlay()">close </button>
     </div>
 </div>
 <div class="field is-left">
@@ -134,7 +132,7 @@
     .overlay-container {
         display: none;
         z-index: 1000;
-        width: 85%;
+        width: 75%;
         height: 50%;
         position: fixed;
         justify-content: center;
@@ -145,6 +143,7 @@
     .overlay-content{
         z-index: 1000;
         font-size: 50px;
+        width: 100%;
         position: absolute;
     }
 
@@ -152,9 +151,7 @@
 <script>
 
     function toggleOverlay(name, first, second, third, fourth, fifth, ao5, pos) {
-        console.log('button clicked')
         var overlay = document.getElementsByClassName("overlay-container")[0];
-        console.log(overlay.style)
         if(overlay.style.display === "none" || !overlay.style.display){
             overlay.style.display = "flex"
             document.getElementById('overlay-name').innerHTML = pos+'. '+name
@@ -164,10 +161,12 @@
             document.getElementById('overlay-4').innerHTML = fourth
             document.getElementById('overlay-5').innerHTML = fifth
             document.getElementById('overlay-ao').innerHTML = ao5
+            // document.body.addEventListener('click', function(evt){
+            //     toggleOverlay(null, null, null, null, null, null, null, null)
+            // })
             
         }
         else{
-            console.log('False')
             overlay.style.display = "none"
         }
         
