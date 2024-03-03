@@ -137,6 +137,7 @@ def make_event():
         new_df=new_df[["ID", "Name"]][df[label]=='Ano']
         new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
         new_df["Ao5s"]=999
+        new_df["to_next"]=False
         os.mkdir(os.path.join(COMP_PATH, compname, label))
         new_df.to_csv(os.path.join(COMP_PATH, compname, label, '1.csv'), index=False)
     except Exception as e:

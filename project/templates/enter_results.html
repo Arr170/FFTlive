@@ -2,187 +2,225 @@
 
 {%block content %}
 <div class="overlay-container">
-    <div class="box">
-            <label>Name:</label>
-            <input type="text"class="input" id="new_competitor_name">
-            <label>ID:</label>
-            <input type="text" class="input" id="new_competitor_id">
-            <button class="button is-link" onclick="addCompetitor(this)">submit</button>
+    <div class="card">
+        <label>Name:</label>
+        <input type="text" id="new_competitor_name">
+        <label>ID:</label>
+        <input type="text" id="new_competitor_id">
+        <button onclick="addCompetitor(this)">submit</button>
     </div>
 </div>
-<div class="columns">
-    <div class = "column is-one-fourth">
-        <div class="block">
-        <form  onkeydown="return event.key != 'Enter'" action="JavaScript:sendForm()" id="result_form" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">
-            <label>Name:</label><input required onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}" class="input is-normal" type="text" name="input_name" id="input_name" placeholder="Name">
-            <label>ID:</label><input autofocus required onkeydown="{if(event.keyCode == 13){
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4 align-self-start">
+            <div class="container mt-5">
+                <form onkeydown="return event.key != 'Enter'" action="JavaScript:sendForm()" id="result_form"
+                    data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}" class="form">
+                    <div>
+                        <label class="form-label">Name:</label>
+                        <input class="form-control" required
+                            onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}"
+                            type="text" name="input_name" id="input_name" placeholder="Name">
+                    </div>
+                    <div>
+                        <label class="form-label">ID:</label>
+                        <input class="form-control" autofocus required onkeydown="{if(event.keyCode == 13){
                 fillById()
-                document.getElementById('input_solve1').focus()}}" class="input is-normal" type="text" name="input_id" id="input_id" placeholder="id">
-            <label>1:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" class="input is-normal" type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">            
-            <label>2:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" class="input is-normal" type="text" name="input_solve2" id="input_solve2" placeholder="0:00.00">            
-            <label>3:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" class="input is-normal" type="text" name="input_solve3" id="input_solve3" placeholder="0:00.00">
-            <label>4:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" class="input is-normal" type="text" name="input_solve4" id="input_solve4" placeholder="0:00.00">
-            <label>5:</label><input maxlength="7" required onkeyup="formate(this)" onkeydown="{if(event.keyCode == 13){document.getElementById('submit_button').focus()}}" class="input is-normal" type="text" name="input_solve5" id="input_solve5" placeholder="0:00.00">
-        </form>
-        </div>
-        <div class="block">
-            <button type="submit" form="result_form" class="button is-warning is-outlined mt-2" id="submit_button">Submit</button>
-        </div>
-        
-        
-    </div>
-    <div class="column">
-       
-                    
-                
-                
-            
-
-
-        <div class="box has-background-light" >
-            <div class="table-container" >
-                <table class="table has-background-light" >
-                    <thead class="has-background-light`">
-                        <div class="box has-text-centered has-background-grey has-text-black">
-                            <h1 class="is-size-4 has-text-weight-bold">{{event}} {{round}}. round</h1>
-                        </div>
-                        
-                        <tr>
-                            <th class="has-text-centered">Pos</th>
-                            <th class="has-text-centered">ID</th>
-                            <th class="has-text-centered">Name</th>
-                            <th class="has-text-centered">1</th>
-                            <th class="has-text-centered">2</th>
-                            <th class="has-text-centered">3</th>
-                            <th class="has-text-centered">4</th>
-                            <th class="has-text-centered">5</th>
-                            <th class="has-text-centered">Best</th>
-                            <th class="has-text-centered">Ao5</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in rows %}
-                        <tr class="" data-competitorId="{{row[1]}}" data-competitorName="{{row[2]}}" data-first="{{row[3]}}" data-second="{{row[4]}}" data-third="{{row[5]}}" data-fourth="{{row[6]}}" data-fifth="{{row[7]}}" onclick="rowClick(this)">
-                            <td name="position" class="has-text-centered">
-                                {{row[0]}}.
-                            </td>
-                            <td name="position" class="has-text-centered">
-                                {{row[1]|int}}
-                            </td>
-                            <td class="has-text-centered">
-                                <button class="button is-link is-outlined is-fullwidth">
-                                    {{row[2]}}
-                                </button>
-                            </td>
-                            <td class="has-text-centered">   
-                                {{row[3]}}
-                            </td>
-                            <td class="has-text-centered">
-                                {{row[4]}}
-                            </td>
-                            <td class="has-text-centered">
-                                {{row[5]}}
-                            </td>
-                            <td class="has-text-centered">
-                                {{row[6]}}
-                            </td>
-                            <td class="has-text-centered">
-                                {{row[7]}}
-                            </td>
-                            <td class="has-text-centered">
-                                {{row[8]}}
-                            </td>
-                            <td class="has-text-centered">
-                                {{row[9]}}
-                            </td>
-                            <td>
-                                <button data-id="{{row[1]}}" class="button is-danger is-outlined" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}" onclick="deleteCompetitor(this)">delete</button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input_id"
+                            placeholder="ID">
+                    </div>
+                    <div>
+                        <label class="form-label">1:</label>
+                        <input class="form-control" maxlength="7" required onkeyup="formate(this)"
+                            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}"
+                            type="text" name="input_solve1" id="input_solve1" placeholder="0:00.00">
+                    </div>
+                    <div>
+                        <label class="form-label">2:</label>
+                        <input class="form-control" maxlength="7" required onkeyup="formate(this)"
+                            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}"
+                            type="text" name="input_solve2" id="input_solve2" placeholder="0:00.00">
+                    </div>
+                    <div>
+                        <label class="form-label">3:</label>
+                        <input class="form-control" maxlength="7" required onkeyup="formate(this)"
+                            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}"
+                            type="text" name="input_solve3" id="input_solve3" placeholder="0:00.00">
+                    </div>
+                    <div>
+                        <label class="form-label">4:</label>
+                        <input class="form-control" maxlength="7" required onkeyup="formate(this)"
+                            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}"
+                            type="text" name="input_solve4" id="input_solve4" placeholder="0:00.00">
+                    </div>
+                    <div>
+                        <label class="form-label">5:</label>
+                        <input class="form-control" maxlength="7" required onkeyup="formate(this)"
+                            onkeydown="{if(event.keyCode == 13){document.getElementById('submit_button').focus()}}"
+                            type="text" name="input_solve5" id="input_solve5" placeholder="0:00.00">
+                    </div>
+                </form>
+                <div>
+                    <button class="btn btn-outline-warning mt-4" type="submit" form="result_form"
+                        id="submit_button">Submit</button>
+                </div>
             </div>
+
+
         </div>
-        <div class="field">
-            <div class="block">
-                <div class="columns">
-                    <div class="column is-one-half">
-                        <div class="columns">
-                            <div class="column is-2">
-                                <a href="{{url_for('main.comp_page', comp=compname)}}" class="button is-warning is-fullwidth">all events</a>
+        <div class="col-8 align-self-end">
+
+            <div>
+                <div>
+                    <table class="table text-center">
+                        <thead>
+                            <div>
+                                <h2 class="text-center">{{event}} {{round}}. round</h2>
                             </div>
-                            <div class="column is-2">
-                                <button onclick="toggleOverlay()" class="button is-info is-fullwidth" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add</button>
-                            </div>
-                            <div class="column is-2">
-                                <button onclick="createGroups()" class="button is-info is-fullwidth">create groups</button>
-                            </div>
+
+                            <tr>
+                                <th>Pos</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>Best</th>
+                                <th>Ao5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                            <tr data-competitorId="{{row[1]}}" data-competitorName="{{row[2]}}" data-first="{{row[3]}}"
+                                data-second="{{row[4]}}" data-third="{{row[5]}}" data-fourth="{{row[6]}}"
+                                data-fifth="{{row[7]}}" onclick="rowClick(this)">
+                                <td>
+                                    {{row[0]}}.
+                                </td>
+                                <td>
+                                    {{row[1]|int}}
+                                </td>
+                                <td>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-light">
+                                            {{row[2]}}
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{row[3]}}
+                                </td>
+                                <td>
+                                    {{row[4]}}
+                                </td>
+                                <td>
+                                    {{row[5]}}
+                                </td>
+                                <td>
+                                    {{row[6]}}
+                                </td>
+                                <td>
+                                    {{row[7]}}
+                                </td>
+                                <td>
+                                    {{row[8]}}
+                                </td>
+                                <td>
+                                    {{row[9]}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline-danger" data-id="{{row[1]}}"
+                                        data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}"
+                                        onclick="deleteCompetitor(this)">delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="d-grid gap-2">
+                                <a class="btn btn-info mt-2" href="{{url_for('main.comp_page', comp=compname)}}">all
+                                    events</a>
+                        
+                                <button class="btn btn-info mt-2" onclick="toggleOverlay()" data-compname="{{compname}}"
+                                    data-event="{{event}}" data-round="{{round}}">add</button>
+                         
+                                <button class="btn btn-warning mt-2" onclick="createGroups()">create groups</button>
                         </div>
-                        <div class="columns">
-                            <div class="column is-2">
-                                <input type="number" class="input is-normal" value="10" id="to_next">
-                            </div>
-                            <div class="column is-2">
-                                <button class="button is-fullwidth" onclick="createNextRound(this)"  data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">create</button>
-                            </div>
+                    </div>
+                    <div class="col-3 align-self-start">
+                        <div>
+                            <input class="form-control" type="number" value="10" id="to_next">
+                        </div>
+                        <div>
+                            <button class="btn btn-info mt-2" onclick="createNextRound(this)" data-compname="{{compname}}" data-event="{{event}}"
+                                data-round="{{round}}">create</button>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+</div>
+</div>
 
 <script>
-    function rowClick(data){
-        
-        if(data.getAttribute('data-first') === '__._'){
+    function rowClick(data) {
+
+        if (data.getAttribute('data-first') === '__._') {
             console.log(data.getAttribute('data-first'))
             document.getElementById('input_name').value = data.getAttribute('data-competitorName')
-            document.getElementById('input_id').value = data.getAttribute('data-competitorId')|0
+            document.getElementById('input_id').value = data.getAttribute('data-competitorId') | 0
             document.getElementById('input_solve1').value = data.getAttribute('')
             document.getElementById('input_solve2').value = data.getAttribute('')
             document.getElementById('input_solve3').value = data.getAttribute('')
             document.getElementById('input_solve4').value = data.getAttribute('')
-            document.getElementById('input_solve5').value = data.getAttribute('')  
+            document.getElementById('input_solve5').value = data.getAttribute('')
             document.getElementById('input_solve1').focus()
-        }else{
+        } else {
             document.getElementById('input_name').value = data.getAttribute('data-competitorName')
-            document.getElementById('input_id').value = data.getAttribute('data-competitorId')|0
+            document.getElementById('input_id').value = data.getAttribute('data-competitorId') | 0
             document.getElementById('input_solve1').value = data.getAttribute('data-first')
             document.getElementById('input_solve2').value = data.getAttribute('data-second')
             document.getElementById('input_solve3').value = data.getAttribute('data-third')
             document.getElementById('input_solve4').value = data.getAttribute('data-fourth')
-            document.getElementById('input_solve5').value = data.getAttribute('data-fifth')            
+            document.getElementById('input_solve5').value = data.getAttribute('data-fifth')
         }
     }
 
-    function formate(input) { 
+    function formate(input) {
         var num = input.value
-        if(num === 'd'){
+        if (num === 'd') {
             input.value = 'DNF'
         }
-        else if(num === 's'){
+        else if (num === 's') {
             input.value = 'DNS'
         }
-        else{
-            num = num.replace(/\D/g,'')
+        else {
+            num = num.replace(/\D/g, '')
             num_len = num.length
-            
-            if (num_len < 5 && num_len > 0){
-                num = ((num[num_len-4])?num[num_len-4]:'') + ((num[num_len-3])?num[num_len-3]:'') +'.'+ ((num[num_len-2])?num[num_len-2]:'')+ ((num[num_len-1])?num[num_len-1]:'')
+
+            if (num_len < 5 && num_len > 0) {
+                num = ((num[num_len - 4]) ? num[num_len - 4] : '') + ((num[num_len - 3]) ? num[num_len - 3] : '') + '.' + ((num[num_len - 2]) ? num[num_len - 2] : '') + ((num[num_len - 1]) ? num[num_len - 1] : '')
                 console.log(num)
-                
+
             }
-            else if(num_len ==5){
-                num = ((num[0])?num[0]:'') + ':' + ((num[1])?num[1]:'') + ((num[2])?num[2]:'')+ '.' + ((num[3])?num[3]:'') + ((num[4])?num[4]:'')
+            else if (num_len == 5) {
+                num = ((num[0]) ? num[0] : '') + ':' + ((num[1]) ? num[1] : '') + ((num[2]) ? num[2] : '') + '.' + ((num[3]) ? num[3] : '') + ((num[4]) ? num[4] : '')
             }
             input.value = num
         }
     }
 
-    function sendForm(){
+    function sendForm() {
         const form = document.getElementById('result_form')
         const data = new FormData(form)
         data.append("event", form.getAttribute('data-event'))
@@ -192,125 +230,125 @@
         fetch("/enter_results", {
             method: 'POST',
             body: data
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             form.reset()
             location.reload()
         })
     }
 
-    async function deleteCompetitor(data){
+    async function deleteCompetitor(data) {
         const id = data.getAttribute('data-id')
         const compname = data.getAttribute('data-compname')
         const event = data.getAttribute('data-event')
         const round = data.getAttribute('data-round')
         await fetch('/delete_from_round', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id:id,
-                compname:compname,
-                round:round,
-                event:event
+                id: id,
+                compname: compname,
+                round: round,
+                event: event
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             document.getElementById('result_form').reset()
             location.reload()
         })
     }
-    
-    function createNextRound(btn){
+
+    function createNextRound(btn) {
         const num = document.getElementById('to_next').value
         const event = btn.getAttribute('data-event')
         const round = btn.getAttribute('data-round')
         const compname = btn.getAttribute('data-compname')
         fetch('/make_next', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                num:num,
-                compname:compname,
-                round:round,
-                event:event
+                num: num,
+                compname: compname,
+                round: round,
+                event: event
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             location.reload()
         })
     }
 
-    function toggleOverlay(){
+    function toggleOverlay() {
         var overlay = document.getElementsByClassName("overlay-container")[0]
-        if(overlay.style.display === 'none' || !overlay.style.display){
+        if (overlay.style.display === 'none' || !overlay.style.display) {
             overlay.style.display = "flex"
         }
-        else{
+        else {
             overlay.style.display = 'none'
         }
     }
 
-    function addCompetitor(){
+    function addCompetitor() {
         const url_str = new URLSearchParams(window.location.search)
         console.log(document.getElementById('new_competitor_id').value, document.getElementById('new_competitor_name').value)
         fetch('/new_competitor_round', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ID:document.getElementById('new_competitor_id').value,
-                Name:document.getElementById('new_competitor_name').value,
-                compname:url_str.get('compname'),
-                round:url_str.get('round'),
-                event:url_str.get('event')
+                ID: document.getElementById('new_competitor_id').value,
+                Name: document.getElementById('new_competitor_name').value,
+                compname: url_str.get('compname'),
+                round: url_str.get('round'),
+                event: url_str.get('event')
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             document.getElementsByClassName("overlay-container")[0].style.display = 'none'
             location.reload()
         })
     }
 
-    function fillById(){
+    function fillById() {
         const url_str = new URLSearchParams(window.location.search)
         const id = document.getElementById('input_id').value
         fetch('/name_by_id', {
-            method:'POST',
-            headers:{
+            method: 'POST',
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ID:id,
-                compname:url_str.get('compname'),
-                round:url_str.get('round'),
-                event:url_str.get('event')
+                ID: id,
+                compname: url_str.get('compname'),
+                round: url_str.get('round'),
+                event: url_str.get('event')
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('input_name').value = data[0]['Name']
-        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('input_name').value = data[0]['Name']
+            })
     }
 
-    function createGroups(){
+    function createGroups() {
         const url_str = new URLSearchParams(window.location.search)
         fetch('/create_groups', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                compname:url_str.get('compname'),
-                round:url_str.get('round'),
-                event:url_str.get('event')
+                compname: url_str.get('compname'),
+                round: url_str.get('round'),
+                event: url_str.get('event')
             })
         })
-        .then(response => location.reload())
+            .then(response => location.reload())
     }
 </script>
 
@@ -322,15 +360,14 @@
         height: 50%;
         position: fixed;
         justify-content: center;
-        align-items:center;
+        align-items: center;
 
     }
 
-    .overlay-content{
+    .overlay-content {
         z-index: 1000;
         font-size: 50px;
         position: absolute;
     }
-
 </style>
 {% endblock %}
