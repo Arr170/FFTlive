@@ -1,35 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="field is-left">
-    <div class="buttons is-primary">
-        <button onclick="history.back()" class="button is-outlined is-white">back</button>
+<!-- <div>
+    <div>
+        <button class="btn btn-outline-light" onclick="history.back()">back</button>
     </div>
-    
-</div>
 
-<div class="box has-background-light">
-    <div class="table-container">
-        <table class="table has-background-light is-fullwidth table-cell-border">
-            <thead class="has-background-light`">
-                <div class="box has-text-centered has-background-grey has-text-black">
-                    <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">{{event}} round {{round}}</h1>
+</div> -->
+
+<div>
+    <div>
+        <table class="table text-center">
+            <thead>
+                <div>
+                    <h2 class="text-center">{{event}} round {{round}}</h2>
                 </div>
-                
-                <tr class="is-size-7-mobile">
-                    <th class="has-text-centered">Name</th>
-                    <th class="has-text-centered">Group</th>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Group</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in rows %}
-                <tr class="is-size-6-mobile " >
-                    <td class="has-text-centered">
-
+                <tr>
+                    <td>
+                        [{{row[1]}}]
+                    </td>
+                    <td>
                         {{row[2]}}
                     </td>
-                    <td class="has-text-centered">
-  
+                    <td>
+
                         {{row[3]}}
                     </td>
                 </tr>
@@ -38,48 +41,6 @@
         </table>
     </div>
 </div>
-<style>
-    .overlay-container {
-        display: none;
-        z-index: 1000;
-        width: 85%;
-        height: 50%;
-        position: fixed;
-        justify-content: center;
-        align-items:center;
 
-    }
 
-    .overlay-content{
-        z-index: 1000;
-        font-size: 50px;
-        position: absolute;
-    }
-
-</style>
-<script>
-
-    function toggleOverlay(name, first, second, third, fourth, fifth, ao5, pos) {
-        console.log('button clicked')
-        var overlay = document.getElementsByClassName("overlay-container")[0];
-        console.log(overlay.style)
-        if(overlay.style.display === "none" || !overlay.style.display){
-            overlay.style.display = "flex"
-            document.getElementById('overlay-name').innerHTML = pos+'. '+name
-            document.getElementById('overlay-1').innerHTML = first
-            document.getElementById('overlay-2').innerHTML = second
-            document.getElementById('overlay-3').innerHTML = third
-            document.getElementById('overlay-4').innerHTML = fourth
-            document.getElementById('overlay-5').innerHTML = fifth
-            document.getElementById('overlay-ao').innerHTML = ao5
-            
-        }
-        else{
-            console.log('False')
-            overlay.style.display = "none"
-        }
-        
-    }
-
-</script>
 {% endblock %}

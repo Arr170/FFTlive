@@ -2,33 +2,30 @@
 
 {% block content %}
 <div>
-    
-    <div class="box has-background-light has-text-centered">
-        <div class="table-container">
-            <table class="table has-background-light has-text-centered is-fullwidth">
+            <table class="table text-center">
                 <thead>
-                    <div class="box has-text-centered has-background-grey has-text-black">
-                        <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">Competitions:</h1>
-                    </div>
+                    <tr  >
+                        <h1 class="text-center">Competitions:</h1>
+                    </tr>
                 </thead>
                 <tbody >
                 {% for comp in comps %}
-                <tr class="is-fullwidth">
+                <tr >
                     <td>{{ comp }} </td>
                     <td>
-                        <a class="button is-info is-outlined" href="{{ url_for('main.comp_page', comp= comp) }}">
+                        <a class="btn btn-light" href="{{ url_for('main.comp_page', comp= comp) }}">
                             <span>show</span>
                         </a>
                     </td>
                     {% if current_user.is_authenticated %}
                     <td>
-                    <a class="button is-danger is-outlined" href="{{url_for('main.edit_comp', comp= comp)}}">
+                    <a class="btn btn-outline-danger" href="{{url_for('main.edit_comp', comp= comp)}}">
                         <span>edit</span>
                     </a>
                     </td>
                     <td>
                         <form onsubmit="return confirm('Delete comp?')" action="{{ url_for('main.dlt_comp', compname = comp)}}" method="post">
-                        <button class="button is-danger is-outlined">
+                        <button class="btn btn-outline-danger" >
                             <span>Delete</span>
                         </button>
                         </form>
@@ -38,21 +35,19 @@
                 {% endfor %}
                 </tbody>
             </table>
-        </div>
-    </div>
     {% if current_user.is_authenticated %} 
-    <div class="box">
+    <div class="container text-centered" >
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <div class="notification is-danger">
+            <div >
                 {{ messages[0] }}
             </div>
         {% endif %}
         {% endwith %}
-        <form method="POST", action="/competitions" enctype="multipart/form-data">
-            <input type="text" name="compname" placeholder="compname" class="input" required>
-            <input type="file", name="csvfile" class="input" required>
-            <button class="button">submit</button>
+        <form class="form" method="POST", action="/competitions" enctype="multipart/form-data">
+            <input class="form-control" type="text" name="compname" placeholder="compname"  required>
+            <input class="form-control" type="file", name="csvfile"  required>
+            <button class="btn btn-outline-light mt-2">submit</button>
         </form>
     </div>
     {% endif %}

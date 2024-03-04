@@ -1,92 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="overlay-container">
-        <div class="box">
-                <label>Name:</label>
-                <input type="text" class="input" id="new_competitor_name">
-            </br>
-                <label>{{cols[3]}}</label>
-                <input type="checkbox" id="event_1">
-            </br>
-                <label>{{cols[4]}}</label>
-                <input type="checkbox" id="event_2">
-            </br>
-                <label>{{cols[5]}}</label>
-                <input type="checkbox" id="event_3">
-            </br>
-                <label>{{cols[6]}}</label>
-                <input type="checkbox" id="event_4">
-            </br>
-                <button class="button is-link" onclick="addCompetitor(this)">submit</button>
-                <button class="button is-danger" onclick="toggleOverlay()">cancel</button>
-        </div>
-    </div>
-    <div class="field is-left">
-        <div class="buttons is-primary">
-            <a href="{{url_for('main.competitions')}}" class="button is-outlined is-white">back</a>
-            <button onclick="toggleOverlay()" class="button is-info" data-compname="{{compname}}" data-event="{{event}}" data-round="{{round}}">add competitor</button>
 
-        </div>
-    </div>
-    <div class="box has-background-light is-fullwidth">
-    <div class="table-container">
-        <table class="table has-background-light">
-            <thead class="has-background-light">
-                <tr>
-                    {% for col in cols %}
-                    <th>
-                        <div>
-                            {{col}}
-                        </div>
-                        <div class="buttons">
-                            <button onclick="SortBy(this.id, this.name)" id="{{col}}" name="{{compname}}" class="button is-small is-outlined is-info is-rounded">Sort</button>
-                            <button onclick="MakeEvent(this.id, this.name)" id="{{col}}" name="{{compname}}" class="button is-small is-outlined is-info is-rounded">Make</button>
-                        </div>
-                    </th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in rows %}
-                <tr>
-                    {% for col in row %}
-                        {% if col == 'YES' %}
-                        <td>
-                            <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-success">
-                                <span>{{col}}</span>
-                            </button>
-                        </td>
-                        {% elif col == 'NO' %}
-                        <td>
-                            <button id="{{row[0]}}"  name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)" class="button is-danger">
-                                <span>{{col}}</span>
-                            </button>
-                        </td>
-                        {% else %}
-                        <td>{{col}}</td>
-                        {% endif %}
-                    {% endfor %}
-                    <td>
-                        <form onsubmit="return confirm('Delete competitor?')" action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
-                        <button class="button is-danger is-outlined">
-                            <span>Delete</span>
-                        </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    </div>
+<button class="btn btn-primary m-3" data-bs-toggle="collapse" data-bs-target="#addNewCollapse" aria-expanded="false"
+    aria-controls="addNewCollapse">add competitor</button>
+<div class="collapse" id="addNewCollapse">
+    <label>Name:</label>
+    <input class="form-control" type="text" class="input" id="new_competitor_name">
+    </br>
+    <label class="form-check-label ml-2 mr-2">{{cols[3]}}</label>
+    <input class="form-check-input" type="checkbox" id="event_1">
+    </br>
+    <label class="form-check-label ml-2 mr-2">{{cols[4]}}</label>
+    <input class="form-check-input" type="checkbox" id="event_2">
+    </br>
+    <label class="form-check-label ml-2 mr-2">{{cols[5]}}</label>
+    <input class="form-check-input" type="checkbox" id="event_3">
+    </br>
+    <label class="form-check-label ml-2 mr-2">{{cols[6]}}</label>
+    <input class="form-check-input" type="checkbox" id="event_4">
+    </br>
+    <button class="btn btn-outline-warning m-2" onclick="addCompetitor(this)">submit</button>
+    <button class="btn btn-danger m-2" onclick="toggleOverlay()">cancel</button>
+</div>
+
+
+<table class="table text-center">
+    <thead class="">
+        <tr>
+            {% for col in cols %}
+            <th>
+                <div>
+                    {{col}}
+                </div>
+                <div class="btn-group" role="group">
+                    <button onclick="SortBy(this.id, this.name)" id="{{col}}" name="{{compname}}"
+                        class="btn btn-outline-primary">Sort</button>
+                    <button onclick="MakeEvent(this.id, this.name)" id="{{col}}" name="{{compname}}"
+                        class="btn btn-outline-primary">Make</button>
+                </div>
+            </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            {% for col in row %}
+            {% if col == 'YES' %}
+            <td>
+                <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)"
+                    class="btn btn-success">
+                    <span>{{col}}</span>
+                </button>
+            </td>
+            {% elif col == 'NO' %}
+            <td>
+                <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)"
+                    class="btn btn-danger">
+                    <span>{{col}}</span>
+                </button>
+            </td>
+            {% else %}
+            <td>{{col}}</td>
+            {% endif %}
+            {% endfor %}
+            <td>
+                <form onsubmit="return confirm('Delete competitor?')"
+                    action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
+                    <button class="btn btn-outline-danger">
+                        <span>Delete</span>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 
 
 <script>
-    function ChangePrsnState(id, compname){
-        
-        fetch('/change_prsn_state',{
+    function ChangePrsnState(id, compname) {
+
+        fetch('/change_prsn_state', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -95,96 +92,65 @@
                 id: id,
                 compname: compname
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             location.reload()
         })
     }
 
-    function SortBy(label, compname){
+    function SortBy(label, compname) {
         fetch('/sort_by', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                label:label,
+                label: label,
                 compname: compname
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             location.reload()
         })
     }
 
-    function MakeEvent(label, compname){
+    function MakeEvent(label, compname) {
         fetch('/make_event', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                label:label,
+                label: label,
                 compname: compname
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
             location.reload()
         })
     }
-    function toggleOverlay(){
-        var overlay = document.getElementsByClassName("overlay-container")[0]
-        if(overlay.style.display === 'none' || !overlay.style.display){
-            overlay.style.display = "flex"
-        }
-        else{
-            overlay.style.display = 'none'
-        }
-    }
 
-    function addCompetitor(){
+    function addCompetitor() {
         const url_str = new URLSearchParams(window.location.search)
         fetch('/new_competitor_comp', {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                Name:document.getElementById('new_competitor_name').value,
-                event_1:document.getElementById('event_1').checked,
-                event_2:document.getElementById('event_2').checked,
-                event_3:document.getElementById('event_3').checked,
-                event_4:document.getElementById('event_4').checked,
-                compname:url_str.get('comp')
+                Name: document.getElementById('new_competitor_name').value,
+                event_1: document.getElementById('event_1').checked,
+                event_2: document.getElementById('event_2').checked,
+                event_3: document.getElementById('event_3').checked,
+                event_4: document.getElementById('event_4').checked,
+                compname: url_str.get('comp')
             })
-        }).then(function(response){
+        }).then(function (response) {
             console.log(response)
-            document.getElementsByClassName("overlay-container")[0].style.display = 'none'
             location.reload()
         })
     }
 </script>
 
-<style>
-    .overlay-container {
-        display: none;
-        z-index: 1000;
-        width: 85%;
-        height: 50%;
-        position: fixed;
-        justify-content: center;
-        align-items:center;
-
-    }
-
-    .overlay-content{
-        z-index: 1000;
-        font-size: 50px;
-        position: absolute;
-    }
-
-</style>
 
 {% endblock %}
-
-

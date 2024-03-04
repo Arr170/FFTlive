@@ -1,125 +1,87 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="overlay-container">
-    <div class="box has-background-light is-fullwidth is-fullheigh" style="width: 100%;">
-        <table class="table has-background-light is-fullwidth has-text-centered">
-            <thead>
-               
-                <tr class="is-justify-content-center">
-                    
-                </tr>
-                <tr>
-                    <th>
-                        <p id="overlay-name"></p>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <p id="overlay-1"></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p id="overlay-2"></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p id="overlay-3"></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p id="overlay-4"></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p id="overlay-5"></p>
-                    </td>
-                </tr>
-                
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>
-                        <b class="is-size-4" id="overlay-ao"></b>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-        <button class="button is-danger is-fullwidth" onclick="toggleOverlay()">close </button>
-    </div>
-</div>
-<div class="field is-left">
-    <div class="buttons is-primary">
-        <button onclick="history.back()" class="button is-outlined is-white">back</button>
+<div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <!-- <button class="btn btn-outline-light" onclick="history.back()">back</button> -->
         {%if current_user.is_authenticated %}
-            <a class="button is-danger" href="{{url_for('main.enter_results', compname = compname, round = round, event = event)}}">edit</a>
+        <a class="btn btn-danger me-5"
+            href="{{url_for('main.enter_results', compname = compname, round = round, event = event)}}">edit round</a>
         {% endif %}
     </div>
-    
+
 </div>
 
-<div class="box has-background-light">
-    <div class="table-container">
-        <table class="table has-background-light is-fullwidth table-cell-border">
-            <thead class="has-background-light`">
-                <div class="box has-text-centered has-background-grey has-text-black">
-                    <h1 class="is-size-4 is-size-6-mobile has-text-weight-bold">{{event}} - {{round}}. round</h1>
+<div>
+    <div>
+        <table class="table text-center">
+            <thead>
+                <div>
+                    <h1 class="text-center">{{event}} - {{round}}. round</h1>
                 </div>
-                
-                <tr class="is-size-7-mobile">
-                    <th class="has-text-centered">  </th>
-                    <th class="has-text-centered">Name</th>
-                    <th class="has-text-centered is-hidden-mobile">1</th>
-                    <th class="has-text-centered is-hidden-mobile">2</th>
-                    <th class="has-text-centered is-hidden-mobile">3</th>
-                    <th class="has-text-centered is-hidden-mobile">4</th>
-                    <th class="has-text-centered is-hidden-mobile">5</th>
-                    <th class="has-text-centered is-hidden-mobile">Best</th>
-                    <th class="has-text-centered">Ao5</th>
+
+                <tr>
+                    <th> </th>
+                    <th>Name</th>
+                    <th class="d-none d-lg-table-cell">1</th>
+                    <th class="d-none d-lg-table-cell">2</th>
+                    <th class="d-none d-lg-table-cell">3</th>
+                    <th class="d-none d-lg-table-cell">4</th>
+                    <th class="d-none d-lg-table-cell">5</th>
+                    <th>Best</th>
+                    <th>Ao5</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in rows %}
-                <tr class="is-size-6-mobile " >
+                <tr>
+
                     {% if row[11] %}
-                    <td class="has-text-centered has-background-success">
-                    {% else %}
-                    <td class="has-text-centered">
-                       {% endif %} 
+                    <td style="background-color:green;">
+                        {% else %}
+                    <td>
+                        {% endif %}
                         {{row[0]}}.
                     </td>
-                    <td class="has-text-centered">
-                        <button class="button is-link is-outlined is-fullwidth is-small" onclick="toggleOverlay('{{row[2]}}', '{{row[3]}}','{{row[4]}}', '{{row[5]}}', '{{row[6]}}', '{{row[7]}}', '{{row[9]}}', '{{row[0]}}')">
-                            {{row[2]}}
-                        </button>
+                    <td>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-light" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#{{row[1]}}collapse" aria-expanded="false"
+                                aria-controls="{{row[1]}}collapse">
+                                {{row[2]}}
+                            </button>
+                        </div>
+                        <div class="collapse mt-4" id="{{row[1]}}collapse">
+                            <ol>
+                                <li><strong>{{row[3]}}</strong></li>
+                                <li><strong>{{row[4]}}</strong></li>
+                                <li><strong>{{row[5]}}</strong></li>
+                                <li><strong>{{row[6]}}</strong></li>
+                                <li><strong>{{row[7]}}</strong></li>
+                            </ol>
+                        </div>
                     </td>
-                    <td class="has-text-centered is-hidden-mobile">
+                    <td class="d-none d-lg-table-cell">
                         {{row[3]}}
                     </td>
-                    <td class="has-text-centered is-hidden-mobile">
+                    <td class="d-none d-lg-table-cell">
 
                         {{row[4]}}
                     </td>
-                    <td class="has-text-centered is-hidden-mobile">
-  
+                    <td class="d-none d-lg-table-cell">
+
                         {{row[5]}}
                     </td>
-                    <td class="has-text-centered is-hidden-mobile">
- 
+                    <td class="d-none d-lg-table-cell">
+
                         {{row[6]}}
                     </td>
-                    <td class="has-text-centered is-hidden-mobile">
+                    <td class="d-none d-lg-table-cell">
                         {{row[7]}}
                     </td>
-                    <td class="has-text-centered is-hidden-mobile">
+                    <td>
                         {{row[8]}}
                     </td>
-                    <td class="has-text-centered">
+                    <td>
                         {{row[9]}}
                     </td>
                 </tr>
@@ -128,49 +90,5 @@
         </table>
     </div>
 </div>
-<style>
-    .overlay-container {
-        display: none;
-        z-index: 1000;
-        width: 75%;
-        height: 50%;
-        position: fixed;
-        justify-content: center;
-        align-items:center;
 
-    }
-
-    .overlay-content{
-        z-index: 1000;
-        font-size: 50px;
-        width: 100%;
-        position: absolute;
-    }
-
-</style>
-<script>
-
-    function toggleOverlay(name, first, second, third, fourth, fifth, ao5, pos) {
-        var overlay = document.getElementsByClassName("overlay-container")[0];
-        if(overlay.style.display === "none" || !overlay.style.display){
-            overlay.style.display = "flex"
-            document.getElementById('overlay-name').innerHTML = pos+'. '+name
-            document.getElementById('overlay-1').innerHTML = first
-            document.getElementById('overlay-2').innerHTML = second
-            document.getElementById('overlay-3').innerHTML = third
-            document.getElementById('overlay-4').innerHTML = fourth
-            document.getElementById('overlay-5').innerHTML = fifth
-            document.getElementById('overlay-ao').innerHTML = ao5
-            // document.body.addEventListener('click', function(evt){
-            //     toggleOverlay(null, null, null, null, null, null, null, null)
-            // })
-            
-        }
-        else{
-            overlay.style.display = "none"
-        }
-        
-    }
-
-</script>
 {% endblock %}
