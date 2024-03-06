@@ -1,8 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-import os, pandas, shutil
+import os, pandas
 from project.results import Result
 from . import db
+from .models import Competition, Competitor, Result, Round
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine, select, update, delete
+
 
 
 
@@ -13,76 +17,84 @@ if(os.environ['IS_PROD']=='1'):
 else:
     COMP_PATH = './project/comps'
 
+engine = create_engine('sqlite:///' + os.path.join(os.getcwd(),COMP_PATH, 'users.db'))
 
 
-@main.route('/', methods=['GET'])
+
+@main.route('/', methods=['GET'])#db
 def competitions():
-    comp_list = os.listdir(COMP_PATH)
+    df = pandas.read_sql(select(Competition).order_by(Competition.id), con=engine )
+    comp_list=df[["name", "id"]].to_dict('records')
+    print(comp_list)
     return render_template('competitions.html', comps = comp_list)
 
-@main.route('/competitions', methods=['POST'])
+@main.route('/competitions', methods=['POST'])#db
 @login_required
 def competitions_post():
-    
     try:
         name = str(request.form.get('compname'))
         file = request.files['csvfile']
         if os.path.splitext(file.filename)[-1] != '.csv':#check for file extention
             flash('Wrong file format!')
             return redirect(url_for('main.competitions'))
-        comp_list = os.listdir(COMP_PATH)
-        for comp in comp_list:#check for existing names
-            if name == str(comp):
-                flash('Competition already exists!')
-                return redirect(url_for('main.competitions'))
-        os.mkdir(os.path.join(COMP_PATH, name))
-        file = pandas.read_csv(file)
-        file["Paid"]="NO"
-        file['E-mail'] = file['E-mail'].str.lower()
-        #file["arrived"]="NO"
-        file.to_csv(os.path.join(COMP_PATH, name, "competitors.csv"), index_label='ID')#save file
+        df = pandas.read_sql(select(Competition).order_by(Competition.id), con=engine )
+        df = pandas.read_csv(file)
+        cols = []
+        for col in df: cols.append(col)#column names
+        print("column num", len(cols))
+        if len(cols) != 5:
+            flash('Wrong number of columns in file!')
+            return redirect(url_for('main.competitions'))
+        
+        new_comp = Competition(name=name, event_1 = cols[1], event_2=cols[2], event_3=cols[3], event_4=cols[4])
+        db.session.add(new_comp)
+        db.session.commit()
+        df = df.to_dict('records')
+        new_comp_id = new_comp.id
+        for i, row in enumerate(df):
+            new_competitor = Competitor(name=row[cols[0]], competition_id = new_comp_id, comp_id=i, event_1=row[cols[1]], event_2=row[cols[2]], event_3=row[cols[3]], event_4=row[cols[4]])
+            db.session.add(new_competitor)
+            db.session.commit()
     except Exception as e:
         print(e)
         flash('Something went wrong!')
 
     return redirect(url_for('main.competitions'))
     
-@main.route('/dlt_comp', methods=['POST'])
+@main.route('/dlt_comp', methods=['POST'])#db
 @login_required
 def dlt_comp():
-    compname = request.args.get('compname')
-    shutil.rmtree(os.path.join(COMP_PATH, compname))
+    id = request.args.get('id')
+    print("id",id)
+    Competition.query.filter_by(id=id).delete()
+    db.session.commit()
+
     return redirect(url_for('main.competitions'))
 
 @main.route('/comp_page')
 def comp_page():
-    compname = str(request.args.get('comp'))
-    all = os.listdir(os.path.join(COMP_PATH, compname))
-    events = [entry for entry in all if not entry.endswith('.csv')]
-    rounds = []
-    for event in events:
-        round_list = os.listdir(os.path.join(COMP_PATH, compname, event))
-        round_list = [x.split('.')[0] for x in round_list]
-        round_list.sort()
-        box = [event, round_list]#contains:[event name, array of round numbers]
-        rounds.append(box)
-    return render_template('comp_page.html', events=events, rounds = rounds, compname=compname)
+    id = request.args.get('id')
+    competition = pandas.read_sql(select(Competition).where(Competition.id==id), con=engine)
+    rounds = pandas.read_sql(select(Round).where(Round.competition_id==id), con=engine)
+    
+    return render_template('comp_page.html')
 
-@main.route('/edit_comp')
+@main.route('/edit_comp')#
 @login_required
 def edit_comp():
-    compname = str(request.args.get('comp'))
-    data = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'))
-    cols = []
-    for col in data: cols.append(col)#column names
-    dict_ = data.to_dict('split')
-    #print(pandas.DataFrame(data))
-    return render_template('comp_edit.html', cols = cols, rows = dict_['data'], compname=compname)
+    id = request.args.get('id')
+    q = select(Competitor).where(Competitor.competition_id==id)
+    df = pandas.read_sql(q, con=engine)
+    competition = pandas.read_sql(select(Competition).where(Competition.id==id), con=engine)
+    cols = ["ID", "Name", competition.event_1.values[0], competition.event_2.values[0], competition.event_3.values[0], competition.event_4.values[0]]#column names
+    dict_ = df.to_dict('split')
+    
+    return render_template('comp_edit.html', cols = cols, rows = dict_['data'], competition_id = id)
 
 @main.route('/dlt_person', methods=['POST'])#deleting person from csv
 @login_required
 def dlt_person():
-    id=request.args.get('id')
+    id=int(request.args.get('id'))
     compname = request.args.get('compname')
     df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col="ID")
     print(df.index)
@@ -125,23 +137,21 @@ def sort_by():
 
     return "ok"
 
-@main.route('/make_event', methods=["POST"])
+@main.route('/make_event', methods=["POST"])#makam na tomlhe ted
 @login_required
 def make_event():
     try:
         data = request.json
-        compname = data.get('compname')
-        label = data.get('label')
-        df=pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
-        new_df=df[["ID", "Name", label]][df['Paid']=="YES"]
-        new_df=new_df[["ID", "Name"]][df[label]=='Ano']
-        new_df[["1", "2", "3", "4", "5", "Best", "Ao5"]] = '__._' #Ao5 is for storing in seconds
-        new_df["Ao5s"]=999
-        new_df["to_next"]=False
-        os.mkdir(os.path.join(COMP_PATH, compname, label))
-        new_df.to_csv(os.path.join(COMP_PATH, compname, label, '1.csv'), index=False)
+        id = data.get('id')
+        name = data.get('name')
+        new_round = Round(name=name, competition_id = id, stage=1)
+        db.session.add(new_round)
+        competitors = pandas.read_sql(select(Competition))
+
+
     except Exception as e:
         print('Error:', e)
+        return e
         
     return "ok"
 

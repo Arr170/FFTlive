@@ -36,7 +36,7 @@
                 <div class="btn-group" role="group">
                     <button onclick="SortBy(this.id, this.name)" id="{{col}}" name="{{compname}}"
                         class="btn btn-outline-primary">Sort</button>
-                    <button onclick="MakeEvent(this.id, this.name)" id="{{col}}" name="{{compname}}"
+                    <button onclick="MakeEvent(this.id, this.name)" id="{{competition_id}}" name="{{col}}"
                         class="btn btn-outline-primary">Make</button>
                 </div>
             </th>
@@ -46,25 +46,13 @@
     <tbody>
         {% for row in rows %}
         <tr>
-            {% for col in row %}
-            {% if col == 'YES' %}
-            <td>
-                <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)"
-                    class="btn btn-success">
-                    <span>{{col}}</span>
-                </button>
-            </td>
-            {% elif col == 'NO' %}
-            <td>
-                <button id="{{row[0]}}" name="{{compname}}" onclick="ChangePrsnState(this.id, this.name)"
-                    class="btn btn-danger">
-                    <span>{{col}}</span>
-                </button>
-            </td>
-            {% else %}
-            <td>{{col}}</td>
-            {% endif %}
-            {% endfor %}
+            <td>{{row[3]}}</td>
+            <td>{{row[2]}}</td>
+            <td>{{row[4]}}</td>
+            <td>{{row[5]}}</td>
+            <td>{{row[6]}}</td>
+            <td>{{row[7]}}</td>
+           
             <td>
                 <form onsubmit="return confirm('Delete competitor?')"
                     action="{{ url_for('main.dlt_person', id = row[0], compname = compname)}}" method="post">
@@ -114,15 +102,15 @@
         })
     }
 
-    function MakeEvent(label, compname) {
+    function MakeEvent(id, name) {
         fetch('/make_event', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                label: label,
-                compname: compname
+                id: id,
+                name: name
             })
         }).then(function (response) {
             console.log(response)

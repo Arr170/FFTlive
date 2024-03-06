@@ -1,15 +1,22 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 
 db = SQLAlchemy()
+
+if(os.environ['IS_PROD']=='1'):
+    COMP_PATH = '/project/comps'
+else:
+    COMP_PATH = './project/comps'
 
 def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = 'a82ead125a1141a6520afa4d9eb3946d1c657af7dcf3e0553433521aa41ba253'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://arzi:at2gYh8Y2YbKJpqS9gFNeNHOz5mxpvYY@dpg-cmrp5na1hbls73fqgpk0-a.frankfurt-postgres.render.com/fftlivedb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.getcwd(),COMP_PATH, 'users.db')
 
     db.init_app(app)
 
@@ -28,6 +35,12 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        # new_user = User(email=os.environ['USERMAIL'], password=generate_password_hash(os.environ['USERPASS'], method='pbkdf2:sha1'))
+
+        # # add the new user to the database
+        # db.session.add(new_user)
+        # db.session.commit()
+
 
      # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
