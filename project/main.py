@@ -38,7 +38,7 @@ def competitions_post():
         os.mkdir(os.path.join(COMP_PATH, name))
         file = pandas.read_csv(file)
         file["Paid"]="NO"
-        file['E-mail'] = file['E-mail'].str.lower()
+        #file['E-mail'] = file['E-mail'].str.lower()
         #file["arrived"]="NO"
         file.to_csv(os.path.join(COMP_PATH, name, "competitors.csv"), index_label='ID')#save file
     except Exception as e:
