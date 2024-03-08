@@ -37,7 +37,7 @@ def competitions_post():
                 return redirect(url_for('main.competitions'))
         os.mkdir(os.path.join(COMP_PATH, name))
         file = pandas.read_csv(file)
-        file["Paid"]="NO"
+        file["Paid"]="YES"
         #file['E-mail'] = file['E-mail'].str.lower()
         #file["arrived"]="NO"
         file.to_csv(os.path.join(COMP_PATH, name, "competitors.csv"), index_label='ID')#save file
@@ -298,7 +298,7 @@ def new_competitor_comp():
     cols = []
     for col in df: cols.append(col)#column names
 
-    add_df=pandas.DataFrame([[id, name, 'Mail', event_1, event_2, event_3, event_4, 'YES']], columns=cols)
+    add_df=pandas.DataFrame([[id, name, event_1, event_2, event_3, event_4, 'YES']], columns=cols)
 
     df = pandas.concat([df,add_df], ignore_index=True)
     df.to_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index=False)
