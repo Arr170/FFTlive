@@ -60,17 +60,23 @@
                 <div class="row">
                     <div class="col-3">
                         <div class="d-grid gap-2">
-                                <a class="btn btn-outline-info mt-2" href="{{url_for('main.comp_page', comp=compname)}}">all
+                                <a class="btn btn-outline-info mt-2 d-none d-lg-grid" href="{{url_for('main.comp_page', comp=compname)}}">all
                                     events</a>
                         
                                 <button class="btn btn-outline-info mt-2" data-bs-toggle="collapse" data-bs-target="#addNewCollapse" aria-expanded="false"
                                 aria-controls="addNewCollapse">add</button>
-                                
+                                <!-- <div class="collapse d-sm-none" id="addNewCollapse">
+                                    <label>Name:</label>
+                                    <input class="form-control" type="text" id="new_competitor_name">
+                                    <label>ID:</label>
+                                    <input class="form-control" type="text" id="new_competitor_id">
+                                    <button class="btn btn-warning mt-2 mb-2" onclick="addCompetitor(this)">submit</button>
+                                </div> -->
                          
-                                <button class="btn btn-outline-warning mt-2" onclick="createGroups()">create groups</button>
+                                <button class="btn btn-outline-warning mt-2 d-none d-lg-grid" onclick="createGroups()">create groups</button>
                         </div>
                     </div>
-                    <div class="col-3 align-self-start mt-2">
+                    <div class="col-3 align-self-start mt-2 d-none d-lg-grid">
                         <div class="collapse" id="addNewCollapse">
                             <label>Name:</label>
                             <input class="form-control" type="text" id="new_competitor_name">
@@ -93,7 +99,7 @@
 
 
         </div>
-        <div class="col-8 align-self-end">
+        <div class="col-8">
 
             <div>
                 <div>
@@ -153,7 +159,9 @@
                                     {{row[8]}}
                                 </td>
                                 <td>
-                                    {{row[9]}}
+                                    <strong>
+                                        {{row[9]}}
+                                    </strong> 
                                 </td>
                                 <td>
                                     <button class="btn btn-outline-danger" data-id="{{row[1]}}"
@@ -299,7 +307,6 @@
             })
         }).then(function (response) {
             console.log(response)
-            document.getElementsByClassName("overlay-container")[0].style.display = 'none'
             location.reload()
         })
     }

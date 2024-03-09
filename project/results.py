@@ -56,6 +56,7 @@ class Result:
             return 'DNF'
         minutes = int(float(time)/60)
         seconds = round(float(time) - minutes*60, 2)
+        seconds = "%.2f"%seconds
         print(minutes, seconds, float(time)-minutes*60)
         if minutes:
             return(f'{minutes}:{seconds}')

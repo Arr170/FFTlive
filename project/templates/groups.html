@@ -1,46 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!-- <div>
-    <div>
-        <button class="btn btn-outline-light" onclick="history.back()">back</button>
-    </div>
+<h2 class="text-center mt-2 mb-3">{{event}} round {{round}}</h2>
 
-</div> -->
+<table class="table text-center">
+    <thead>
 
-<div>
-    <div>
-        <table class="table text-center">
-            <thead>
-                <div>
-                    <h2 class="text-center">{{event}} round {{round}}</h2>
-                </div>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Group</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            <td>
+                [{{row[0]}}]
+            </td>
+            <td>
+                {{row[1]}}
+            </td>
+            <td>
 
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Group</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in rows %}
-                <tr>
-                    <td>
-                        [{{row[1]}}]
-                    </td>
-                    <td>
-                        {{row[2]}}
-                    </td>
-                    <td>
-
-                        {{row[3]}}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+                {{row[2]}}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 
 {% endblock %}
