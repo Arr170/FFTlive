@@ -180,17 +180,31 @@ def round_page():
 
     return render_template('round_page.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round=round)
 
-@main.route('/groups', methods=['GET'])
+@main.route('/groups', methods=['GET', 'POST'])
 def groups():
-    compname = request.args.get('compname')
-    event = request.args.get('event')
-    round = request.args.get('round')
-    data = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))    
-    cols = []
-    for col in data: cols.append(col)
-    dict_ = data.to_dict('split')
+    if request.method == 'GET':
+        compname = request.args.get('compname')
+        event = request.args.get('event')
+        round = request.args.get('round')
+        data = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))    
+        cols = []
+        for col in data: cols.append(col)
+        dict_ = data.to_dict('split')
 
-    return render_template('groups.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round=round)
+        return render_template('groups.html', cols = cols, rows = dict_['data'], compname=compname, event=event, round=round)
+    if request.method == 'POST':
+        compname = request.args.get('compname')
+        event = request.args.get('event')
+        round = request.args.get('round')
+        person_id = request.args.get('person_id')
+        new_group = request.args.get('new_group')
+        data = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))
+        print("AAAAA",compname, event, round)
+        data.loc[data["ID"]==int(person_id), 'Group'] = new_group
+        data.to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index=False)
+
+       
+        return redirect(url_for('main.groups', compname=compname, event=event, round=round))
 
 @main.route('/enter_results', methods=['GET', 'POST'])
 @login_required
@@ -299,7 +313,7 @@ def new_competitor_comp():
         round = pandas.concat([round,round_add], ignore_index=True)
         round.to_csv(os.path.join(COMP_PATH, compname, data.get('event_1_name'), '1.csv'), index=False)
 
-        group_add = pandas.DataFrame([[id, name, 3]], columns=['ID', 'Name', 'Group'])
+        group_add = pandas.DataFrame([[id, name, 0]], columns=['ID', 'Name', 'Group'])
         groups = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_1_name'), '1 groups.csv'), index_col=False)
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_1_name'), '1 groups.csv'), index=False)
@@ -310,7 +324,7 @@ def new_competitor_comp():
         round = pandas.concat([round,round_add], ignore_index=True)
         round.to_csv(os.path.join(COMP_PATH, compname, data.get('event_2_name'), '1.csv'), index=False)
 
-        group_add = pandas.DataFrame([[id, name, 3]], columns=['ID', 'Name', 'Group'])
+        group_add = pandas.DataFrame([[id, name, 0]], columns=['ID', 'Name', 'Group'])
         groups = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_2_name'), '1 groups.csv'), index_col=False)
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_2_name'), '1 groups.csv'), index=False)
@@ -321,7 +335,7 @@ def new_competitor_comp():
         round = pandas.concat([round,round_add], ignore_index=True)
         round.to_csv(os.path.join(COMP_PATH, compname, data.get('event_3_name'), '1.csv'), index=False)
 
-        group_add = pandas.DataFrame([[id, name, 3]], columns=['ID', 'Name', 'Group'])
+        group_add = pandas.DataFrame([[id, name, 0]], columns=['ID', 'Name', 'Group'])
         groups = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_3_name'), '1 groups.csv'), index_col=False)
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_3_name'), '1 groups.csv'), index=False)
@@ -332,7 +346,7 @@ def new_competitor_comp():
         round = pandas.concat([round,round_add], ignore_index=True)
         round.to_csv(os.path.join(COMP_PATH, compname, data.get('event_4_name'), '1.csv'), index=False)
 
-        group_add = pandas.DataFrame([[id, name, 3]], columns=['ID', 'Name', 'Group'])
+        group_add = pandas.DataFrame([[id, name, 0]], columns=['ID', 'Name', 'Group'])
         groups = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_4_name'), '1 groups.csv'), index_col=False)
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_4_name'), '1 groups.csv'), index=False)

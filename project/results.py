@@ -26,7 +26,7 @@ class Result:
         total = 0#storing total time of 5 solves
         DNFs = 0
         for result in self.results:
-            if result == 'DNF':
+            if (result == 'DNF' or  'DNS'):
                 DNFs += 1
                 results_in_sec.append(float(0))
             else:
