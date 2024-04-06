@@ -200,7 +200,7 @@ def groups():
         new_group = request.args.get('new_group')
         data = pandas.read_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'))
         print("AAAAA",compname, event, round)
-        data.loc[data["ID"]==int(person_id), 'Group'] = new_group
+        data.loc[data["ID"]==int(person_id), 'Group'] = int(new_group)
         data.to_csv(os.path.join(COMP_PATH, compname, event, round+'.csv'), index=False)
 
        
@@ -307,7 +307,7 @@ def new_competitor_comp():
     df = pandas.read_csv(os.path.join(COMP_PATH, compname, 'competitors.csv'), index_col=False)
     # print(os.path.join(COMP_PATH, compname, data.get('event_1_name'), "1 groups.csv"))  
     id = len(df) + 2
-    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_1_name'), "1 groups.csv"))):
+    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_1_name'), "1 groups.csv")) and event_1 == 'Ano'):
         round_add = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
         round = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_1_name'), '1.csv'), index_col=False)
         round = pandas.concat([round,round_add], ignore_index=True)
@@ -318,7 +318,7 @@ def new_competitor_comp():
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_1_name'), '1 groups.csv'), index=False)
 
-    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_2_name'), "1 groups.csv"))):
+    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_2_name'), "1 groups.csv")) and event_2 == 'Ano'):
         round_add = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
         round = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_2_name'), '1.csv'), index_col=False)
         round = pandas.concat([round,round_add], ignore_index=True)
@@ -329,7 +329,7 @@ def new_competitor_comp():
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_2_name'), '1 groups.csv'), index=False)
 
-    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_3_name'), "1 groups.csv"))):
+    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_3_name'), "1 groups.csv")) and event_3 == 'Ano'):
         round_add = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
         round = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_3_name'), '1.csv'), index_col=False)
         round = pandas.concat([round,round_add], ignore_index=True)
@@ -340,7 +340,7 @@ def new_competitor_comp():
         groups = pandas.concat([groups,group_add], ignore_index=True)
         groups.to_csv(os.path.join(COMP_PATH, compname, data.get('event_3_name'), '1 groups.csv'), index=False)
 
-    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_4_name'), "1 groups.csv"))):
+    if(os.path.exists(os.path.join(COMP_PATH, compname, data.get('event_4_name'), "1 groups.csv")) and event_4 == 'Ano'):
         round_add = pandas.DataFrame([[id, name, '__._', '__._', '__._', '__._', '__._', '__._', '__._', 999.0, False]], columns=['ID', 'Name', '1', '2', '3', '4', '5', 'Best', 'Ao5', 'Ao5s', 'to_next'])
         round = pandas.read_csv(os.path.join(COMP_PATH, compname, data.get('event_4_name'), '1.csv'), index_col=False)
         round = pandas.concat([round,round_add], ignore_index=True)
