@@ -1,5 +1,6 @@
 venv
 *.csv
 *.pyc
-project/comps
+*.db
 __pycache__/
+project/comps
