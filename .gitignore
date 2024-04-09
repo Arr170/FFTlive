@@ -1,4 +1,5 @@
 venv
 *.csv
 *.pyc
+project/comps
 __pycache__/
