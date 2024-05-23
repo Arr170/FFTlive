@@ -9,7 +9,7 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = 'a82ead125a1141a6520afa4d9eb3946d1c657af7dcf3e0553433521aa41ba253'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://arzi:at2gYh8Y2YbKJpqS9gFNeNHOz5mxpvYY@dpg-cmrp5na1hbls73fqgpk0-a.frankfurt-postgres.render.com/fftlivedb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://fyftlive_user:cZhAeaV3qMNJGaG6bjM3qzYCs1S1BslN@dpg-cp7smk7jbltc738j2su0-a.frankfurt-postgres.render.com/fyftlive'
 
     db.init_app(app)
 
