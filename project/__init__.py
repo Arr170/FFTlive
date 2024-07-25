@@ -1,15 +1,21 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+import os
 
 
 db = SQLAlchemy()
+
+if(os.environ['IS_PROD']=='1'):
+    COMP_PATH = '/project/data'#upravit podle umisteni na servru
+else:
+    COMP_PATH = './project/data'
 
 def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = 'a82ead125a1141a6520afa4d9eb3946d1c657af7dcf3e0553433521aa41ba253'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://fyftlive_user:cZhAeaV3qMNJGaG6bjM3qzYCs1S1BslN@dpg-cp7smk7jbltc738j2su0-a.frankfurt-postgres.render.com/fyftlive'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.getcwd(),COMP_PATH, 'users.db')
 
     db.init_app(app)
 

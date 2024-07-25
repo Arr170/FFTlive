@@ -1,5 +1,6 @@
 venv
 *.csv
 *.pyc
+*.env
 __pycache__/
 project/comps
