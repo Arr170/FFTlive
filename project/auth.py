@@ -26,7 +26,7 @@ def login_post():
         return redirect(url_for('auth.login'))
     
     login_user(user, remember=remember)
-    return redirect(url_for('main.competitions'))
+    return redirect(url_for('main.index'))
 
 @auth.route('/signupnot4you')
 def signup():
@@ -57,4 +57,4 @@ def signup_post():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main.competitions'))
+    return redirect(url_for('main.index'))

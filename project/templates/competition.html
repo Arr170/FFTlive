@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<div class="modal fade modal-xl" id="edit-competition-modal" tabindex="-1" aria-labelledby="editCompetitionModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-center"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class=" col card col-4">
+                        <form hx-post="/add_new_competitor/{{ request.args.get('id') }}"  hx-swap="outerHTML">
+                            <div class="m-3">
+                                <label class="form-label" for="new-competitor-name" >New competitor name:</label>
+                                <input class="form-control" id="new-competitor-name" type="text" name="NewCompetitorName">
+                            </div>
+                            <div class="m-3" hx-get="/comp_events/{{ request.args.get('id') }}" hx-trigger="load" hx-swap="innerHTML"></div>
+                            <button type="submit" class="btn btn-secondary mb-3">Add</button>
+                        </form>
+                    </div>
+                    <div hx-get="/competition_competitors/{{ request.args.get('id') }}" hx-swap="innerHTML">
+
+                    </div>
+
+                </div>
+                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="post-competition">Create</button>
+            </div>
+            
+
+        </div>
+
+    </div>
+
+</div>
+<div>
+    <button class="btn btn-outline-warning me-3 mb-3" style="float: right;" data-bs-toggle="modal" data-bs-target="#edit-competition-modal">edit competition</button>
+
+</div>
+{% endif %}
+<ul class="nav nav-tabs nav-fill mb-5" id="event-selector" hx-get="/navbar_events/{{ request.args.get('id') }}"
+    hx-trigger="load">
+
+</ul>
+<div class="container-fluid justify-content-center w-100" id="data-container">
+    <span class="htmx-indicator" id="loading">Loading...</span>
+</div>
+
+<script>
+    const BASE_URL = "{{ request.url_root }}"
+</script>
+
+{% endblock %}

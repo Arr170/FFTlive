@@ -1,57 +1,6 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div>
-            <table class="table text-center">
-                <thead>
-                    <tr  >
-                        <h1 class="text-center">Competitions:</h1>
-                    </tr>
-                </thead>
-                <tbody >
-                {% for comp in comps %}
-                <tr >
-                    <td>{{ comp }} </td>
-                    <td>
-                        <a class="btn btn-light" href="{{ url_for('main.comp_page', comp= comp) }}">
-                            <span>show</span>
-                        </a>
-                    </td>
-                    {% if current_user.is_authenticated %}
-                    <td>
-                    <a class="btn btn-outline-danger" href="{{url_for('main.edit_comp', comp= comp)}}">
-                        <span>edit</span>
-                    </a>
-                    </td>
-                    <td>
-                        <form onsubmit="return confirm('Delete comp?')" action="{{ url_for('main.dlt_comp', compname = comp)}}" method="post">
-                        <button class="btn btn-outline-danger" >
-                            <span>Delete</span>
-                        </button>
-                        </form>
-                    </td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-    {% if current_user.is_authenticated %} 
-    <div class="container text-centered" >
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div >
-                {{ messages[0] }}
-            </div>
-        {% endif %}
-        {% endwith %}
-        <form class="form" method="POST", action="/competitions" enctype="multipart/form-data">
-            <input class="form-control" type="text" name="compname" placeholder="compname"  required>
-            <input class="form-control" type="file", name="csvfile"  required>
-            <button class="btn btn-outline-light mt-2">submit</button>
-        </form>
-    </div>
-    {% endif %}
+<h5 class="justify-content">competitions</h5>
+<div class="list-group">
+    {% for competition in data %}
+    <a href="{{url_for('main.competition', id=competition.id)}}" class="list-group-item list-group-action">{{competition.name}}</a>
+    {% endfor %}
 </div>
-
-
-{% endblock %}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-bs-theme="dark">
+<html data-bs-theme="light" id="html-tag">
 
 <head>
     <meta charset="utf-8">
@@ -12,13 +12,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.1"
+        integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+        crossorigin="anonymous"></script>
 </head>
 
 
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Results app</a>
+            <a class="navbar-brand" href="/" id="nav-brand">Results app</a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -27,41 +31,119 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a href="{{url_for('main.competitions')}}" class="nav-link">
-                            Competitions
-                        </a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         {% if not current_user.is_authenticated %}
                         <a href="{{ url_for('auth.login') }}" class="nav-link">
                             Login
                         </a>
                         {% endif %}
                     </li>
-                    <li>
+                    <li class="nav-item">
                         {% if current_user.is_authenticated %}
                         <a href="{{ url_for('auth.logout') }}" class="nav-link">
                             Logout
                         </a>
                         {% endif %}
-                    </li> -->
+                    </li>
+                    <div class="align-self-end">
+                        <button onClick="changeMode()" class="btn" id="change-mode-btn">
+                            <sun-icon></sun-icon>
+                        </button>
+
+                    </div>
                 </ul>
             </div>
+
         </div>
     </nav>
-    <section>
-        <div>
-            <div>
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-    </section>
+    {% block content %}
+    {% endblock %}
+
     <footer class="text-center mt-auto">
         <!-- <p class="text text-secondary">(this website does not use cookies)</p> -->
     </footer>
 </body>
+<script>
+    const html = document.getElementById("html-tag")
+    const changeButton = document.getElementById("change-mode-btn")
+    let tagTheme = html.getAttribute("data-bs-theme")
+    let sessionTheme = sessionStorage.getItem("theme")
+
+    document.addEventListener('DOMContentLoaded', function () {
+        tagTheme = html.getAttribute("data-bs-theme")
+        sessionTheme = sessionStorage.getItem("theme")
+        //console.log(sessionTheme)
+        if (sessionTheme === "light") {
+
+            html.setAttribute("data-bs-theme", "light")
+            if (changeButton) changeButton.innerHTML = "<sun-icon></sun-icon>"
+
+        }
+        if (sessionTheme === "dark") {
+            html.setAttribute("data-bs-theme", "dark")
+            if (changeButton) changeButton.innerHTML = "<moon-icon></moon-icon>"
+        }
+    })
+
+    function changeMode() {
+        tagTheme = html.getAttribute("data-bs-theme")
+        if (tagTheme === "dark") {
+
+            html.setAttribute("data-bs-theme", "light")
+            sessionStorage.setItem("theme", "light")
+            changeButton.innerHTML = "<sun-icon></sun-icon>"
+
+        }
+        else {
+            html.setAttribute("data-bs-theme", "dark")
+            sessionStorage.setItem("theme", "dark")
+            changeButton.innerHTML = "<moon-icon></moon-icon>"
+        }
+    }
 
 
+    class SunIcon extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({ mode: 'open' })
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+            svg.setAttribute('width', '30')
+            svg.setAttribute('height', '30')
+            svg.setAttribute('fill', 'currentColor')
+            svg.setAttribute('class', 'bi bi-sun-fill')
+            svg.setAttribute('viewBox', '0 0 16 16')
+
+            svg.innerHTML = '  <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>'
+
+            shadow.appendChild(svg)
+        }
+    }
+    customElements.define('sun-icon', SunIcon)
+
+    class MoonIcon extends HTMLElement {
+        constructor() {
+            super()
+            const shadow = this.attachShadow({ mode: 'open' })
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+            svg.setAttribute('width', '30')
+            svg.setAttribute('height', '30')
+            svg.setAttribute('fill', 'currentColor')
+            svg.setAttribute('class', 'bi bi-sun-fill')
+            svg.setAttribute('viewBox', '0 0 16 16')
+
+            svg.innerHTML = `
+        <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+        `;
+
+            shadow.appendChild(svg)
+        }
+    }
+
+
+    customElements.define('moon-icon', MoonIcon)
+</script>
 
 </html>

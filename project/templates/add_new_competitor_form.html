@@ -1,0 +1,8 @@
+<form hx-post="/add_new_competitor/{{ compId }}" hx-swap="innerHTML">
+    <div class="m-3">
+        <label class="form-label" for="new-competitor-name">New competitor name:</label>
+        <input class="form-control" id="new-competitor-name" type="text" name="NewCompetitorName">
+    </div>
+    <div class="m-3" hx-get="/comp_events/{{ compId }}" hx-trigger="load"hx-swap="innerHTML"></div>
+    <button type="submit" class="btn btn-secondary mb-3">Add</button>
+</form>

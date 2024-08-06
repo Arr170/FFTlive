@@ -1,0 +1,7 @@
+{% for ev in competition[0].events %}
+<div class="m-3">
+    <input type="checkbox" class="btn-check" id="{{ev.name}}-check" autocomplete="off" name="{{ev.name}}">
+    <label class="btn btn-outline-primary" for="{{ev.name}}-check" id="{{ev.name}}-check-label">{{ev.name}}</label>
+</div>
+
+{% endfor %}

@@ -1,0 +1,18 @@
+{% for event in competition[0].events %}
+<li class="nav-item">
+    <button class="nav-link" name="event_bar" onclick="changeActive(this)" hx-get="/result_tables?competition_id={{competition[0].id}}&event_id={{event.id}}" hx-target="#data-container" hx-trigger="click">{{event.name}}</button>
+</li>
+{% endfor    %}
+
+<script>
+    const elements = document.getElementsByName("event_bar")
+    htmx.trigger(elements[0], 'click')
+    htmx.ajax('GET', "/result_tables?competition_id={{competition[0].id}}&event_id={{competition[0].events[0].id}}", {target:'#data-container', swap:'innerHTML'})
+
+    function changeActive(btn){
+        elements.forEach(element => {
+            element.classList.remove('active');
+        });
+        btn.classList.add("active")
+    }
+</script>

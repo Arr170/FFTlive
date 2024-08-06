@@ -1,0 +1,87 @@
+<form  id="result_form" class="m-3"
+        hx-post="/results_upload/{{id}}" hx-swap="outerHTML">
+    <div>
+        <label class="form-label">Name:</label>
+        <input class="form-control mb-2" required
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}" type="text"
+            name="input_name" id="input_name" placeholder="Name">
+    </div>
+    <div>
+        <label class="form-label">ID:</label>
+        <input class="form-control mb-2" autofocus required onkeydown="{if(event.keyCode == 13){
+        
+        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input_id" placeholder="ID">
+    </div>
+    <div>
+        <label class="form-label">1:</label>
+        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" type="text"
+            name="input_solve1" id="input_solve1" placeholder="0:00.00">
+    </div>
+    <div>
+        <label class="form-label">2:</label>
+        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" type="text"
+            name="input_solve2" id="input_solve2" placeholder="0:00.00">
+    </div>
+    <div>
+        <label class="form-label">3:</label>
+        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" type="text"
+            name="input_solve3" id="input_solve3" placeholder="0:00.00">
+    </div>
+    <div>
+        <label class="form-label">4:</label>
+        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" type="text"
+            name="input_solve4" id="input_solve4" placeholder="0:00.00">
+    </div>
+    <div>
+        <label class="form-label">5:</label>
+        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
+            onkeydown='{if(event.keyCode == 13){document.getElementById("submit-button-{{id}}").focus()}}' type="text"
+            name="input_solve5" id="input_solve5" placeholder="0:00.00">
+    </div>
+    <div>
+        <button class="btn btn-outline-warning mt-3" type="submit" form="result_form" id="submit-button-{{id}}" >Submit</button>
+    </div>
+</form>
+
+
+
+<script>
+    function formate(input) {
+        var num = input.value
+        if (num === 'd') {
+            input.value = 'DNF'
+        }
+        else if (num === 's') {
+            input.value = 'DNS'
+        }
+        else {
+            num = num.replace(/\D/g, '')
+            num_len = num.length
+
+            if (num_len < 5 && num_len > 0) {
+                num = ((num[num_len - 4]) ? num[num_len - 4] : '') + ((num[num_len - 3]) ? num[num_len - 3] : '') + '.' + ((num[num_len - 2]) ? num[num_len - 2] : '') + ((num[num_len - 1]) ? num[num_len - 1] : '')
+                console.log(num)
+
+            }
+            else if (num_len == 5) {
+                num = ((num[0]) ? num[0] : '') + ':' + ((num[1]) ? num[1] : '') + ((num[2]) ? num[2] : '') + '.' + ((num[3]) ? num[3] : '') + ((num[4]) ? num[4] : '')
+            }
+            input.value = num
+        }
+    }
+
+   
+
+    document.addEventListener('htmx:afterRequest', function(event) {
+        console.log(event)
+    if (event.detail.path === '/results_upload/{{id}}') {
+        htmx.ajax('GET', "/result_table/{{id}}", {target:'#table-container-{{id}}', swap:'innerHTML'})
+        console.log("updating table")
+    }
+});
+
+</script>

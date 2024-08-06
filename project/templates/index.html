@@ -1,4 +1,69 @@
 {% extends "base.html" %}
-
 {% block content %}
+
+{% if current_user.is_authenticated %}
+<div class="modal fade" id="new-competition-modal" tabindex="-1" aria-labelledby="newCompetitionModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-center">Create new competition</h2>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="new-competition-name" class="form-label">Competition name</label>
+                    <input type="text" class="form-control" id="new-competition-name">
+                </div>
+                <div class="mb-3" id="events-pick-container">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="post-competition">Create</button>
+            </div>
+            
+
+        </div>
+
+    </div>
+
+</div>
+{% endif %}
+<div class="container text-center">
+    <div class="row justify-content-center">
+        <div class="col col-12 col-md-6 align-self-center">
+            <div id="competitions-container" class="list-group" hx-get="/competitions" hx-trigger="load">
+            </div>
+            {% if current_user.is_authenticated %}
+            <button class="btn btn-warning m-3 " data-bs-toggle="modal" data-bs-target="#new-competition-modal"
+                id="create-new-btn">Create new</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    const BASE_URL = "{{ request.url_root }}"
+
+    
+</script>
+
+<script type="module">
+    import { populateModal, postCompetition} from "./static/index.js"
+
+    if(document.getElementById('create-new-btn')){
+        document.getElementById('create-new-btn').addEventListener('click', populateModal);
+    }
+    if(document.getElementById('post-competition')){
+        document.getElementById('post-competition').addEventListener('click', function(){
+            postCompetition()
+        })
+    }
+
+
+</script>
+
 {% endblock %}

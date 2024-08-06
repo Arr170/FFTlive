@@ -1,0 +1,29 @@
+{% for round in rounds %}
+<div class="text-center mb-5" id="round-container-{{round.id}}">
+
+    {% if current_user.is_authenticated %}
+    <button id="unlock-button-{{round.id}}" 
+            data-state="locked"     
+            class="btn btn-danger m-1 mb-2" 
+            style="float: right;"
+            hx-get="/result_table_entering_on/{{round.id}}" 
+            hx-target="#round-container-{{round.id}}" 
+            hx-swap="innerHTML">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lock-fill"
+            viewBox="0 0 16 16">
+            <path
+                d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+        </svg>
+    </button>
+    <div class="card w-100 justify-content-center">
+        <div class="row" id="table-set-container-{{round.id}}">
+            <div class="col align-self-start" id="table-container-{{round.id}}" hx-get="/result_table/{{round.id}}"
+                hx-swap="innerHTML" hx-trigger="load, every 30s"></div>
+
+        </div>
+    </div>
+    {% else %}
+    <div hx-get="/result_table/{{round.id}}" hx-trigger="load"></div>
+    {% endif %}
+</div>
+{% endfor %}
