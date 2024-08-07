@@ -21,7 +21,7 @@
                             <button type="submit" class="btn btn-secondary mb-3">Add</button>
                         </form>
                     </div>
-                    <div hx-get="/competition_competitors/{{ request.args.get('id') }}" hx-swap="innerHTML">
+                    <div class="col card" hx-get="/competition_competitors/{{ request.args.get('id') }}" hx-swap="innerHTML" hx-trigger="load, every 10s">
 
                     </div>
 

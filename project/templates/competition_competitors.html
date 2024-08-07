@@ -1,0 +1,13 @@
+<table class="table">
+    <tbody>
+        {% for competitor in cmptrs %}
+    <tr>
+        <td>{{competitor.name}}</td>
+        {% for ev in competitor.events %}
+        <td>{{ev.name}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+    
+</table>

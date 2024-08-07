@@ -144,6 +144,7 @@ class Average(db.Model):
 class Round(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.Integer, nullable=False)
+    advances = db.Column(db.String)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id', name='fk_round_event_id'), nullable=False)
     competition_id = db.Column(db.Integer, db.ForeignKey('competition.id', name='fk_round_competition_id'), nullable=False)
     competitors = db.relationship('Competitor', secondary=round_competitors, backref=db.backref('rounds', lazy=True))
@@ -157,16 +158,6 @@ class EventSchema(ma.SQLAlchemyAutoSchema):
 event_schema = EventSchema()
 events_schema = EventSchema(many=True)
 
-class CompetitionSchema(ma.SQLAlchemyAutoSchema):
-    events = ma.Nested(EventSchema, many=True)
-
-    class Meta:
-        model = Competition
-        include_relationships = True
-        load_instance = True
-
-competition_schema = CompetitionSchema()
-competitions_schema = CompetitionSchema(many=True)
 
 class CompetitorSchema(ma.SQLAlchemyAutoSchema):
     events = ma.Nested(EventSchema, many=True)
@@ -213,3 +204,14 @@ class RoundSchema(ma.SQLAlchemyAutoSchema):
 
 round_schema = RoundSchema()
 rounds_schema = RoundSchema(many=True)
+
+class CompetitionSchema(ma.SQLAlchemyAutoSchema):
+    events = ma.Nested(EventSchema, many=True)
+
+    class Meta:
+        model = Competition
+        include_relationships = True
+        load_instance = True
+
+competition_schema = CompetitionSchema()
+competitions_schema = CompetitionSchema(many=True)

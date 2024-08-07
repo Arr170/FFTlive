@@ -13,7 +13,7 @@
         <div class="row" id="table-set-container-{{round}}">
             <div class="col" hx-get="/results_entering/{{round}}" hx-trigger="load" hx-swap="afterbegin">
             </div>
-            <div class="col align-self-start" id="table-container-{{round}}" hx-get="/result_table/{{round}}"
+            <div class="col align-self-start" id="table-container-{{round}}" hx-get="/result_table_admin/{{round}}"
                 hx-swap="innerHTML" hx-trigger="load, every 10s"></div>
         </div>
     </div>

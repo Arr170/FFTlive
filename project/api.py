@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy import case, asc
 import os, pandas, shutil
 from project.results import Result
 from . import db
@@ -17,6 +18,7 @@ api = Blueprint('api', __name__)
 #               {
 #                   name: "event name",
 #                   number: "number of rounds"
+#                   rounds_numbers: [] how many competitor advances to next rounnd. ex: ['70%', '8', '0']
 #               }
 #           ]
 # 
@@ -37,6 +39,8 @@ def api_get_competitions(competition_id=None):
             query = query.filter_by(id=competition_id)
 
         competitions = query.all()
+
+        print(competitions)
 
         return competitions_schema.jsonify(competitions)
 
@@ -62,7 +66,7 @@ def api_get_competitions(competition_id=None):
             
                 for num in range(1, int(ev["number"])+1):
 
-                    new_round = Round(number = num, event_id = event.id, competition_id = new_competition.id)
+                    new_round = Round(number = num, event_id = event.id, competition_id = new_competition.id, advances=ev["rounds_numbers"][num-1])
                     db.session.add(new_round)
                     db.session.commit()
                     print("new round added")
@@ -75,12 +79,14 @@ def api_get_competitions(competition_id=None):
         None
 
 @api.route('/api/competitors', methods=["GET"])
-def api_get_competitors(competitor_id=None):
+def api_get_competitors(competitor_id=None, competition_id=None):
     query = Competitor.query
     if competitor_id:
         query = query.filter_by(id=competitor_id)
         competitor = query.first()
         return competitor_schema.jsonify(competitor)
+    if competition_id:
+        query = query.filter_by(competition_id=competition_id)    
     competitors = query.all()
     return competitors_schema.jsonify(competitors)
 
@@ -103,7 +109,7 @@ def api_get_events(event_name=None):
         return events_schema.jsonify(events)
 
 @api.route('/api/rounds', methods=['GET'])
-def api_get_rounds(competition_id=None, event_id=None, number=None):
+def api_get_rounds(competition_id=None, event_id=None, number=None, id=None):
     args = request.args
 
     query = Round.query
@@ -120,6 +126,9 @@ def api_get_rounds(competition_id=None, event_id=None, number=None):
     if competition_id:
         query = query.filter_by(competition_id=competition_id)
     
+    if id:
+        query = query.filter_by(id=id)
+
     if event_id:
         query = query.filter_by(event_id=event_id)
 
@@ -159,7 +168,20 @@ def api_get_averages(round_id=None, competitor_id=None, competition_id=None, id=
     if competition_id:
         query = query.filter_by(competition_id=competition_id)
 
-    avgs = query.order_by(Average.best).order_by(Average.avg).all()
+    avgs = query.order_by(
+            case(
+                (Average.best == None, 1),
+            else_=0
+            ),
+            asc(Average.best)
+            ).order_by(
+            case(
+                (Average.avg == None, 1),
+                else_=0
+            ),
+            asc(Average.avg)
+        ).all()
+
 
     return averages_schema.jsonify(avgs)
 

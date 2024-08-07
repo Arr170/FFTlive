@@ -1,49 +1,51 @@
-<form  id="result_form" class="m-3"
-        hx-post="/results_upload/{{id}}" hx-swap="outerHTML">
+<form  id="result-form-{{id}}" class="m-3"
+        hx-post="/results_upload/{{id}}" hx-swap="outerHTML" >
     <div>
-        <label class="form-label">Name:</label>
-        <input class="form-control mb-2" required
+        <p class="text-start">Name:</p>
+        <input class="form-control mb-3" required
             onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}" type="text"
-            name="input_name" id="input_name" placeholder="Name">
+            name="input_name" id="input_name" placeholder="Name" value="{{average.competitor.name if average is not none}}">
     </div>
     <div>
-        <label class="form-label">ID:</label>
-        <input class="form-control mb-2" autofocus required onkeydown="{if(event.keyCode == 13){
+        <p class="text-start">ID:</p>
+        <input class="form-control mb-3" autofocus required onkeydown="{if(event.keyCode == 13){
         
-        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input_id" placeholder="ID">
+        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input_id" 
+        placeholder="ID"
+        value="{{average.competitor.id if average is not none}}">
     </div>
     <div>
-        <label class="form-label">1:</label>
-        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" type="text"
-            name="input_solve1" id="input_solve1" placeholder="0:00.00">
+        <p class="text-start">1:</p>
+        <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" type="text" inputmode="numeric"
+            name="input_solve1" id="input_solve1" placeholder="0:00.00" value="{{average.first.time_string if average is not none}}">
     </div>
     <div>
-        <label class="form-label">2:</label>
-        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" type="text"
-            name="input_solve2" id="input_solve2" placeholder="0:00.00">
+        <p class="text-start">2:</p>
+        <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" type="text" inputmode="numeric"
+            name="input_solve2" id="input_solve2" placeholder="0:00.00" value="{{average.second.time_string if average is not none}}">
     </div>
     <div>
-        <label class="form-label">3:</label>
-        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" type="text"
-            name="input_solve3" id="input_solve3" placeholder="0:00.00">
+        <p class="text-start">3:</p>
+        <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" type="text" inputmode="numeric"
+            name="input_solve3" id="input_solve3" placeholder="0:00.00" value="{{average.third.time_string if average is not none}}">
     </div>
     <div>
-        <label class="form-label">4:</label>
-        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" type="text"
-            name="input_solve4" id="input_solve4" placeholder="0:00.00">
+        <p class="text-start">4:</p>
+        <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" type="text" inputmode="numeric"
+            name="input_solve4" id="input_solve4" placeholder="0:00.00" value="{{average.fourth.time_string if average is not none}}">
     </div>
     <div>
-        <label class="form-label">5:</label>
-        <input class="form-control mb-2" maxlength="7" required onkeyup="formate(this)"
-            onkeydown='{if(event.keyCode == 13){document.getElementById("submit-button-{{id}}").focus()}}' type="text"
-            name="input_solve5" id="input_solve5" placeholder="0:00.00">
+        <p class="text-start">5:</p>
+        <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
+            onkeydown='{if(event.keyCode == 13){document.getElementById("submit-button-{{id}}").focus()}}' type="text" inputmode="numeric"
+            name="input_solve5" id="input_solve5" placeholder="0:00.00" value="{{average.fifth.time_string if average is not none}}">
     </div>
     <div>
-        <button class="btn btn-outline-warning mt-3" type="submit" form="result_form" id="submit-button-{{id}}" >Submit</button>
+        <button class="btn btn-outline-warning mt-3" type="submit" form="result-form-{{id}}" id="submit-button-{{id}}" >Submit</button>
     </div>
 </form>
 
@@ -72,16 +74,6 @@
             }
             input.value = num
         }
-    }
-
-   
-
-    document.addEventListener('htmx:afterRequest', function(event) {
-        console.log(event)
-    if (event.detail.path === '/results_upload/{{id}}') {
-        htmx.ajax('GET', "/result_table/{{id}}", {target:'#table-container-{{id}}', swap:'innerHTML'})
-        console.log("updating table")
-    }
-});
+    }   
 
 </script>
