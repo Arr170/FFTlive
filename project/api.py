@@ -138,6 +138,15 @@ def api_get_rounds(competition_id=None, event_id=None, number=None, id=None):
 
     return rounds_schema.jsonify(rounds)
 
+@api.route('/api/delete_average/<id>', methods=["DELETE"])
+@login_required
+def delete_average(id):
+    avg = Average.query.get(id)
+    db.session.delete(avg)
+    db.session.commit()
+
+    return ""
+
 @api.route('/api/averages', methods=['GET'])
 def api_get_averages(round_id=None, competitor_id=None, competition_id=None, id=None):
     args = request.args
@@ -170,16 +179,16 @@ def api_get_averages(round_id=None, competitor_id=None, competition_id=None, id=
 
     avgs = query.order_by(
             case(
-                (Average.best == None, 1),
+                (Average.avg == None, 1),
             else_=0
             ),
-            asc(Average.best)
+            asc(Average.avg)
             ).order_by(
             case(
-                (Average.avg == None, 1),
+                (Average.best == None, 1),
                 else_=0
             ),
-            asc(Average.avg)
+            asc(Average.best)
         ).all()
 
 

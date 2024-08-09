@@ -9,7 +9,7 @@
 
 </div>
 
-<h3 class="m-3">{{round.number}}. Round</h3>
+<h3 class="m-3">{{round}}. Round</h3>
 <div class=" justify-content-center m-2">
     <table class="table text-center ">
         <thead>
@@ -30,30 +30,37 @@
         <tbody>
             {% for avg in avgs %}
     <div class="modal-dialog modal-dialog-scrollable" id="person-result-modal-content">
-            <tr hx-get="/results_entering/{{round.id}}?avg_id={{avg.id}}" hx-target="#result-form-{{round.id}}" hx-swap="outerHTML">
-                <td>{{ loop.index }}</td>
+            <tr>
+                {% if loop.index <= adv %}
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="bg-success">{{ loop.index }}</td>
+                {% else %}
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML">{{ loop.index }}</td>
+                {% endif %}
                 <td>
                     <b>{{avg.competitor.name}}</b>
                 </td>
-                <td class="d-none d-lg-table-cell">{{avg.first.time_string}}</td>
-                <td class="d-none d-lg-table-cell">{{avg.second.time_string}} </td>
-                <td class="d-none d-lg-table-cell">{{avg.third.time_string}} </td>
-                <td class="d-none d-lg-table-cell">{{avg.fourth.time_string}} </td>
-                <td class="d-none d-lg-table-cell">{{avg.fifth.time_string}} </td>
-                <td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.first.time_string}}</td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.second.time_string}} </td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.third.time_string}} </td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.fourth.time_string}} </td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.fifth.time_string}} </td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML">
                     {% if avg.best_string %}
                     {{avg.best_string }}
                     {% else %}
                     -
                     {% endif %}
                 </td>
-                <td>
+                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML">
                     <strong>
                         {% if avg.best_string %}
                         {{avg.avg_string }}
                         {% else %}
                         -
                         {% endif %}</strong>
+                </td>
+                <td>
+                    <button class="btn btn-danger" hx-delete="/api/delete_average/{{avg.id}}" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">delete</button>
                 </td>
             </tr>
             {% endfor %}

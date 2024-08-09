@@ -60,16 +60,25 @@ def get_round_table(id): # round id
 
 @main.route('/result_table_admin/<id>', methods=['GET'])
 @login_required
-def get_round_table_admin(id):
-    averages = api_get_averages(id) # round id
-    r = Round.query.filter_by(id=id).first()
-    return render_template("result_table_admin.html", avgs=averages.json, round = r)
+def get_round_table_admin(id): # round id
+    averages = api_get_averages(id) 
+    r = api_get_rounds(id=id).json[0]
+    advances = r['advances']
+    if advances.find("%") != -1:        
+        competitors = len(averages.json)
+        advances = int(competitors*int(advances[:-1])/100)
+    else:
+        advances = int(advances)
+    return render_template("result_table_admin.html", avgs=averages.json, round = r["number"], adv = advances)
 
 @main.route('/results_entering/<id>', methods=['GET'])
 def get_results_entering(id, avg=None): # round id
     args = request.args
     if args.__contains__("avg_id"):
         avg = api_get_averages(id=args.get('avg_id'))
+        return render_template("results_entering.html", id=id, average = avg.json[0])
+    if args.__contains__("competitor_id"):
+        avg = api_get_averages(round_id=id, competitor_id=args.get('competitor_id'))
         return render_template("results_entering.html", id=id, average = avg.json[0])
     return render_template("results_entering.html", id=id, average = avg)
 
@@ -167,6 +176,32 @@ def person_result(id): # avg id
 def competition_competitors(id): # competition id
     competitors = api_get_competitors(competition_id=id)
     return render_template("competition_competitors.html", cmptrs = competitors.json)
+
+@main.route("/populate_next_round/<id>", methods=["GET"])
+@login_required
+def populate_next_round(id):
+    averages = api_get_averages(round_id=id).json
+    finished_round = Round.query.filter_by(id=id).first()
+    next_round = Round.query.filter_by(competition_id=finished_round.competition_id, event_id=finished_round.event_id, number=(finished_round.number +1)).first()
+    if next_round:
+        advances = finished_round.advances
+        if advances.find("%") != -1:        
+            competitors = len(averages)
+            advances = int(competitors*int(advances[:-1])/100)
+        else:
+            advances = int(advances)
+        print("IN POPULATING NEXT")
+        #print(averages)
+        for pos in range(1, advances+1):
+            # print(pos)
+            # print(averages[pos]["id"])
+            # print(averages[pos]["competitor"]["id"])
+            new_avg = Average(competitor_id=averages[pos]["competitor"]["id"], round_id=next_round.id)
+            db.session.add(new_avg)
+            db.session.commit()
+    return "ok", 200
+
+
 ### old code below ###
 
 ###                ###

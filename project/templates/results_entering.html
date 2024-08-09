@@ -1,22 +1,22 @@
 <form  id="result-form-{{id}}" class="m-3"
-        hx-post="/results_upload/{{id}}" hx-swap="outerHTML" >
+        hx-post="/results_upload/{{id}}" hx-swap="outerHTML" onkeydown="return event.key != 'Enter';" >
     <div>
         <p class="text-start">Name:</p>
         <input class="form-control mb-3" required
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_id').focus()}}" type="text"
+            onkeydown="{if(event.keyCode == 13){document.getElementById('input-id-{{id}}').focus()}}" type="text"
             name="input_name" id="input_name" placeholder="Name" value="{{average.competitor.name if average is not none}}">
     </div>
     <div>
         <p class="text-start">ID:</p>
-        <input class="form-control mb-3" autofocus required onkeydown="{if(event.keyCode == 13){
-        
-        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input_id" 
+        <input class="form-control mb-3" {% if avg is none %}autofocus{% endif %} required onkeydown="{if(event.keyCode == 13){
+        fillById()
+        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input-id-{{id}}" 
         placeholder="ID"
         value="{{average.competitor.id if average is not none}}">
     </div>
     <div>
         <p class="text-start">1:</p>
-        <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
+        <input class="form-control mb-3" {% if avg is not none %}autofocus{% endif %} maxlength="7" required onkeyup="formate(this)"
             onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" type="text" inputmode="numeric"
             name="input_solve1" id="input_solve1" placeholder="0:00.00" value="{{average.first.time_string if average is not none}}">
     </div>
@@ -44,14 +44,16 @@
             onkeydown='{if(event.keyCode == 13){document.getElementById("submit-button-{{id}}").focus()}}' type="text" inputmode="numeric"
             name="input_solve5" id="input_solve5" placeholder="0:00.00" value="{{average.fifth.time_string if average is not none}}">
     </div>
-    <div>
-        <button class="btn btn-outline-warning mt-3" type="submit" form="result-form-{{id}}" id="submit-button-{{id}}" >Submit</button>
-    </div>
 </form>
 
 
 
 <script>
+    function fillById(){
+        const competitor_id = document.getElementById("input-id-{{id}}").value
+        htmx.ajax('GET', `/results_entering/{{id}}?competitor_id=${competitor_id}`, {target:'#result-form-{{id}}', swap:'outerHTML'})
+        console.log("filling BY ID")
+    }
     function formate(input) {
         var num = input.value
         if (num === 'd') {
