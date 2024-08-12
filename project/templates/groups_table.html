@@ -1,0 +1,33 @@
+<table class="table text-center mb-0" >
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Group</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for avg in avgs %}
+        <tr>
+            <td class="group-{{avg.group}}">{{avg.competitor.name}}</td>
+            {% if avgs %}
+            <td class="group-{{avg.group}}">{{avg.group}}</td>
+            {% else %}
+            <td>Not asigned yet</td>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<style>
+    .group-1{
+        color: #FF9900 !important;
+    }
+    .group-2{
+        color:   #CC3333 !important;
+
+    }
+    .group-3{
+        color:  #FFCC00 !important;
+    }
+</style>

@@ -56,7 +56,7 @@ def get_round_table(id): # round id
         advances = int(competitors*int(advances[:-1])/100)
     else:
         advances = int(advances)
-    return render_template("result_table.html", avgs=averages.json, round = r["number"], adv = advances)
+    return render_template("result_table.html", avgs=averages.json, round = r, adv = advances)
 
 @main.route('/result_table_admin/<id>', methods=['GET'])
 @login_required
@@ -91,7 +91,7 @@ def entering_on(id): # round id
 def entering_off(id): # round id
     return render_template("result_table_entering_off.html", round=id)
 
-@main.route("/comp_events/<id>", methods=["GET"]) # pupulating competition's events for adding new competitors
+@main.route("/comp_events/<id>", methods=["GET"]) # pupulating competition's events in modal for adding new competitors
 def comp_events(id): # competition id
     comp = api_get_competitions(competition_id=id)
     return render_template("comp_events.html", competition=comp.json)
@@ -176,6 +176,28 @@ def person_result(id): # avg id
 def competition_competitors(id): # competition id
     competitors = api_get_competitors(competition_id=id)
     return render_template("competition_competitors.html", cmptrs = competitors.json)
+@main.route("/groups/<id>", methods=["get"])
+def groups(id): # round id
+    averages = Average.query.filter_by(round_id = id).order_by(Average.group).all()
+    return render_template("groups_table.html", avgs = averages)
+
+@main.route("/asign_groups/<id>")
+@login_required
+def asign_groups(id): # round id
+    averages = Average.query.filter_by(round_id=id).order_by(Average.id).all()
+    counter = 1
+    if len(averages) > 20:
+        group_count = 3
+    else:
+        group_count = 2
+    
+    for av in averages:
+        av.group = counter
+        counter +=1
+        if counter > group_count:
+            counter = 1
+    db.session.commit()
+    return "ok", 200
 
 @main.route("/populate_next_round/<id>", methods=["GET"])
 @login_required

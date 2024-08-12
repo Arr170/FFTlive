@@ -81,6 +81,7 @@ class Average(db.Model):
     avg_string = db.Column(db.String)
     best = db.Column(db.Integer)
     best_string = db.Column(db.String)
+    group = db.Column(db.Integer)
     first_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_first_id'))
     second_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_second_id'))
     third_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_third_id'))
