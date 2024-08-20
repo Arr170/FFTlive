@@ -16,7 +16,7 @@ ma = Marshmallow()
 
 
 if(os.environ['IS_PROD']=='1'):
-    COMP_PATH = '/project/data'#upravit podle umisteni na servru
+    COMP_PATH = '/project/comps'#upravit podle umisteni na servru
 else:
     COMP_PATH = './project/data'
 
