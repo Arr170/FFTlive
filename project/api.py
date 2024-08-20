@@ -147,6 +147,8 @@ def delete_average(id):
 
     return ""
 
+
+
 @api.route('/api/averages', methods=['GET'])
 def api_get_averages(round_id=None, competitor_id=None, competition_id=None, id=None):
     args = request.args

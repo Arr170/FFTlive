@@ -6,6 +6,9 @@
         {% for ev in competitor.events %}
         <td>{{ev.name}}</td>
         {% endfor %}
+        <td>
+            <button class="btn btn-danger" hx-delete="/delete_competitor/{{competitor.id}}" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">delete</button>
+        </td>
     </tr>
     {% endfor %}
     </tbody>

@@ -223,7 +223,16 @@ def populate_next_round(id):
             db.session.commit()
     return "ok", 200
 
-
+@main.route('/delete_competitor/<id>', methods=["DELETE"])
+@login_required
+def delete_competitor(id): # competitor id
+    competitor_to_delete = Competitor.query.get(id)
+    averages_to_delete = Average.query.filter_by(competitor_id=id).all()
+    for avg in averages_to_delete:
+        db.session.delete(avg)
+    db.session.delete(competitor_to_delete)
+    db.session.commit()
+    return ""
 ### old code below ###
 
 ###                ###
