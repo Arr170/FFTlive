@@ -4,7 +4,7 @@ import os, pandas, shutil
 from project.results import Result
 from . import db
 from .models import *
-from .api import *
+from .get_funcs import *
 import requests
 
 
@@ -27,14 +27,14 @@ def competition():
     return render_template('competition.html')
 
 @main.route('/competitions', methods=['GET']) #for htmx
-def get_competitions():
-    data = api_get_competitions()
+def competitions():
+    data = get_competitions()
     print(data.json)
     return render_template("competitions.html", data=data.json) #for htmx
 
 @main.route('/navbar_events/<compId>',  methods=["GET"])
 def get_navbar_events(compId):
-    data = api_get_competitions(compId)
+    data = get_competitions(compId)
     print(data.json)
     return render_template("events_bar.html", competition = data.json)
 
@@ -42,14 +42,14 @@ def get_navbar_events(compId):
 def get_result_tables():
     args = request.args
     if args.__contains__("competition_id") and args.__contains__("event_id"):
-        rounds = api_get_rounds(competition_id=args["competition_id"], event_id=args["event_id"])
+        rounds = get_rounds(competition_id=args["competition_id"], event_id=args["event_id"])
         return render_template("result_tables.html", rounds=rounds.json)
     return "not enough data", 418
 
 @main.route('/result_table/<id>', methods=['GET'])
 def get_round_table(id): # round id
-    averages = api_get_averages(id) 
-    r = api_get_rounds(id=id).json[0]
+    averages = get_averages(id) 
+    r = get_rounds(id=id).json[0]
     advances = r['advances']
     if advances.find("%") != -1:        
         competitors = len(averages.json)
@@ -61,8 +61,8 @@ def get_round_table(id): # round id
 @main.route('/result_table_admin/<id>', methods=['GET'])
 @login_required
 def get_round_table_admin(id): # round id
-    averages = api_get_averages(id) 
-    r = api_get_rounds(id=id).json[0]
+    averages = get_averages(id) 
+    r = get_rounds(id=id).json[0]
     advances = r['advances']
     if advances.find("%") != -1:        
         competitors = len(averages.json)
@@ -75,10 +75,10 @@ def get_round_table_admin(id): # round id
 def get_results_entering(id, avg=None): # round id
     args = request.args
     if args.__contains__("avg_id"):
-        avg = api_get_averages(id=args.get('avg_id'))
+        avg = get_averages(id=args.get('avg_id'))
         return render_template("results_entering.html", id=id, average = avg.json[0])
     if args.__contains__("competitor_id"):
-        avg = api_get_averages(round_id=id, competitor_id=args.get('competitor_id'))
+        avg = get_averages(round_id=id, competitor_id=args.get('competitor_id'))
         return render_template("results_entering.html", id=id, average = avg.json[0])
     return render_template("results_entering.html", id=id, average = avg)
 
@@ -93,7 +93,7 @@ def entering_off(id): # round id
 
 @main.route("/comp_events/<id>", methods=["GET"]) # pupulating competition's events in modal for adding new competitors
 def comp_events(id): # competition id
-    comp = api_get_competitions(competition_id=id)
+    comp = get_competitions(competition_id=id)
     return render_template("comp_events.html", competition=comp.json)
 
 @main.route("/add_new_competitor/<id>", methods=["POST"])
@@ -112,7 +112,7 @@ def add_new_competitor(id): # competition id
                 print(event)
                 new_competitor.events.append(event)
                 db.session.commit()
-                first_round = api_get_rounds(competition_id=id, event_id=event.id, number=1).json
+                first_round = get_rounds(competition_id=id, event_id=event.id, number=1).json
                 first_round = first_round[0]
                 print("ROUND:")
                 print(first_round['id'])
@@ -168,13 +168,13 @@ def results_upload(id): # round id
 
 @main.route('/person_result/<id>', methods=["GET"])
 def person_result(id): # avg id
-    result = api_get_averages(id=id)
+    result = get_averages(id=id)
     print(result.json)
     return render_template("person_result_modal.html", avg=result.json[0])
 
 @main.route("/competition_competitors/<id>", methods=["GET"])
 def competition_competitors(id): # competition id
-    competitors = api_get_competitors(competition_id=id)
+    competitors = get_competitors(competition_id=id)
     return render_template("competition_competitors.html", cmptrs = competitors.json)
 @main.route("/groups/<id>", methods=["get"])
 def groups(id): # round id
@@ -202,7 +202,7 @@ def asign_groups(id): # round id
 @main.route("/populate_next_round/<id>", methods=["GET"])
 @login_required
 def populate_next_round(id):
-    averages = api_get_averages(round_id=id).json
+    averages = get_averages(round_id=id).json
     finished_round = Round.query.filter_by(id=id).first()
     next_round = Round.query.filter_by(competition_id=finished_round.competition_id, event_id=finished_round.event_id, number=(finished_round.number +1)).first()
     if next_round:
