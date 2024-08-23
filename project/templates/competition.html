@@ -6,34 +6,41 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title text-center"></h2>
-            </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class=" col card col-4">
-                        <form hx-post="/add_new_competitor/{{ request.args.get('id') }}"  hx-swap="outerHTML">
+                    <div class="card col-12 col-md-4 mb-1">
+                        <form hx-post="/add_new_competitor/{{ request.args.get('id') }}" hx-swap="outerHTML">
                             <div class="m-3">
-                                <label class="form-label" for="new-competitor-name" >New competitor name:</label>
-                                <input class="form-control" id="new-competitor-name" type="text" name="NewCompetitorName">
+                                <label class="form-label" for="new-competitor-name">New competitor name:</label>
+                                <input class="form-control" id="new-competitor-name" type="text"
+                                    name="NewCompetitorName">
                             </div>
-                            <div class="m-3" hx-get="/comp_events/{{ request.args.get('id') }}" hx-trigger="load" hx-swap="innerHTML"></div>
+                            <div class="m-3" hx-get="/comp_events/{{ request.args.get('id') }}" hx-trigger="load"
+                                hx-swap="innerHTML"></div>
                             <button type="submit" class="btn btn-secondary mb-3">Add</button>
                         </form>
                     </div>
-                    <div class="col card" hx-get="/competition_competitors/{{ request.args.get('id') }}" hx-swap="innerHTML" hx-trigger="load, every 10s">
+                    <div class="card col-12 col-md-8 mb-1" hx-get="/competition_competitors/{{ request.args.get('id') }}"
+                        hx-swap="innerHTML" hx-trigger="load, every 10s">
 
                     </div>
 
                 </div>
-                
+
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="post-competition">Create</button>
+
+            <div class="row m-3">
+                <div class="col text-start">
+                    <button type="button" class="btn btn-danger float-left" onclick="deleteComp">Delete
+                        Competition</button>
+                </div>
+                <div class="col text-end">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
-            
+
+
 
         </div>
 
@@ -41,7 +48,8 @@
 
 </div>
 <div>
-    <button class="btn btn-outline-warning me-3 mb-3" style="float: right;" data-bs-toggle="modal" data-bs-target="#edit-competition-modal">edit competition</button>
+    <button class="btn btn-outline-warning me-3 mb-3" style="float: right;" data-bs-toggle="modal"
+        data-bs-target="#edit-competition-modal">edit competition</button>
 
 </div>
 {% endif %}

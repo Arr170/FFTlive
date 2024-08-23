@@ -2,7 +2,8 @@
     <tbody>
         {% for competitor in cmptrs %}
     <tr>
-        <td>{{competitor.name}}</td>
+        <td>
+            <strong>{{competitor.name}}</strong></td>
         {% for ev in competitor.events %}
         <td>{{ev.name}}</td>
         {% endfor %}

@@ -32,9 +32,9 @@
             {% for avg in avgs %}
             <tr data-bs-toggle="modal" data-bs-target="#show-results-modal" hx-get="/person_result/{{avg.id}}"
                 hx-target="#person-result-modal-content">
-                {% if loop.index <= adv %} <td class="bg-success">{{ loop.index }}</td>
+                {% if loop.index <= adv %} <td class="bg-success">{{ loop.index }}.</td>
                     {% else %}
-                    <td>{{ loop.index }}</td>
+                    <td>{{ loop.index }}.</td>
                     {% endif %}
                     <td>
                         <b>{{avg.competitor.name}}</b>

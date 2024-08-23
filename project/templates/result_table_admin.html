@@ -9,7 +9,7 @@
 
 </div>
 
-<h3 class="m-3">{{round}}. Round</h3>
+<h3 class="m-3">{{round['number']}}. Round {{round['id']}}</h3>
 <div class=" justify-content-center m-2">
     <table class="table text-center ">
         <thead>
@@ -32,26 +32,26 @@
     <div class="modal-dialog modal-dialog-scrollable" id="person-result-modal-content">
             <tr>
                 {% if loop.index <= adv %}
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="bg-success">{{ loop.index }}</td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="bg-success">{{ loop.index }}.</td>
                 {% else %}
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML">{{ loop.index }}</td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click">{{ loop.index }}.</td>
                 {% endif %}
                 <td>
                     <b>{{avg.competitor.name}}</b>
                 </td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.first.time_string}}</td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.second.time_string}} </td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.third.time_string}} </td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.fourth.time_string}} </td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML" class="d-none d-lg-table-cell">{{avg.fifth.time_string}} </td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML">
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="d-none d-lg-table-cell">{{avg.first.time_string}}</td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="d-none d-lg-table-cell">{{avg.second.time_string}} </td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="d-none d-lg-table-cell">{{avg.third.time_string}} </td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="d-none d-lg-table-cell">{{avg.fourth.time_string}} </td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="d-none d-lg-table-cell">{{avg.fifth.time_string}} </td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click">
                     {% if avg.best_string %}
                     {{avg.best_string }}
                     {% else %}
                     -
                     {% endif %}
                 </td>
-                <td hx-get="/results_entering/{{round}}?avg_id={{avg.id}}" hx-target="#result-form-{{round}}" hx-swap="outerHTML">
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML">
                     <strong>
                         {% if avg.best_string %}
                         {{avg.avg_string }}

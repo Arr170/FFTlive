@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 import os, pandas, shutil
-from project.results import Result
 from . import db
 from .models import *
 from .get_funcs import *
@@ -69,7 +68,7 @@ def get_round_table_admin(id): # round id
         advances = int(competitors*int(advances[:-1])/100)
     else:
         advances = int(advances)
-    return render_template("result_table_admin.html", avgs=averages.json, round = r["number"], adv = advances)
+    return render_template("result_table_admin.html", avgs=averages.json, round = r, adv = advances)
 
 @main.route('/results_entering/<id>', methods=['GET'])
 def get_results_entering(id, avg=None): # round id
@@ -100,24 +99,28 @@ def comp_events(id): # competition id
 @login_required
 def add_new_competitor(id): # competition id
     data = request.form
-    print(data)
-    new_competitor = Competitor(name=data.get("NewCompetitorName"), competition_id=id)
+    person = Person.query.filter_by(name=data.get("NewCompetitorName")).first()
+    print(person)
+    if not person:
+        person = Person(name=data.get("NewCompetitorName"))
+        db.session.add(person)
+        db.session.commit()
+        print("PERSON:")
+        print(person)
+
+    new_competitor = Competitor(name=data.get("NewCompetitorName"), competition_id=id, person_id = person.id)
     db.session.add(new_competitor)
     db.session.commit()
     for a in data:
-        print(a, data.get(a))
         if data.get(a) == "on":
             event = Event.query.filter_by(name = a).first()
             if event:
-                print(event)
                 new_competitor.events.append(event)
                 db.session.commit()
                 first_round = get_rounds(competition_id=id, event_id=event.id, number=1).json
                 first_round = first_round[0]
-                print("ROUND:")
-                print(first_round['id'])
                 try:
-                    new_average = Average(competitor_id = new_competitor.id, round_id = first_round['id'])
+                    new_average = Average(competitor_id = new_competitor.id, round_id = first_round['id'], event_id=event.id, person_id=new_competitor.person_id)
                     db.session.add(new_average)
                     db.session.commit()
                     print("new average added", new_average.id, first_round['id'])
@@ -125,33 +128,34 @@ def add_new_competitor(id): # competition id
                     print("round may not exist", str(e))
     
 
-    print(id)
     return render_template("add_new_competitor_form.html", compId=id)
 
 @main.route('/results_upload/<id>', methods=["POST"])
 @login_required
 def results_upload(id): # round id
+    rnd = Round.query.get(id)
     data = request.form
     competitor_id = data.get('input_id')
+    competitor = Competitor.query.get(competitor_id)
 
-    new_first = data.get('input_solve1')
-    new_first = Result(time_string = new_first, round_id = id, competitor_id = competitor_id)
+    new_first_time_str = data.get('input_solve1')
+    new_first = Result(time_string = new_first_time_str, round_id = id, competitor_id = competitor_id, event_id=rnd.event_id, person_id = competitor.person_id, competition_id=competitor.competition_id)
     db.session.add(new_first)    
 
-    new_second = data.get('input_solve2')
-    new_second = Result(time_string = new_second, round_id = id, competitor_id = competitor_id)
+    new_second_time_str = data.get('input_solve2')
+    new_second = Result(time_string = new_second_time_str, round_id = id, competitor_id = competitor_id, event_id=rnd.event_id, person_id = competitor.person_id, competition_id=competitor.competition_id)
     db.session.add(new_second)
 
-    new_third = data.get('input_solve3')
-    new_third = Result(time_string = new_third, round_id = id, competitor_id = competitor_id)
+    new_third_time_str = data.get('input_solve3')
+    new_third = Result(time_string = new_third_time_str, round_id = id, competitor_id = competitor_id, event_id=rnd.event_id, person_id = competitor.person_id, competition_id=competitor.competition_id)
     db.session.add(new_third)
 
-    new_fourth = data.get('input_solve4')
-    new_fourth = Result(time_string = new_fourth, round_id = id, competitor_id = competitor_id)
+    new_fourth_time_str = data.get('input_solve4')
+    new_fourth = Result(time_string = new_fourth_time_str, round_id = id, competitor_id = competitor_id, event_id=rnd.event_id, person_id = competitor.person_id, competition_id=competitor.competition_id)
     db.session.add(new_fourth) 
 
-    new_fifth = data.get('input_solve5')
-    new_fifth = Result(time_string = new_fifth, round_id = id, competitor_id = competitor_id)
+    new_fifth_time_str = data.get('input_solve5')
+    new_fifth = Result(time_string = new_fifth_time_str, round_id = id, competitor_id = competitor_id, event_id=rnd.event_id, person_id = competitor.person_id, competition_id=competitor.competition_id)
     db.session.add(new_fifth)
 
     db.session.commit()
@@ -202,10 +206,16 @@ def asign_groups(id): # round id
 @main.route("/populate_next_round/<id>", methods=["GET"])
 @login_required
 def populate_next_round(id):
+
     averages = get_averages(round_id=id).json
     finished_round = Round.query.filter_by(id=id).first()
     next_round = Round.query.filter_by(competition_id=finished_round.competition_id, event_id=finished_round.event_id, number=(finished_round.number +1)).first()
     if next_round:
+        next_avgs = Average.query.filter_by(round_id=next_round.id).all()
+        if next_avgs:
+            for avg in next_avgs:
+                db.session.delete(avg)
+            db.session.commit()
         advances = finished_round.advances
         if advances.find("%") != -1:        
             competitors = len(averages)
@@ -214,11 +224,11 @@ def populate_next_round(id):
             advances = int(advances)
         print("IN POPULATING NEXT")
         #print(averages)
-        for pos in range(1, advances+1):
+        for pos in range(0, advances):
             # print(pos)
             # print(averages[pos]["id"])
             # print(averages[pos]["competitor"]["id"])
-            new_avg = Average(competitor_id=averages[pos]["competitor"]["id"], round_id=next_round.id)
+            new_avg = Average(competitor_id=averages[pos]["competitor"]["id"], round_id=next_round.id, event_id=next_round.event_id)
             db.session.add(new_avg)
             db.session.commit()
     return "ok", 200
@@ -233,6 +243,23 @@ def delete_competitor(id): # competitor id
     db.session.delete(competitor_to_delete)
     db.session.commit()
     return ""
+
+@main.route('/rankings', methods=["GET"])
+def rankings():
+    events = get_events().json
+    return render_template('rankings.html', events = events)
+
+@main.route('/ranking_event_table/<id>', methods=["GET"])
+def ranking_event_table(id): # event id
+    print("NEW EVENT RATING")
+    singles = Result.query.filter_by(record=True, event_id=id).order_by(Result.time).all()
+    averages = Average.query.filter_by(record = True, event_id=id).order_by(Average.avg).all()
+    print(singles)
+    print(averages)
+
+    return render_template("ranking_event_table.html", singles = singles, averages = averages)
+
+
 ### old code below ###
 
 ###                ###

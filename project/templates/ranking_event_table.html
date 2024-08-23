@@ -1,0 +1,71 @@
+<div class="row w-100 text-center justify-content-center">
+    <div class="card col-12 col-md-6 text-center">
+        <h4 class="m-2">Best Singles</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Time
+                    </th>
+                </tr>
+            </thead>
+            {% for single in singles %}
+            <tr>
+                <td>
+                    {{ loop.index }}.
+                </td>
+                <td>
+                    <strong>
+                        {{single.competitor.name}}
+                    </strong>
+                </td>
+                <td>
+                    {{single.time_string}}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+    <div class="card col-12 col-md-6 text-center">
+        <h4 class="m-2">Best Averages</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Averge
+                    </th>
+                </tr>
+            </thead>
+            {% for avg in averages %}
+            <tr>
+                <td>
+                    {{ loop.index }}.
+                </td>
+                <td>
+                    <strong>
+                        {{avg.competitor.name}}
+                    </strong>
+                </td>
+                <td>
+                    {{avg.avg_string}}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>

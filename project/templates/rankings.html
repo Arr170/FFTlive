@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<ul class="nav nav-tabs nav-fill mb-5" id="event-selector">
+    {% for event in events %}
+    <li class="nav-item">
+        <button class="nav-link" name="event_bar" onclick="changeActive(this)" hx-get="/ranking_event_table/{{event.id}}" hx-target="#data-container" hx-trigger="click" hx-swap="innerHTML">{{event['name']}}</button>
+    </li>
+    {% endfor %}
+</ul>
+<div id="data-container">
+
+</div>
+
+<script>
+    const elements = document.getElementsByName("event_bar")
+    htmx.trigger(elements[0], 'click')
+    htmx.ajax('GET', "/ranking_event_table/1", {target:'#data-container', swap:'innerHTML'})
+
+    function changeActive(btn){
+        elements.forEach(element => {
+            element.classList.remove('active');
+        });
+        btn.classList.add("active")
+    }
+</script>
+{% endblock %}
+

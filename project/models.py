@@ -1,64 +1,88 @@
 from . import db, ma
 from flask_login import UserMixin
 
+
 # Many-to-Many relationship tables with named foreign key constraints
 competitor_events = db.Table('competitor_events',
-    db.Column('Competitor_id', db.Integer, db.ForeignKey('competitor.id', name='fk_competitor_events_competitor_id'), primary_key=True),
-    db.Column('Event_id', db.Integer, db.ForeignKey('event.id', name='fk_competitor_events_event_id'), primary_key=True)
+    db.Column('Competitor_id', db.Integer, db.ForeignKey('Competitor.id', name='fk_competitor_events_competitor_id'), primary_key=True),
+    db.Column('Event_id', db.Integer, db.ForeignKey('Event.id', name='fk_competitor_events_event_id'), primary_key=True)
 )
 
 competition_events = db.Table('competition_events',
-    db.Column('Competition_id', db.Integer, db.ForeignKey('competition.id', name='fk_competition_events_competition_id'), primary_key=True),
-    db.Column('Event_id', db.Integer, db.ForeignKey('event.id', name='fk_competition_events_event_id'), primary_key=True)
+    db.Column('Competition_id', db.Integer, db.ForeignKey('Competition.id', name='fk_competition_events_competition_id'), primary_key=True),
+    db.Column('Event_id', db.Integer, db.ForeignKey('Event.id', name='fk_competition_events_event_id'), primary_key=True)
 )
 
-# class CompetitionEvent(db.Model):
-#     __tablename__ = 'competition_events'
-#     competition_id = db.Column(db.Integer, db.ForeignKey('competition.id', name='fk_competition_event_competition_id'), primary_key=True)
-#     event_id = db.Column(db.Integer, db.ForeignKey('event.id', name='fk_competition_event_event_id'), primary_key=True)
 
 round_competitors = db.Table('competitor_rounds',
-    db.Column('Competitor_id', db.Integer, db.ForeignKey('competitor.id', name='fk_competitor_rounds_competitor_id'), primary_key=True),
-    db.Column('Round_id', db.Integer, db.ForeignKey('round.id', name='fk_competitor_rounds_round_id'), primary_key=True)
+    db.Column('Competitor_id', db.Integer, db.ForeignKey('Competitor.id', name='fk_competitor_rounds_competitor_id'), primary_key=True),
+    db.Column('Round_id', db.Integer, db.ForeignKey('Round.id', name='fk_competitor_rounds_round_id'), primary_key=True)
 )
 
+# Models
 class User(UserMixin, db.Model):
+    __tablename__ = "User"
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
 
-class Competitor(db.Model):
+class Person(db.Model):
+    __tablename__ = "Person"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    competition_id = db.Column(db.Integer, db.ForeignKey('competition.id', name='fk_competitor_competition_id'), nullable=False)
+
+class Competitor(db.Model):
+    __tablename__ = "Competitor"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    person_id = db.Column(db.Integer, db.ForeignKey('Person.id', name='fk_competitor_person_id'))
+    competition_id = db.Column(db.Integer, db.ForeignKey('Competition.id', name='fk_competitor_competition_id'), nullable=False)
 
     events = db.relationship('Event', secondary=competitor_events, backref=db.backref('competitors', lazy=True))
 
 class Competition(db.Model):
+    __tablename__ = "Competition"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
     events = db.relationship('Event', secondary=competition_events, backref=db.backref('competitions', lazy=True))
 
 class Event(db.Model):
+    __tablename__ = "Event"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
     comp_format = db.Column(db.String(3))  # ao5/mo3
 
 class Result(db.Model):
+    __tablename__ = "Result"
     id = db.Column(db.Integer, primary_key=True)
+    record = db.Column(db.Boolean)
     time = db.Column(db.Integer)
     time_string = db.Column(db.String)
-    competitor_id = db.Column(db.Integer, db.ForeignKey('competitor.id', name='fk_result_competitor_id'), nullable=False)
-    round_id = db.Column(db.Integer, db.ForeignKey('round.id', name='fk_result_round_id'), nullable=False)
+    competitor_id = db.Column(db.Integer, db.ForeignKey('Competitor.id', name='fk_result_competitor_id'), nullable=False)
+    person_id = db.Column(db.Integer, db.ForeignKey('Person.id', name='fk_result_person_id'))
+
+    competition_id = db.Column(db.Integer, db.ForeignKey('Competition.id', name='fk_result_competition_id'), nullable=False)
+    round_id = db.Column(db.Integer, db.ForeignKey('Round.id', name='fk_result_round_id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('Event.id'), name='fk_event_id')
 
     competitor = db.relationship('Competitor', foreign_keys=[competitor_id], backref='result_competitor')
 
-    def __init__(self, competitor_id, round_id, time_string):
+    def __init__(self, competitor_id, round_id, time_string, event_id, competition_id, person_id):
         self.competitor_id = competitor_id
         self.round_id = round_id
         self.time_string = time_string
         self.time = self._parse_time_string(time_string)
+        self.event_id = event_id
+        self.competition_id = competition_id
+        self.person_id = person_id
+
+        prev_record = Result.query.filter_by(person_id = self.person_id, event_id = self.event_id, record = True).first()
+        if not prev_record: 
+            self.record = True
+        elif prev_record.time > self.time:
+            self.record = True
+            prev_record.record = False
 
     @staticmethod
     def _parse_time_string(time_string):
@@ -76,19 +100,24 @@ class Result(db.Model):
 
 
 class Average(db.Model):
+    __tablename__ = "Average"
     id = db.Column(db.Integer, primary_key=True)
     avg = db.Column(db.Integer)
     avg_string = db.Column(db.String)
+    record = db.Column(db.Boolean)
     best = db.Column(db.Integer)
     best_string = db.Column(db.String)
     group = db.Column(db.Integer)
-    first_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_first_id'))
-    second_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_second_id'))
-    third_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_third_id'))
-    fourth_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_fourth_id'))
-    fifth_id = db.Column(db.Integer, db.ForeignKey('result.id', name='fk_average_fifth_id'))
-    round_id = db.Column(db.Integer, db.ForeignKey('round.id', name='fk_average_round_id'), nullable=False)
-    competitor_id = db.Column(db.Integer, db.ForeignKey('competitor.id', name='fk_average_competitor_id'), nullable=False)
+
+    first_id = db.Column(db.Integer, db.ForeignKey('Result.id', name='fk_average_first_id'))
+    second_id = db.Column(db.Integer, db.ForeignKey('Result.id', name='fk_average_second_id'))
+    third_id = db.Column(db.Integer, db.ForeignKey('Result.id', name='fk_average_third_id'))
+    fourth_id = db.Column(db.Integer, db.ForeignKey('Result.id', name='fk_average_fourth_id'))
+    fifth_id = db.Column(db.Integer, db.ForeignKey('Result.id', name='fk_average_fifth_id'))
+    round_id = db.Column(db.Integer, db.ForeignKey('Round.id', name='fk_average_round_id'), nullable=False)
+    competitor_id = db.Column(db.Integer, db.ForeignKey('Competitor.id', name='fk_average_competitor_id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('Event.id'), name='fk_event_id')
+    person_id = db.Column(db.Integer, db.ForeignKey('Person.id', name='fk_average_person_id'))
 
     competitor = db.relationship('Competitor', foreign_keys=[competitor_id], backref='average_competitor')
     first = db.relationship('Result', foreign_keys=[first_id], backref='average_first')
@@ -97,14 +126,23 @@ class Average(db.Model):
     fourth = db.relationship('Result', foreign_keys=[fourth_id], backref='average_fourth')
     fifth = db.relationship('Result', foreign_keys=[fifth_id], backref='average_fifth')
 
-    def __init__(self, competitor_id, round_id):
+    def __init__(self, competitor_id, round_id, event_id, person_id):
         self.competitor_id = competitor_id
         self.round_id = round_id
+        self.event_id = event_id
+        self.person_id = person_id
         
 
     def append_results(self, result_ids):
         self.first_id, self.second_id, self.third_id, self.fourth_id, self.fifth_id = result_ids
         self._calculate_avg_and_best()
+
+        prev_record = Average.query.filter_by(person_id = self.person_id, event_id = self.event_id, record = True).first()
+        if not prev_record: 
+            self.record = True
+        elif prev_record.avg > self.avg:
+            self.record = True
+            prev_record.record = False
 
     def _calculate_avg_and_best(self):
         results = [Result.query.get(result_id) for result_id in 
@@ -143,13 +181,19 @@ class Average(db.Model):
 
 
 class Round(db.Model):
+    __tablename__ = "Round"
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.Integer, nullable=False)
     advances = db.Column(db.String)
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id', name='fk_round_event_id'), nullable=False)
-    competition_id = db.Column(db.Integer, db.ForeignKey('competition.id', name='fk_round_competition_id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('Event.id', name='fk_round_event_id'), nullable=False)
+    competition_id = db.Column(db.Integer, db.ForeignKey('Competition.id', name='fk_round_competition_id'), nullable=False)
     competitors = db.relationship('Competitor', secondary=round_competitors, backref=db.backref('rounds', lazy=True))
 
+
+
+
+
+### interface
 class EventSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Event

@@ -69,7 +69,8 @@ def get_rounds(competition_id=None, event_id=None, number=None, id=None):
 
     return rounds_schema.jsonify(rounds)
 
-
+def get_results(round_id=None, competitor_id=None, competition_id=None, event_id=None):
+    None
 
 
 def get_averages(round_id=None, competitor_id=None, competition_id=None, id=None):
