@@ -25,7 +25,7 @@ def index():
 def competition():
     return render_template('competition.html')
 
-@main.route('/competitions', methods=['GET']) #for htmx
+@main.route('/competitions', methods=['GET', 'POST']) #for htmx
 def competitions():
     if request.method == 'POST':
         try:
@@ -35,6 +35,7 @@ def competitions():
 
             check_comp = Competition.query.filter_by(name=name).first()
             if check_comp:
+                print("DOUBLE")
                 return "ok"
 
             new_competition = Competition(name=name)
@@ -53,9 +54,11 @@ def competitions():
                     db.session.add(new_round)
                     db.session.commit()
                     print("new round added")
+            print("all ok")
             return "ok"
 
         except Exception as e:
+            print("CHYBBBAAAA")
             print(e)
             flash(str(e))
     else:
@@ -283,11 +286,8 @@ def rankings():
 
 @main.route('/ranking_event_table/<id>', methods=["GET"])
 def ranking_event_table(id): # event id
-    print("NEW EVENT RATING")
     singles = Result.query.filter_by(record=True, event_id=id).order_by(Result.time).all()
     averages = Average.query.filter_by(record = True, event_id=id).order_by(Average.avg).all()
-    print(singles)
-    print(averages)
 
     return render_template("ranking_event_table.html", singles = singles, averages = averages)
 

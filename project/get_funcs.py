@@ -19,7 +19,6 @@ def get_competitions(competition_id=None):
 
     competitions = query.all()
 
-    print(competitions)
 
     return competitions_schema.jsonify(competitions)
 

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_cors import CORS, cross_origin
 from flask_marshmallow import Marshmallow
 from marshmallow import fields
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -28,6 +29,7 @@ def create_app():
 
     db.init_app(app)
     ma.init_app(app)
+    cors = CORS(app)
 
     migrate = Migrate(app, db)
 
