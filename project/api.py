@@ -10,6 +10,11 @@ from .models import *
 
 api = Blueprint('api', __name__)
 
+
+@api.after_request
+def set_content_type(response):
+    response.headers['Content-Type'] = 'application/json'
+    return response
 # POST:
 # data formate: 
 # {

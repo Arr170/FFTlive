@@ -259,11 +259,10 @@ def ranking_event_table(id): # event id
 
     return render_template("ranking_event_table.html", singles = singles, averages = averages)
 
-@main.route('/events', methods=['GET'])
-def api_get_events():
-    query = Event.query
-    events = query.all()
-    return events_schema.jsonify(events).json
+# @main.route('/events_picker', methods=['GET'])
+# def api_get_events():
+#     events = get_events()
+#     return render_template("events_picker.html", events = events.json)
 
 ### old code below ###
 
