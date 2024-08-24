@@ -35,7 +35,7 @@ def competitions():
 
             check_comp = Competition.query.filter_by(name=name).first()
             if check_comp:
-                return {"message": "dublicate name"}, 200
+                return "ok"
 
             new_competition = Competition(name=name)
             db.session.add(new_competition)
@@ -53,7 +53,7 @@ def competitions():
                     db.session.add(new_round)
                     db.session.commit()
                     print("new round added")
-            return {"message": "created"}, 201
+            return "ok"
 
         except Exception as e:
             print(e)
