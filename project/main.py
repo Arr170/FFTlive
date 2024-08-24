@@ -27,9 +27,41 @@ def competition():
 
 @main.route('/competitions', methods=['GET']) #for htmx
 def competitions():
-    data = get_competitions()
-    print(data.json)
-    return render_template("competitions.html", data=data.json) #for htmx
+    if request.method == 'POST':
+        try:
+            data = request.json
+            name = data.get('competition_name')
+            events = data.get('events')
+
+            check_comp = Competition.query.filter_by(name=name).first()
+            if check_comp:
+                return {"message": "dublicate name"}, 200
+
+            new_competition = Competition(name=name)
+            db.session.add(new_competition)
+            db.session.commit()
+
+            for ev in events:
+                event = Event.query.filter_by(name = ev["name"]).first()
+                if event:
+                    new_competition.events.append(event)
+                    db.session.commit()
+            
+                for num in range(1, int(ev["number"])+1):
+
+                    new_round = Round(number = num, event_id = event.id, competition_id = new_competition.id, advances=ev["rounds_numbers"][num-1])
+                    db.session.add(new_round)
+                    db.session.commit()
+                    print("new round added")
+            return {"message": "created"}, 201
+
+        except Exception as e:
+            print(e)
+            flash(str(e))
+    else:
+        data = get_competitions()
+        print(data.json)
+        return render_template("competitions.html", data=data.json) #for htmx
 
 @main.route('/navbar_events/<compId>',  methods=["GET"])
 def get_navbar_events(compId):
