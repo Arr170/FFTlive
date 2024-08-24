@@ -3,6 +3,8 @@
 </div>
 
 <script type="text/javascript">
+    const BASE_URL = "{{ request.url_root }}"
+
     let ev = '{{events}}'
     ev = ev.replace(/&#39;/g, "'")
     ev = ev.replace(/'/g, '"')
