@@ -14,7 +14,7 @@
                     <label for="new-competition-name" class="form-label">Competition name</label>
                     <input type="text" class="form-control" id="new-competition-name">
                 </div>
-                <div class="mb-3" id="events-pick-container">
+                <div class="mb-3"  hx-get="/events_picker" hx-trigger="load" hx-swap="innerHTML">
                 </div>
             </div>
             <div class="modal-footer">
@@ -45,7 +45,7 @@
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     const BASE_URL = "{{ request.url_root }}"
 
 
@@ -197,6 +197,6 @@
     }
 
 
-</script>
+</script> -->
 
 {% endblock %}
