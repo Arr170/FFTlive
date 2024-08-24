@@ -81,7 +81,6 @@
 
     function postCompetition() {
         const compUrl = `${BASE_URL}api/competitions`
-        const eventsUrl = `${BASE_URL}api/events`
         const name = document.getElementById('new-competition-name').value
 
         let dataToSend = {
@@ -89,46 +88,40 @@
             events: []
         }
 
-        fetch(eventsUrl)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(event => {
-                    if (document.getElementById(`${event.name}-check`).checked) {
-                        const rounds = document.getElementById(`${event.name}-number`).value
-                        const rounds_adncs = []
-                        for (let num = 1; num <= rounds; num++) {
-                            rounds_adncs.push(document.getElementById(`${event.name}-round-${num}`).value)
-                        }
-                        const ev = {
-                            name: event.name,
-                            number: rounds,
-                            rounds_numbers: rounds_adncs
-                        }
-                        dataToSend.events.push(ev)
-                    }
 
-                });
-                fetch(compUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dataToSend)
-                })
-                    .then(response => response.json())
-                    .then(responseData => {
-                        if (responseData.message !== "created") {
-                            console.log("comething didnt go well")
-                            alert(responseData.message)
-                        }
-                        else {
-                            location.reload()
-                        }
-                    })
+        events.forEach(event => {
+            if (document.getElementById(`${event.name}-check`).checked) {
+                const rounds = document.getElementById(`${event.name}-number`).value
+                const rounds_adncs = []
+                for (let num = 1; num <= rounds; num++) {
+                    rounds_adncs.push(document.getElementById(`${event.name}-round-${num}`).value)
+                }
+                const ev = {
+                    name: event.name,
+                    number: rounds,
+                    rounds_numbers: rounds_adncs
+                }
+                dataToSend.events.push(ev)
+            }
+
+        });
+        fetch(compUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataToSend)
+        })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.message !== "created") {
+                    console.log("comething didnt go well")
+                    alert(responseData.message)
+                }
+                else {
+                    location.reload()
+                }
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
 
     }
 
