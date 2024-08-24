@@ -263,7 +263,7 @@ def ranking_event_table(id): # event id
 def api_get_events():
     query = Event.query
     events = query.all()
-    return events_schema.jsonify(events)
+    return events_schema.jsonify(events).json
 
 ### old code below ###
 
