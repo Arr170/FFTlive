@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="htmx-indicator d-relative justify-content-center w-100" id="loading">
+    <div class="spinner d-absolute">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
 {% if current_user.is_authenticated %}
 <div class="modal fade modal-xl" id="edit-competition-modal" tabindex="-1" aria-labelledby="editCompetitionModal"
     aria-hidden="true">
@@ -20,8 +33,9 @@
                             <button type="submit" class="btn btn-secondary mb-3">Add</button>
                         </form>
                     </div>
-                    <div class="card col-12 col-md-8 mb-1" hx-get="/competition_competitors/{{ request.args.get('id') }}"
-                        hx-swap="innerHTML" hx-trigger="load, every 10s">
+                    <div class="card col-12 col-md-8 mb-1"
+                        hx-get="/competition_competitors/{{ request.args.get('id') }}" hx-swap="innerHTML"
+                        hx-trigger="load, every 10s">
 
                     </div>
 
@@ -57,12 +71,25 @@
     hx-trigger="load">
 
 </ul>
-<div class="container-fluid justify-content-center w-100" id="data-container">
-    <span class="htmx-indicator" id="loading">Loading...</span>
+<div class="container-fluid align-items-center justify-content-center w-100" id="data-container">
 </div>
 
 <script>
     const BASE_URL = "{{ request.url_root }}"
 </script>
+
+<style>
+    .htmx-indicator {
+        display: none;
+    }
+
+    .htmx-request .htmx-indicator {
+        display: flex;
+    }
+
+    .htmx-request.htmx-indicator {
+        display: flex;
+    }
+</style>
 
 {% endblock %}

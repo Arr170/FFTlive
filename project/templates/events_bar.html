@@ -1,6 +1,11 @@
 {% for event in competition[0].events %}
 <li class="nav-item">
-    <button class="nav-link" name="event_bar" onclick="changeActive(this)" hx-get="/result_tables?competition_id={{competition[0].id}}&event_id={{event.id}}" hx-target="#data-container" hx-trigger="click">{{event.name}}</button>
+    <button class="nav-link" name="event_bar" 
+            hx-indicator="#loading" onclick="changeActive(this)" 
+            hx-get="/result_tables?competition_id={{competition[0].id}}&event_id={{event.id}}" 
+            hx-target="#data-container" 
+            hx-trigger="click"
+            hx-on::before-request="clearContent()">{{event.name}}</button>
 </li>
 {% endfor    %}
 
@@ -15,4 +20,15 @@
         });
         btn.classList.add("active")
     }
+
+    function clearContent() {
+    const target = document.getElementById('data-container');
+
+    target.innerHTML = ''
+}
 </script>
+<!-- <style>
+    .htmx-request #data-container {
+    display: none; /* Hide the target content while the request is ongoing */
+}
+</style> -->

@@ -40,6 +40,8 @@ class Competitor(db.Model):
     competition_id = db.Column(db.Integer, db.ForeignKey('Competition.id', name='fk_competitor_competition_id'), nullable=False)
 
     events = db.relationship('Event', secondary=competitor_events, backref=db.backref('competitors', lazy=True))
+    competition = db.relationship('Competition', foreign_keys=[competition_id], backref='competitor_competition')
+
 
 class Competition(db.Model):
     __tablename__ = "Competition"

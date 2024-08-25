@@ -5,6 +5,7 @@ from . import db
 from .models import *
 from .get_funcs import *
 import requests
+import time
 
 
 
@@ -35,7 +36,6 @@ def competitions():
 
             check_comp = Competition.query.filter_by(name=name).first()
             if check_comp:
-                print("DOUBLE")
                 return "ok"
 
             new_competition = Competition(name=name)
@@ -54,22 +54,18 @@ def competitions():
                     db.session.add(new_round)
                     db.session.commit()
                     print("new round added")
-            print("all ok")
             return "ok"
 
         except Exception as e:
-            print("CHYBBBAAAA")
             print(e)
             flash(str(e))
     else:
         data = get_competitions()
-        print(data.json)
         return render_template("competitions.html", data=data.json) #for htmx
 
 @main.route('/navbar_events/<compId>',  methods=["GET"])
 def get_navbar_events(compId):
     data = get_competitions(compId)
-    print(data.json)
     return render_template("events_bar.html", competition = data.json)
 
 @main.route('/result_tables', methods=["GET"]) # for htmx
@@ -135,13 +131,10 @@ def comp_events(id): # competition id
 def add_new_competitor(id): # competition id
     data = request.form
     person = Person.query.filter_by(name=data.get("NewCompetitorName")).first()
-    print(person)
     if not person:
         person = Person(name=data.get("NewCompetitorName"))
         db.session.add(person)
         db.session.commit()
-        print("PERSON:")
-        print(person)
 
     new_competitor = Competitor(name=data.get("NewCompetitorName"), competition_id=id, person_id = person.id)
     db.session.add(new_competitor)
@@ -158,7 +151,6 @@ def add_new_competitor(id): # competition id
                     new_average = Average(competitor_id = new_competitor.id, round_id = first_round['id'], event_id=event.id, person_id=new_competitor.person_id)
                     db.session.add(new_average)
                     db.session.commit()
-                    print("new average added", new_average.id, first_round['id'])
                 except Exception as e:
                     print("round may not exist", str(e))
     
@@ -257,12 +249,7 @@ def populate_next_round(id):
             advances = int(competitors*int(advances[:-1])/100)
         else:
             advances = int(advances)
-        print("IN POPULATING NEXT")
-        #print(averages)
         for pos in range(0, advances):
-            # print(pos)
-            # print(averages[pos]["id"])
-            # print(averages[pos]["competitor"]["id"])
             new_avg = Average(competitor_id=averages[pos]["competitor"]["id"], round_id=next_round.id, event_id=next_round.event_id)
             db.session.add(new_avg)
             db.session.commit()
