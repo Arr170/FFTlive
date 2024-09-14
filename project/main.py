@@ -11,15 +11,8 @@ import time
 
 main = Blueprint('main', __name__)
 
-if(os.environ['IS_PROD']=='1'):
-    COMP_PATH = '/project/comps'
-else:
-    COMP_PATH = './project/comps'
-
-
 @main.route('/', methods=['GET'])
 def index():
-    comp_list = os.listdir(COMP_PATH)
     return render_template('index.html')
 
 @main.route('/competition', methods=['GET'])
@@ -63,6 +56,29 @@ def competitions():
         data = get_competitions()
         return render_template("competitions.html", data=data.json) #for htmx
 
+@main.route('/delete_comp/<id>', methods=["DELETE"])
+@login_required
+def delete_comp(id):
+    competition = Competition.query.get(id)
+    competitors = Competitor.query.filter_by(competition_id = id).all()
+    rounds = Round.query.filter_by(competition_id = id)
+
+    
+    for comp in competitors:
+        averages = Average.query.filter_by(competitor_id = comp.id).all()
+        results = Result.query.filter_by(competitor_id = comp.id).all()
+        for avg in averages:
+            db.session.delete(avg)
+        for r in results:
+            db.session.delete(r)
+        db.session.delete(comp)
+    for r in rounds:
+            db.session.delete(r)
+    db.session.delete(competition)
+    db.session.commit()
+    return "deleted successfully", 200
+
+
 @main.route('/navbar_events/<compId>',  methods=["GET"])
 def get_navbar_events(compId):
     data = get_competitions(compId)
@@ -73,6 +89,7 @@ def get_result_tables():
     args = request.args
     if args.__contains__("competition_id") and args.__contains__("event_id"):
         rounds = get_rounds(competition_id=args["competition_id"], event_id=args["event_id"])
+        print(rounds.json)
         return render_template("result_tables.html", rounds=rounds.json)
     return "not enough data", 418
 
@@ -274,15 +291,21 @@ def rankings():
 @main.route('/ranking_event_table/<id>', methods=["GET"])
 def ranking_event_table(id): # event id
     singles = Result.query.filter_by(record=True, event_id=id).order_by(Result.time).all()
-    averages = Average.query.filter_by(record = True, event_id=id).order_by(Average.avg).all()
+    averages = Average.query.filter_by(avg_record = True, event_id=id).order_by(Average.avg).all()
 
     return render_template("ranking_event_table.html", singles = singles, averages = averages)
 
 @main.route('/events_picker', methods=['GET'])
-def api_get_events():
+def events_picker():
     events = get_events()
     return render_template("events_picker.html", events = events.json)
 
+@main.route('/season_cup', methods=['GET'])
+def season_cup():
+    persons = Person.query.order_by(Person.points).all()
+    return render_template("season_cup.html", persons=persons)
+
+# @main.route('')
 ### old code below ###
 
 ###                ###

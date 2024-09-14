@@ -32,7 +32,9 @@
                     {{single.time_string}}
                 </td>
                 <td>
-                    {{single.competitor.competition.name}}
+                    <a href="/competition?id={{single.competitor.competition.id}}">
+                        {{single.competitor.competition.name}}
+                    </a>
                 </td>
             </tr>
             {% endfor %}
@@ -73,7 +75,10 @@
                     {{avg.avg_string}}
                 </td>
                 <td>
-                    {{avg.competitor.competition.name}}
+                    <a href="/competition?id={{avg.competitor.competition.id}}">
+                        {{avg.competitor.competition.name}}
+                    </a>
+                    
                 </td>
             </tr>
             {% endfor %}

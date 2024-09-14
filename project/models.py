@@ -31,6 +31,7 @@ class Person(db.Model):
     __tablename__ = "Person"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+    points = db.Column(db.Integer)
 
 class Competitor(db.Model):
     __tablename__ = "Competitor"
@@ -78,6 +79,7 @@ class Result(db.Model):
         self.event_id = event_id
         self.competition_id = competition_id
         self.person_id = person_id
+        
 
         prev_record = Result.query.filter_by(person_id = self.person_id, event_id = self.event_id, record = True).first()
         if not prev_record: 
@@ -106,7 +108,7 @@ class Average(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     avg = db.Column(db.Integer)
     avg_string = db.Column(db.String)
-    record = db.Column(db.Boolean)
+    avg_record = db.Column(db.Boolean)
     best = db.Column(db.Integer)
     best_string = db.Column(db.String)
     group = db.Column(db.Integer)
@@ -139,12 +141,12 @@ class Average(db.Model):
         self.first_id, self.second_id, self.third_id, self.fourth_id, self.fifth_id = result_ids
         self._calculate_avg_and_best()
 
-        prev_record = Average.query.filter_by(person_id = self.person_id, event_id = self.event_id, record = True).first()
+        prev_record = Average.query.filter_by(person_id = self.person_id, event_id = self.event_id, avg_record = True).first()
         if not prev_record: 
-            self.record = True
+            self.avg_record = True
         elif prev_record.avg > self.avg:
-            self.record = True
-            prev_record.record = False
+            self.avg_record = True
+            prev_record.avg_record = False
 
     def _calculate_avg_and_best(self):
         results = [Result.query.get(result_id) for result_id in 

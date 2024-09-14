@@ -46,7 +46,7 @@
 
             <div class="row m-3">
                 <div class="col text-start">
-                    <button type="button" class="btn btn-danger float-left" onclick="deleteComp">Delete
+                    <button type="button" class="btn btn-danger float-left" onclick="deleteComp()">Delete
                         Competition</button>
                 </div>
                 <div class="col text-end">
@@ -75,7 +75,19 @@
 </div>
 
 <script>
-    const BASE_URL = "{{ request.url_root }}"
+    function deleteComp(){
+        url = "/delete_comp/{{ request.args.get('id') }}"
+        console.log(url)
+        if(confirm("Do you want to permamently delete this competition?") == true){
+
+        
+        fetch(url, {
+            method: "DELETE"
+        })
+        .then(res=>console.log(res))
+        .then(window.open('/'))
+    }
+    }
 </script>
 
 <style>
