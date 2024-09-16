@@ -17,7 +17,13 @@ def index():
 
 @main.route('/competition', methods=['GET'])
 def competition():
-    return render_template('competition.html')
+    args = request.args
+    name="def"
+    if args.__contains__("id"):
+
+        competition = Competition.query.get(args["id"])
+        name = competition.name
+    return render_template('competition.html', name = name)
 
 @main.route('/competitions', methods=['GET', 'POST']) #for htmx
 def competitions():
@@ -300,9 +306,35 @@ def events_picker():
     events = get_events()
     return render_template("events_picker.html", events = events.json)
 
+@main.route("/calculate_competition_points/<id>", methods=["GET"])
+@login_required
+def calculate_competition_point(id): # competition id
+    rounds = Round.query.filter_by(competition_id=id).all()
+    if not rounds:
+        return {"message": "required rounds are not found"}
+    for r in rounds:
+        averages = get_averages(round_id=r.id).json
+        advances = r.advances
+        if advances.find("%") != -1:        
+            competitors = len(averages)
+            advances = int(competitors*int(advances[:-1])/100)
+        else:
+            advances = int(advances)
+        
+        if advances == 3:
+            for pos in range(0, advances):
+                competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
+                competitor.add_points(3-pos)
+        else: 
+            for pos in range(0, advances):
+                competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
+                competitor.add_points(1)
+
+
 @main.route('/season_cup', methods=['GET'])
 def season_cup():
     persons = Person.query.order_by(Person.points).all()
+    print(persons)
     return render_template("season_cup.html", persons=persons)
 
 # @main.route('')

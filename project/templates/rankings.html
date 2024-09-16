@@ -12,6 +12,7 @@
 </div>
 
 <script>
+    document.getElementById('nav-brand').innerHTML="Rankings"
     const elements = document.getElementsByName("event_bar")
     htmx.trigger(elements[0], 'click')
     htmx.ajax('GET', "/ranking_event_table/1", {target:'#data-container', swap:'innerHTML'})

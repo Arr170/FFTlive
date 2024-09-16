@@ -36,7 +36,7 @@
                 {% else %}
                 <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click">{{ loop.index }}.</td>
                 {% endif %}
-                <td>
+                <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" >
                     <b>{{avg.competitor.name}}</b>
                 </td>
                 <td hx-get="/results_entering/{{round['id']}}?avg_id={{avg.id}}" hx-target="#result-form-{{round['id']}}" hx-swap="outerHTML" hx-trigger="click" class="d-none d-lg-table-cell">{{avg.first.time_string}}</td>

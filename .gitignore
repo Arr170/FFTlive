@@ -6,5 +6,4 @@ venv
 __pycache__/
 project/comps
 project/data
-/migrations
 /data

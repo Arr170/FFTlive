@@ -39,9 +39,13 @@ class Competitor(db.Model):
     name = db.Column(db.String(100))
     person_id = db.Column(db.Integer, db.ForeignKey('Person.id', name='fk_competitor_person_id'))
     competition_id = db.Column(db.Integer, db.ForeignKey('Competition.id', name='fk_competitor_competition_id'), nullable=False)
+    points = db.Column(db.Integer)
 
     events = db.relationship('Event', secondary=competitor_events, backref=db.backref('competitors', lazy=True))
     competition = db.relationship('Competition', foreign_keys=[competition_id], backref='competitor_competition')
+
+    def add_points(self, p):
+        self.points += p
 
 
 class Competition(db.Model):
