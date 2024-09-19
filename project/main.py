@@ -155,11 +155,11 @@ def add_new_competitor(id): # competition id
     data = request.form
     person = Person.query.filter_by(name=data.get("NewCompetitorName")).first()
     if not person:
-        person = Person(name=data.get("NewCompetitorName"))
+        person = Person(name=data.get("NewCompetitorName"), points = 0)
         db.session.add(person)
         db.session.commit()
 
-    new_competitor = Competitor(name=data.get("NewCompetitorName"), competition_id=id, person_id = person.id)
+    new_competitor = Competitor(name=data.get("NewCompetitorName"), competition_id=id, person_id = person.id, points=0)
     db.session.add(new_competitor)
     db.session.commit()
     for a in data:
@@ -273,7 +273,8 @@ def populate_next_round(id):
         else:
             advances = int(advances)
         for pos in range(0, advances):
-            new_avg = Average(competitor_id=averages[pos]["competitor"]["id"], round_id=next_round.id, event_id=next_round.event_id)
+            competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
+            new_avg = Average(competitor_id=competitor.id, person_id=competitor.person_id, round_id=next_round.id, event_id=next_round.event_id)
             db.session.add(new_avg)
             db.session.commit()
     return "ok", 200
@@ -308,28 +309,39 @@ def events_picker():
 
 @main.route("/calculate_competition_points/<id>", methods=["GET"])
 @login_required
-def calculate_competition_point(id): # competition id
+def calculate_competition_points(id): # competition id
     rounds = Round.query.filter_by(competition_id=id).all()
     if not rounds:
         return {"message": "required rounds are not found"}
     for r in rounds:
+        print("new round")
         averages = get_averages(round_id=r.id).json
         advances = r.advances
         if advances.find("%") != -1:        
-            competitors = len(averages)
-            advances = int(competitors*int(advances[:-1])/100)
+            competitors_count = len(averages)
+            advances = int(competitors_count*int(advances[:-1])/100)
         else:
             advances = int(advances)
         
         if advances == 3:
             for pos in range(0, advances):
+                print(averages[pos]["competitor"]["id"])
                 competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
                 competitor.add_points(3-pos)
         else: 
             for pos in range(0, advances):
+                print(averages[pos]["competitor"]["id"])
                 competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
                 competitor.add_points(1)
 
+        db.session.commit()
+    competitors = Competitor.query.filter_by(competition_id=id).all()
+    for competitor in competitors:
+        person = Person.query.get(competitor.person_id)
+        person.calculate_points()
+        print(person.name)
+        print(person.points)
+    return {"message": "points calculated and assingned"}
 
 @main.route('/season_cup', methods=['GET'])
 def season_cup():

@@ -1,5 +1,6 @@
 from . import db, ma
 from flask_login import UserMixin
+from sqlalchemy import desc
 
 
 # Many-to-Many relationship tables with named foreign key constraints
@@ -33,6 +34,15 @@ class Person(db.Model):
     name = db.Column(db.String(100))
     points = db.Column(db.Integer)
 
+    def calculate_points(self):
+        competitors = Competitor.query.filter_by(person_id=self.id).order_by(desc(Competitor.points)).limit(4).all()
+        for competitor in competitors:
+            print("[", competitor.points, "]")
+            if self.points:
+                self.points += competitor.points
+            else:
+                self.point = 0
+
 class Competitor(db.Model):
     __tablename__ = "Competitor"
     id = db.Column(db.Integer, primary_key=True)
@@ -45,7 +55,10 @@ class Competitor(db.Model):
     competition = db.relationship('Competition', foreign_keys=[competition_id], backref='competitor_competition')
 
     def add_points(self, p):
-        self.points += p
+        if self.points:
+            self.points += p
+        else:
+            self.points = p + 0
 
 
 class Competition(db.Model):

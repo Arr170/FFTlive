@@ -50,6 +50,9 @@
                         Competition</button>
                 </div>
                 <div class="col text-end">
+                    <button type="button" class="btn btn-secondary" onclick="calculate()">assing points</button>
+                </div>
+                <div class="col text-end">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -76,6 +79,13 @@
 
 <script>
     document.getElementById('nav-brand').innerHTML="{{name}}"
+
+    function calculate(){
+        url = "/calculate_competition_points/{{ request.args.get('id') }}"
+        fetch(url)
+            .then(resp => console.log(resp))
+    }
+
     function deleteComp(){
         url = "/delete_comp/{{ request.args.get('id') }}"
         console.log(url)

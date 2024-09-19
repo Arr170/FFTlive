@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-
-    
+{% for person in persons %}
+{{person.points}} {{person.name}}
+{% endfor %}
+     
 {% endblock %}
 <script>
     document.getElementById('nav-brand').innerHTML="Cup"
