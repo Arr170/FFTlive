@@ -36,12 +36,12 @@ class Person(db.Model):
 
     def calculate_points(self):
         competitors = Competitor.query.filter_by(person_id=self.id).order_by(desc(Competitor.points)).limit(4).all()
+        self.points = 0
         for competitor in competitors:
-            print("[", competitor.points, "]")
-            if self.points:
-                self.points += competitor.points
-            else:
-                self.point = 0
+            self.points += competitor.points
+            db.session.commit()
+
+            
 
 class Competitor(db.Model):
     __tablename__ = "Competitor"
@@ -55,10 +55,12 @@ class Competitor(db.Model):
     competition = db.relationship('Competition', foreign_keys=[competition_id], backref='competitor_competition')
 
     def add_points(self, p):
-        if self.points:
-            self.points += p
-        else:
-            self.points = p + 0
+        self.points += p
+        db.session.commit()
+    
+    def reset_points(self):
+        self.points = 0
+        db.session.commit()
 
 
 class Competition(db.Model):

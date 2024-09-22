@@ -5,5 +5,5 @@ venv
 *.db
 __pycache__/
 project/comps
-project/data
+/project/data
 /data

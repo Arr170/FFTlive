@@ -1,6 +1,6 @@
 {% for event in competition[0].events %}
 <li class="nav-item">
-    <button class="nav-link" name="event_bar" 
+    <button class="nav-link" name="event_bar" id="{{event.name}}"
             hx-indicator="#loading" onclick="changeActive(this)" 
             hx-get="/result_tables?competition_id={{competition[0].id}}&event_id={{event.id}}" 
             hx-target="#data-container" 
@@ -11,10 +11,28 @@
 
 <script>
     const elements = document.getElementsByName("event_bar")
-    htmx.trigger(elements[0], 'click')
-    htmx.ajax('GET', "/result_tables?competition_id={{competition[0].id}}&event_id={{competition[0].events[0].id}}", {target:'#data-container', swap:'innerHTML'})
 
+    let elementIds = []
+
+    elements.forEach(el=>{
+        elementIds.push(el.id)
+    })
+
+    let storedElement = sessionStorage.getItem("stored_element")
+    if(storedElement && elementIds.includes(storedElement)){
+        el = document.getElementById(storedElement)
+        htmx.trigger(el, 'click')
+        htmx.ajax('GET', el.getAttribute("hx-get"), {target:'#data-container', swap:'innerHTML'})
+
+    }
+    else{
+        htmx.trigger(elements[0], 'click')
+        sessionStorage.setItem("stored_element", elements[0].id)
+        htmx.ajax('GET', "/result_tables?competition_id={{competition[0].id}}&event_id={{competition[0].events[0].id}}", {target:'#data-container', swap:'innerHTML'})
+    }
+    
     function changeActive(btn){
+        sessionStorage.setItem("stored_element", btn.id)
         elements.forEach(element => {
             element.classList.remove('active');
         });

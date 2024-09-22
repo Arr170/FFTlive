@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, Response, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy import desc
 import os, pandas, shutil
 from . import db
 from .models import *
@@ -311,10 +312,13 @@ def events_picker():
 @login_required
 def calculate_competition_points(id): # competition id
     rounds = Round.query.filter_by(competition_id=id).all()
-    if not rounds:
-        return {"message": "required rounds are not found"}
+    competitors = Competitor.query.filter_by(competition_id = id).all()
+    for c in competitors: # set all points to zero
+        c.reset_points()
+    if not rounds: # in case of something bad happened
+        return Response("no rounds", status=501)
+
     for r in rounds:
-        print("new round")
         averages = get_averages(round_id=r.id).json
         advances = r.advances
         if advances.find("%") != -1:        
@@ -325,28 +329,27 @@ def calculate_competition_points(id): # competition id
         
         if advances == 3:
             for pos in range(0, advances):
-                print(averages[pos]["competitor"]["id"])
                 competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
                 competitor.add_points(3-pos)
         else: 
             for pos in range(0, advances):
-                print(averages[pos]["competitor"]["id"])
                 competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
                 competitor.add_points(1)
 
-        db.session.commit()
+
     competitors = Competitor.query.filter_by(competition_id=id).all()
     for competitor in competitors:
         person = Person.query.get(competitor.person_id)
         person.calculate_points()
-        print(person.name)
-        print(person.points)
-    return {"message": "points calculated and assingned"}
+
+    return Response("points calculated", status=200)
 
 @main.route('/season_cup', methods=['GET'])
 def season_cup():
-    persons = Person.query.order_by(Person.points).all()
+    persons = Person.query.order_by(desc(Person.points)).all()
     print(persons)
+    for p in persons:
+        print(p.points)
     return render_template("season_cup.html", persons=persons)
 
 # @main.route('')

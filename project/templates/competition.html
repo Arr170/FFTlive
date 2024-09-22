@@ -79,11 +79,20 @@
 
 <script>
     document.getElementById('nav-brand').innerHTML="{{name}}"
+    
 
     function calculate(){
         url = "/calculate_competition_points/{{ request.args.get('id') }}"
         fetch(url)
-            .then(resp => console.log(resp))
+            .then(resp => {
+                if(resp.status == 200){
+                    alert("Points calculated!")
+                }
+                else{
+                    alert("Something went wrong!")
+                }
+                location.reload()
+            })
     }
 
     function deleteComp(){

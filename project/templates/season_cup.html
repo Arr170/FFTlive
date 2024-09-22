@@ -1,10 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
-{% for person in persons %}
-{{person.points}} {{person.name}}
-{% endfor %}
-     
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for person in persons %}
+        <tr>
+            <td>{{ loop.index }}.</td>
+            <td>{{person.name}}</td>
+            <td>{{person.points}} </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+
 {% endblock %}
 <script>
-    document.getElementById('nav-brand').innerHTML="Cup"
+    document.getElementById('nav-brand').innerHTML = "Cup"
 </script>
