@@ -17,31 +17,36 @@
     <div>
         <p class="text-start">1:</p>
         <input class="form-control mb-3" {% if avg is not none %}autofocus{% endif %} maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve2').focus()}}" type="text" inputmode="numeric"
+            onkeydown="{if(event.keyCode == 13 || event.keyCode == 40){document.getElementById('input_solve2').focus()}
+                        if(event.keyCode == 38){document.getElementById('input_id').focus()}}" type="text" inputmode="numeric"
             name="input_solve1" id="input_solve1" placeholder="0:00.00" value="{{average.first.time_string if average is not none}}">
     </div>
     <div>
         <p class="text-start">2:</p>
         <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve3').focus()}}" type="text" inputmode="numeric"
+            onkeydown="{if(event.keyCode == 13  || event.keyCode == 40){document.getElementById('input_solve3').focus()}
+                        if(event.keyCode == 38){document.getElementById('input_solve1').focus()}}" type="text" inputmode="numeric"
             name="input_solve2" id="input_solve2" placeholder="0:00.00" value="{{average.second.time_string if average is not none}}">
     </div>
     <div>
         <p class="text-start">3:</p>
         <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve4').focus()}}" type="text" inputmode="numeric"
+            onkeydown="{if(event.keyCode == 13  || event.keyCode == 40){document.getElementById('input_solve4').focus()}
+                        if(event.keyCode == 38){document.getElementById('input_solve2').focus()}}" type="text" inputmode="numeric"
             name="input_solve3" id="input_solve3" placeholder="0:00.00" value="{{average.third.time_string if average is not none}}">
     </div>
     <div>
         <p class="text-start">4:</p>
         <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
-            onkeydown="{if(event.keyCode == 13){document.getElementById('input_solve5').focus()}}" type="text" inputmode="numeric"
+            onkeydown="{if(event.keyCode == 13  || event.keyCode == 40){document.getElementById('input_solve5').focus()}
+                        if(event.keyCode == 38){document.getElementById('input_solve3').focus()}}" type="text" inputmode="numeric"
             name="input_solve4" id="input_solve4" placeholder="0:00.00" value="{{average.fourth.time_string if average is not none}}">
     </div>
     <div>
         <p class="text-start">5:</p>
         <input class="form-control mb-3" maxlength="7" required onkeyup="formate(this)"
-            onkeydown='{if(event.keyCode == 13){document.getElementById("submit-button-{{id}}").focus()}}' type="text" inputmode="numeric"
+            onkeydown='{if(event.keyCode == 13  || event.keyCode == 40){document.getElementById("submit-button-{{id}}").focus()}
+                        if(event.keyCode == 38){document.getElementById("input_solve4").focus()}}' type="text" inputmode="numeric"
             name="input_solve5" id="input_solve5" placeholder="0:00.00" value="{{average.fifth.time_string if average is not none}}">
     </div>
 </form>
