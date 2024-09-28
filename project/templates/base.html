@@ -70,12 +70,39 @@
     </nav>
     {% block content %}
     {% endblock %}
+    <div id="cookieConsent" style="display: none; position: fixed; bottom: 10%;" class="bg-secondary m-5">
+        <div class="row w-100 m-2">
+            <div class="col">
+                This website uses cookies.
+                <a class="link link-warning" href="/privacy">learn more</a>
+            </div>
+
+            <div class="col">
+                <button id="acceptCookies" class="btn btn-warning">Got it!</button>
+            </div>
+
+        </div>
+    </div>
 
     <footer class="text-center mt-auto">
-        <!-- <p class="text text-secondary">(this website does not use cookies)</p> -->
+        
     </footer>
 </body>
 <script>
+
+    // Check if the user already accepted cookies
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!localStorage.getItem('cookiesAccepted')) {
+            document.getElementById('cookieConsent').style.display = 'block';
+        }
+
+        // Set cookiesAccepted in localStorage when user accepts
+        document.getElementById('acceptCookies').addEventListener('click', function () {
+            localStorage.setItem('cookiesAccepted', 'true');
+            document.getElementById('cookieConsent').style.display = 'none';
+        });
+    });
+
     const html = document.getElementById("html-tag")
     const changeButton = document.getElementById("change-mode-btn")
     let tagTheme = html.getAttribute("data-bs-theme")

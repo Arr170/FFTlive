@@ -16,6 +16,10 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+@main.route('/privacy', methods=['GET'])
+def privacy():
+    return "The only reason we are using cookies is flask login for admin. chill."
+
 @main.route('/competition', methods=['GET'])
 def competition():
     args = request.args
