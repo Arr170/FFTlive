@@ -8,6 +8,8 @@
     <tbody>
         {% for avg in avgs %}
         <tr>
+            <td class="group-{{avg.group}}">[{{avg.competitor.id}}]</td> 
+
             <td class="group-{{avg.group}}">{{avg.competitor.name}}</td>
             {% if avgs %}
             <td class="group-{{avg.group}}">{{avg.group}}</td>
