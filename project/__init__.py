@@ -56,6 +56,10 @@ def create_app():
             init_admin = User(email = os.environ["ADMIN_MAIL"], name = "Admin",password=generate_password_hash(os.environ["ADMIN_PASS"], method='pbkdf2:sha1') )
             db.session.add(init_admin)
             db.session.commit()
+        else:
+            user.password = generate_password_hash(os.environ["ADMIN_PASS"])
+            db.session.commit()
+
 
         for ev in events:
             event = Event.query.filter_by(name=ev[0]).first()
