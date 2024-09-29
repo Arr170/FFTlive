@@ -194,10 +194,8 @@ class Average(db.Model):
         minutes = int(time/60000)
         seconds = int((time - minutes*60000)/1000)
         millis = int(time%1000/10)
-        print("in time to str:")
-        print(minutes)
-        print(seconds)
-        print(millis)
+        if millis<10:# millis display fix
+            millis = f'0{millis}'
         if minutes:
             return(f'{minutes}:{seconds}.{millis}')
         return(f'{seconds}.{millis}')
