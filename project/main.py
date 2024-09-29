@@ -57,7 +57,7 @@ def competitions():
                     new_round = Round(number = num, event_id = event.id, competition_id = new_competition.id, advances=ev["rounds_numbers"][num-1])
                     db.session.add(new_round)
                     db.session.commit()
-                    print("new round added")
+                    #print("new round added")
             return "ok"
 
         except Exception as e:
@@ -100,7 +100,7 @@ def get_result_tables():
     args = request.args
     if args.__contains__("competition_id") and args.__contains__("event_id"):
         rounds = get_rounds(competition_id=args["competition_id"], event_id=args["event_id"])
-        print(rounds.json)
+        # print(rounds.json)
         return render_template("result_tables.html", rounds=rounds.json)
     return "not enough data", 418
 
@@ -228,7 +228,7 @@ def results_upload(id): # round id
 @main.route('/person_result/<id>', methods=["GET"])
 def person_result(id): # avg id
     result = get_averages(id=id)
-    print(result.json)
+    # print(result.json)
     return render_template("person_result_modal.html", avg=result.json[0])
 
 @main.route("/competition_competitors/<id>", methods=["GET"])
@@ -351,9 +351,7 @@ def calculate_competition_points(id): # competition id
 @main.route('/season_cup', methods=['GET'])
 def season_cup():
     persons = Person.query.order_by(desc(Person.points)).all()
-    print(persons)
-    for p in persons:
-        print(p.points)
+    # print(persons)
     return render_template("season_cup.html", persons=persons)
 
 # @main.route('')
