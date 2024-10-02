@@ -354,6 +354,26 @@ def season_cup():
     # print(persons)
     return render_template("season_cup.html", persons=persons)
 
+@main.route('/person/<id>', methods=['GET'])
+def person(id): # competitor id 
+    events = Event.query.all()
+    data = []
+    competitor = Competitor.query.get(id)
+    person = Person.query.get(competitor.id)
+    for event in events:
+        average = Average.query.filter_by(event_id = event.id, person_id = id).first()
+        single = Result.query.filter_by(event_id = event.id, person_id = id).first()
+        record = {
+        'event_name': event.name,
+        'average': average.avg_string if average else "--",
+        'single': single.time_string if single else "--"
+        }
+        
+        data.append(record)
+    
+        
+    return render_template("person.html", data = data, name = person.name)
+ 
 # @main.route('')
 ### old code below ###
 

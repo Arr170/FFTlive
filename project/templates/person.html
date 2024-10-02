@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center">{{name}}</h1>
+<h2 class="text-center m-2">Personal records:</h2>
+{% for record in data %}
+<div class="card justify-content-center m-1 p-1">
+    <h2 class="text-center">{{record['event_name']}}</h2>
+    <table class="table text-center">
+        <thead>
+                
+            <tr>
+                <th>single</th>
+                <th>average</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{record['single']}}</td>
+                <td>{{record['average']}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endfor %}
+{% endblock %}

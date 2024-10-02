@@ -1,6 +1,8 @@
 <div class="modal-content justify-content-start">
-    <div class="modal-header">
-        <h2 class="modal-title text-center">{{avg.competitor.name}}</h2>
+    <div class="modal-header text-center">
+            <a href="/person/{{avg.competitor.id}}" class="btn btn-primary btn-lg">
+                {{avg.competitor.name}}
+            </a>
     </div>
     <div class="modal-body">
         <p class="text-start">1: {{avg.first.time_string}}</p>
@@ -14,6 +16,7 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
     </div>
-    
+
 
 </div>
+<!-- link-underline link-underline-opacity-0 -->
