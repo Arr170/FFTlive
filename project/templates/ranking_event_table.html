@@ -24,9 +24,12 @@
                     {{ loop.index }}.
                 </td>
                 <td>
-                    <strong>
-                        {{single.competitor.name}}
-                    </strong>
+                    <a href="/person/{{single.competitor.id}}">
+                        <strong>
+                            {{single.competitor.name}}
+                        </strong>
+                    </a>
+                    
                 </td>
                 <td>
                     {{single.time_string}}
@@ -67,9 +70,11 @@
                     {{ loop.index }}.
                 </td>
                 <td>
-                    <strong>
-                        {{avg.competitor.name}}
-                    </strong>
+                    <a href="/person/{{avg.competitor.id}}">
+                        <strong>
+                            {{avg.competitor.name}}
+                        </strong>
+                    </a>
                 </td>
                 <td>
                     {{avg.avg_string}}

@@ -1,3 +1,11 @@
+<div class="reload-btn" id="reload-btn">
+    <a class="btn btn-secondary rounded-circle" onclick="location.reload()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+        </svg>
+    </a>
+</div>
 {% for round in rounds %}
 <div class="text-center mb-5" id="round-container-{{round.id}}">
 
@@ -18,7 +26,7 @@
     <div class="card w-100 justify-content-center">
         <div class="row" id="table-set-container-{{round.id}}">
             <div class="col align-self-start" id="table-container-{{round.id}}" hx-get="/result_table/{{round.id}}"
-                hx-swap="innerHTML" hx-trigger="load, every 60s"></div>
+                hx-swap="innerHTML" hx-trigger="load"></div>
 
         </div>
     </div>
@@ -27,3 +35,14 @@
     {% endif %}
 </div>
 {% endfor %}
+
+
+
+<style>
+    .reload-btn {
+        position: fixed;
+        z-index: 1000;
+        left: 5%;
+        bottom: 5%;
+    }
+</style>
