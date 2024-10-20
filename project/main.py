@@ -359,10 +359,10 @@ def person(id): # competitor id
     events = Event.query.all()
     data = []
     competitor = Competitor.query.get(id)
-    person = Person.query.get(competitor.id)
+    person = Person.query.get(competitor.person_id)
     for event in events:
-        average = Average.query.filter_by(event_id = event.id, person_id = person.id).first()
-        single = Result.query.filter_by(event_id = event.id, person_id = person.id).first()
+        average = Average.query.filter_by(event_id = event.id, person_id = person.id, avg_record = True).first()
+        single = Result.query.filter_by(event_id = event.id, person_id = person.id, record = True).first()
         record = {
         'event_name': event.name,
         'average': average.avg_string if average else "--",
