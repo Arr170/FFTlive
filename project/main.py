@@ -192,6 +192,10 @@ def results_upload(id): # round id
     data = request.form
     competitor_id = data.get('input_id')
     competitor = Competitor.query.get(competitor_id)
+    
+    old_results = Result.query.filter_by(round_id = id, competitor_id = competitor_id).all()
+    for res in old_results:
+        db.session.delete(res)
 
     new_first_time_str = data.get('input_solve1')
     new_first = Result(time_string = new_first_time_str, round_id = id, competitor_id = competitor_id, event_id=rnd.event_id, person_id = competitor.person_id, competition_id=competitor.competition_id)
