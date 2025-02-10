@@ -1,0 +1,24 @@
+<div class="modal-dialog" id="add-competitor-round-{{ roundId }}">
+  <div class="modal-content">
+      <div class="modal-body">
+        <form hx-post="/add_competitor_to_round/{{ roundId }}" hx-swap="innerHTML" hx-target="#add-competitor-round-{{ roundId }}">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          <div class="m-3">
+            <label for="competitor_round_id" class="form-label">Competitor ID</label>
+            <input type="number" class="form-control" id="competitor_round_id" name="CompetitorId">
+          </div>
+          <button class="btn btn-secondary mb-3">Add</button>
+        </form>          
+      </div>
+  </div>
+</div>
+

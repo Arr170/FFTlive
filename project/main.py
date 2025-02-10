@@ -154,6 +154,33 @@ def comp_events(id): # competition id
     comp = get_competitions(competition_id=id)
     return render_template("comp_events.html", competition=comp.json)
 
+@main.route("/add_competitor_to_round/<id>", methods=["POST", "GET"])
+@login_required
+def add_competitor_to_round(id): # round id
+    if request.method == "POST":
+        try:
+            data = request.form
+            print("DATA:")
+            print(data.get("CompetitorId"))
+            competitor = Competitor.query.get(data.get("CompetitorId"))
+            print(competitor)
+            r = Round.query.get(id)
+            print(r)
+            print(r.competitors)
+            event = Event.query.get(r.event_id)
+            print("event:", event)
+            competitor.events.append(event)
+            db.session.commit()
+            print("commited")
+            new_average = Average(competitor_id=competitor.id, round_id=id, event_id=r.event_id, person_id=competitor.person_id)
+            db.session.add(new_average)
+            db.session.commit()
+            flash("Competitor added", "success")
+        except Exception as e:
+            print("round may not exist", str(e))
+            flash(f"Error: {str(e)}", "warning")
+    return render_template("new_competitor_round.html", roundId = id)
+
 @main.route("/add_new_competitor/<id>", methods=["POST"])
 @login_required
 def add_new_competitor(id): # competition id
@@ -265,28 +292,34 @@ def asign_groups(id): # round id
 @main.route("/populate_next_round/<id>", methods=["GET"])
 @login_required
 def populate_next_round(id):
-
-    averages = get_averages(round_id=id).json
-    finished_round = Round.query.filter_by(id=id).first()
-    next_round = Round.query.filter_by(competition_id=finished_round.competition_id, event_id=finished_round.event_id, number=(finished_round.number +1)).first()
-    if next_round:
-        next_avgs = Average.query.filter_by(round_id=next_round.id).all()
-        if next_avgs:
-            for avg in next_avgs:
-                db.session.delete(avg)
-            db.session.commit()
-        advances = finished_round.advances
-        if advances.find("%") != -1:        
-            competitors = len(averages)
-            advances = int(competitors*int(advances[:-1])/100)
+    try:
+        averages = get_averages(round_id=id).json
+        finished_round = Round.query.filter_by(id=id).first()
+        next_round = Round.query.filter_by(competition_id=finished_round.competition_id, event_id=finished_round.event_id, number=(finished_round.number +1)).first()
+        if next_round:
+            next_avgs = Average.query.filter_by(round_id=next_round.id).all()
+            if next_avgs:
+                for avg in next_avgs:
+                    db.session.delete(avg)
+                db.session.commit()
+            advances = finished_round.advances
+            if advances.find("%") != -1:        
+                competitors = len(averages)
+                advances = int(competitors*int(advances[:-1])/100)
+            else:
+                advances = int(advances)
+            for pos in range(0, advances):
+                competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
+                new_avg = Average(competitor_id=competitor.id, person_id=competitor.person_id, round_id=next_round.id, event_id=next_round.event_id)
+                db.session.add(new_avg)
+                db.session.commit()
+            asign_groups(next_round.id)
+            return jsonify({"message": "Next round created.", "category": "success"}), 200
         else:
-            advances = int(advances)
-        for pos in range(0, advances):
-            competitor = Competitor.query.get(averages[pos]["competitor"]["id"])
-            new_avg = Average(competitor_id=competitor.id, person_id=competitor.person_id, round_id=next_round.id, event_id=next_round.event_id)
-            db.session.add(new_avg)
-            db.session.commit()
-    return "ok", 200
+            return jsonify({"message": "No next round in this category", "category": "warning"}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"Something failed: {str(e)}", "category": "danger"}), 400
 
 @main.route('/delete_competitor/<id>', methods=["DELETE"])
 @login_required
@@ -377,11 +410,4 @@ def person(id): # competitor id
     
         
     return render_template("person.html", data = data, name = person.name)
- 
-# @main.route('')
-### old code below ###
 
-###                ###
-
-###                ###
-######################
