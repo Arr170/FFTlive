@@ -44,10 +44,15 @@
 
             </div>
 
-            <div class="row m-3">
+            <div class="row m-3" id="competition-edit-buttons">
                 <div class="col text-start">
                     <button type="button" class="btn btn-danger float-left" onclick="deleteComp()">Delete
                         Competition</button>
+                </div>
+                <div class="col text-start">
+                    <button class="btn btn-success" onclick="assignFirstRounds()">
+                        Assign groups
+                    </button>
                 </div>
                 <div class="col text-end">
                     <button type="button" class="btn btn-secondary" onclick="calculate()">assing points</button>
@@ -80,6 +85,24 @@
 <script>
     document.getElementById('nav-brand').innerHTML="{{name}}"
     
+    function showFlashMessage(message, category) {
+            console.log
+            let alertDiv = document.createElement("div");
+            alertDiv.className = `alert alert-${category} alert-dismissible fade show fixed-top m-3 shadow`;
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            buttonsDiv = document.getElementById("competition-edit-buttons")
+            buttonsDiv.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.classList.remove("show");
+                alertDiv.classList.add("fade");
+                setTimeout(() => alertDiv.remove(), 500);
+            }, 5000);
+        }
 
     function calculate(){
         url = "/calculate_competition_points/{{ request.args.get('id') }}"
@@ -95,16 +118,26 @@
             })
     }
 
+    function assignFirstRounds(){
+        url = "/assign_first_rounds_groups/{{ request.args.get('id') }}"
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+                showFlashMessage(data.message, data.category)
+            })
+            .catch(error => {
+                showFlashMessage("An error occurred.", "danger")
+            })
+    }
+
     function deleteComp(){
         url = "/delete_comp/{{ request.args.get('id') }}"
-        console.log(url)
         if(confirm("Do you want to permamently delete this competition?") == true){
 
         
         fetch(url, {
             method: "DELETE"
         })
-        .then(res=>console.log(res))
         .then(window.open('/'))
     }
     }

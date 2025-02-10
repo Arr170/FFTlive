@@ -28,31 +28,27 @@
     <script>
         function showFlashMessage(message, category) {
             console.log
-            let alertDiv = document.createElement("div");
-            alertDiv.className = `alert alert-${category} alert-dismissible fade show fixed-top m-3 shadow`;
-            alertDiv.role = "alert";
+            let alertDiv = document.createElement("div")
+            alertDiv.className = `alert alert-${category} alert-dismissible fade show fixed-top m-3 shadow`
+            alertDiv.role = "alert"
             alertDiv.innerHTML = `
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
             buttonsDiv = document.getElementById("entering-buttons")
-            buttonsDiv.appendChild(alertDiv);
+            buttonsDiv.appendChild(alertDiv)
 
             setTimeout(() => {
-                alertDiv.classList.remove("show");
-                alertDiv.classList.add("fade");
-                setTimeout(() => alertDiv.remove(), 500); // Remove after fade-out
-            }, 5000);
+                alertDiv.classList.remove("show")
+                alertDiv.classList.add("fade")
+                setTimeout(() => alertDiv.remove(), 500)
+            }, 5000)
         }
+
         function makeNext(){
             fetch("/populate_next_round/{{round}}")
             .then(response => response.json())
-            .then(data => {
-                showFlashMessage(data.message, data.category)
-            })
-            .catch(error => {
-                showFlashMessage("An error occurred.", "danger")
-            })
+            
         }
 
         function asignGroups(){

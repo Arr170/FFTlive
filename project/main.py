@@ -273,7 +273,7 @@ def groups(id): # round id
 
 @main.route("/asign_groups/<id>")
 @login_required
-def asign_groups(id): # round id
+def assign_groups(id): # round id
     averages = Average.query.filter_by(round_id=id).order_by(Average.id).all()
     counter = 1
     if len(averages) > 20:
@@ -288,6 +288,17 @@ def asign_groups(id): # round id
             counter = 1
     db.session.commit()
     return "ok", 200
+
+@main.route("/assign_first_rounds_groups/<id>")
+@login_required
+def asign_first_rounds_groups(id): #competition id
+    try:
+        rounds = Round.query.filter_by(competition_id=id, number=1)
+        for round in rounds:
+            assign_groups(round.id)
+        return jsonify({"message": "Groups for first rounds assigned!", "category": "success"}), 200
+    except Exception as e:
+        return jsonify({f"Something went very wrong :( {str(e)}"}), 500
 
 @main.route("/populate_next_round/<id>", methods=["GET"])
 @login_required
@@ -313,7 +324,7 @@ def populate_next_round(id):
                 new_avg = Average(competitor_id=competitor.id, person_id=competitor.person_id, round_id=next_round.id, event_id=next_round.event_id)
                 db.session.add(new_avg)
                 db.session.commit()
-            asign_groups(next_round.id)
+            assign_groups(next_round.id)
             return jsonify({"message": "Next round created.", "category": "success"}), 200
         else:
             return jsonify({"message": "No next round in this category", "category": "warning"}), 200
