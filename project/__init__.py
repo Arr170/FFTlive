@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 
 import os
 
-events = [["3x3x3", "ao5"], ["2x2x2", "ao5"], ["Pyraminx", "ao5"], ["4x4x4", "ao5"], ["Skewb", "ao5"], ["TeamBLD", "ao5"], ["MirrorBlock", "ao5"], ["TeamSolve", "ao5"], ["Clock", "ao5"]
+events = [["3x3x3", "ao5"], ["2x2x2", "ao5"], ["Pyraminx", "ao5"], ["4x4x4", "ao5"], ["Skewb", "ao5"], ["TeamBLD", "ao5"], ["MirrorBlock", "ao5"], ["TeamSolve", "ao5"], ["Clock", "ao5"]]
 
 db = SQLAlchemy()
 
