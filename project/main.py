@@ -147,7 +147,8 @@ def entering_on(id): # round id
 
 @main.route('/result_table_entering_off/<id>', methods=["GET"]) # turning on and off results entering form next to result table 
 def entering_off(id): # round id
-    return render_template("result_table_entering_off.html", round=id)
+    round = Round.query.filter_by(id = id).first()
+    return render_template("result_table_entering_off.html", round=id, num=round.number)
 
 @main.route("/comp_events/<id>", methods=["GET"]) # pupulating competition's events in modal for adding new competitors
 def comp_events(id): # competition id
