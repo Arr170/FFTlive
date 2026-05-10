@@ -1,4 +1,4 @@
-<form hx-post="/add_new_competitor/{{ compId }}" hx-swap="innerHTML">
+<form hx-post="/add_new_competitor/{{ compId }}" hx-swap="outerHTML" hx-on::after-request="htmx.trigger('#competitionCompetitors', 'reload')">
     <div class="m-3">
         <label class="form-label" for="new-competitor-name">New competitor name:</label>
         <input class="form-control" id="new-competitor-name" type="text" name="NewCompetitorName">
