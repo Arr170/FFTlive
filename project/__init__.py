@@ -17,15 +17,15 @@ ma = Marshmallow()
 
 
 if(os.environ['IS_PROD']=='1'):
-    COMP_PATH = '/project/comps'#upravit podle umisteni na servru
+    COMP_PATH = './project/comps'#upravit podle umisteni na servru
 else:
     COMP_PATH = './project/data'
 
-def create_app():
+def create_app(env, d):
     app = Flask(__name__, static_folder='static', template_folder='templates')
 
     app.config['SECRET_KEY'] = 'a82ead125a1141a6520afa4d9eb3946d1c657af7dcf3e0553433521aa41ba253'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.getcwd(),COMP_PATH, 'users.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/arsi/FFTlive/project/data/users.db'
 
     db.init_app(app)
     ma.init_app(app)
@@ -99,3 +99,5 @@ def create_app():
     app.register_blueprint(api_blueprint)
 
     return app
+
+app = create_app(1, 2)

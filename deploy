@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export FLASK_DEBUG=1
+export IS_PROD=0
+export ADMIN_PASS=pass
+export ADMIN_MAIL=admin@mail.com
+
+nohup pyenv exec waitress-serve --listen=0.0.0.0:8080 "project:app" > server.log 2>&1 &

@@ -7,3 +7,6 @@ __pycache__/
 project/comps
 /project/data
 /data
+/server.log
+/nohup.*
+/.python-version
