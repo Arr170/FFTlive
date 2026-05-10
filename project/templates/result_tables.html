@@ -11,6 +11,7 @@
 
     {% if current_user.is_authenticated %}
     <button id="unlock-button-{{round.id}}" 
+            name="round-lock-{{round.number}}"
             data-state="locked"     
             class="btn btn-danger m-1 mb-2" 
             style="float: right;"
