@@ -132,13 +132,15 @@ def get_round_table_admin(id): # round id
 @main.route('/results_entering/<id>', methods=['GET'])
 def get_results_entering(id, avg=None): # round id
     args = request.args
+    num = Round.query.filter_by(id = id).first().number
+
     if args.__contains__("avg_id"):
         avg = get_averages(id=args.get('avg_id'))
-        return render_template("results_entering.html", id=id, average = avg.json[0])
+        return render_template("results_entering.html", id=id, average = avg.json[0], num = num)
     if args.__contains__("competitor_id"):
         avg = get_averages(round_id=id, competitor_id=args.get('competitor_id'))
-        return render_template("results_entering.html", id=id, average = avg.json[0])
-    return render_template("results_entering.html", id=id, average = avg)
+        return render_template("results_entering.html", id=id, average = avg.json[0], num = num)
+    return render_template("results_entering.html", id=id, average = avg, num = num)
 
 @main.route('/result_table_entering_on/<id>', methods=["GET"]) # turning on and off results entering form next to result table 
 def entering_on(id): # round id
