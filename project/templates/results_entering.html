@@ -1,6 +1,6 @@
 <form id="result-form-{{id}}" class="m-3" hx-post="/results_upload/{{id}}" hx-swap="outerHTML"
     onkeydown="return event.key != 'Enter';" onsubmit="document.getElementById('input-id-{{id}}').focus()"
-    hx-on::after-request="htmx.trigger('#table-container-{{}}', 'reload')">
+    hx-on::after-request="htmx.trigger('#table-container-{{num}}', 'reload')">
     <div>
         <p class="text-start">Name:</p>
         <input class="form-control mb-3" required readonly type="text" name="input_name" id="input_name"
