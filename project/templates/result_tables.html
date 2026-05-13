@@ -7,16 +7,16 @@
     </a>
 </div>
 {% for round in rounds %}
-<div class="text-center mb-5" id="round-container-{{round.id}}">
+<div class="text-center mb-5" id="round-container-{{round.number}}">
 
     {% if current_user.is_authenticated %}
-    <button id="unlock-button-{{round.id}}" 
+    <button id="unlock-button-{{round.number}}" 
             name="round-lock-{{round.number}}"
             data-state="locked"     
             class="btn btn-danger m-1 mb-2" 
             style="float: right;"
             hx-get="/result_table_entering_on/{{round.id}}" 
-            hx-target="#round-container-{{round.id}}" 
+            hx-target="#round-container-{{round.number}}" 
             hx-swap="innerHTML">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lock-fill"
             viewBox="0 0 16 16">
@@ -25,8 +25,8 @@
         </svg>
     </button>
     <div class="card w-100 justify-content-center">
-        <div class="row" id="table-set-container-{{round.id}}">
-            <div class="col align-self-start" id="table-container-{{round.id}}" hx-get="/result_table/{{round.id}}"
+        <div class="row" id="table-set-container-{{round.number}}">
+            <div class="col align-self-start" id="table-container-{{round.number}}" hx-get="/result_table/{{round.id}}"
                 hx-swap="innerHTML" hx-trigger="load"></div>
 
         </div>

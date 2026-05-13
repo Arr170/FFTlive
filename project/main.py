@@ -142,7 +142,8 @@ def get_results_entering(id, avg=None): # round id
 
 @main.route('/result_table_entering_on/<id>', methods=["GET"]) # turning on and off results entering form next to result table 
 def entering_on(id): # round id
-    return render_template("result_table_entering_on.html", round=id)
+    round = Round.query.filter_by(id = id).first()
+    return render_template("result_table_entering_on.html", round=id, num=round.number)
 
 
 @main.route('/result_table_entering_off/<id>', methods=["GET"]) # turning on and off results entering form next to result table 
