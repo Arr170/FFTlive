@@ -3,7 +3,7 @@
     hx-on::after-request="htmx.trigger('#table-container-{{num}}', 'reload')">
     <div>
         <p class="text-start">Name:</p>
-        <input class="form-control mb-3" required readonly type="text" name="input_name" id="input_name"
+        <input class="form-control mb-3" required readonly type="text" name="input_name" id="input-name-{{num}}"
             placeholder="Name" value="{{average.competitor.name if average is not none}}">
     </div>
     <div>
