@@ -54,7 +54,7 @@
 
 <script>
     function fillById() {
-        const competitor_id = document.getElementById("input-id-{{id}}").value
+        const competitor_id = document.getElementById("input-id-{{num}}").value
         htmx.ajax('GET', `/results_entering/{{id}}?competitor_id=${competitor_id}`, { target: '#result-form-{{num}}', swap: 'outerHTML' })
     }
     function formate(input) {
