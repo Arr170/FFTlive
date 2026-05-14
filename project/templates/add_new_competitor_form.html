@@ -4,5 +4,5 @@
         <input class="form-control" id="new-competitor-name" type="text" name="NewCompetitorName">
     </div>
     <div class="m-3" hx-get="/comp_events/{{ compId }}" hx-trigger="load"hx-swap="innerHTML"></div>
-    <button type="submit" class="btn btn-secondary mb-3">Add</button>
+    <button type="submit" id="submit-add-competitor-button" class="btn btn-secondary mb-3">Add</button>
 </form>

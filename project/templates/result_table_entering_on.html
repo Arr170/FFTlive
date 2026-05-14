@@ -15,10 +15,10 @@
         <div class="row" id="table-set-container-{{num}}">
             <div class="col" hx-get="/results_entering/{{round}}" hx-trigger="load" hx-swap="afterbegin" id="entering-buttons">
                 <div>
-                    <button class="btn btn-outline-warning mt-3 mb-3" type="submit" form="result-form-{{num}}" id="submit-button-{{num}}" >Submit</button>
+                    <button id="submit-round-button" class="btn btn-outline-warning mt-3 mb-3" type="submit" form="result-form-{{num}}" id="submit-button-{{num}}" >Submit</button>
                     <button class="btn btn-outline-secondary mt-3 mb-3" onclick="makeNext()">Make next</button>
                     <button class="btn btn-outline-secondary mt-3 mb-3" onclick="asignGroups()">Asign groups</button>
-                    <button class="btn btn-outline-success mt-3 mb-3" data-bs-toggle="modal" data-bs-target="#add-competitor-round-modal-{{num}}">Add person</button>
+                    <button id="add-person-round-button" class="btn btn-outline-success mt-3 mb-3" data-bs-toggle="modal" data-bs-target="#add-competitor-round-modal-{{num}}">Add person</button>
                 </div>
             </div>
             <div class="col align-self-start" id="table-container-{{num}}" hx-get="/result_table_admin/{{round}}"
