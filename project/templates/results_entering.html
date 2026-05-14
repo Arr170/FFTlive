@@ -1,5 +1,5 @@
-<form id="result-form-{{id}}" class="m-3" hx-post="/results_upload/{{id}}" hx-swap="outerHTML"
-    onkeydown="return event.key != 'Enter';" onsubmit="document.getElementById('input-id-{{id}}').focus()"
+<form id="result-form-{{num}}" class="m-3" hx-post="/results_upload/{{id}}" hx-swap="outerHTML"
+    onkeydown="return event.key != 'Enter';" onsubmit="document.getElementById('input-id-{{num}}').focus()"
     hx-on::after-request="htmx.trigger('#table-container-{{num}}', 'reload')">
     <div>
         <p class="text-start">Name:</p>
@@ -10,7 +10,7 @@
         <p class="text-start">ID:</p>
         <input class="form-control mb-3" required onkeydown="{if(event.keyCode == 13){
         fillById()
-        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input-id-{{id}}"
+        document.getElementById('input_solve1').focus()}}" type="text" name="input_id" id="input-id-{{num}}"
             placeholder="ID" value="{{average.competitor.id if average is not none}}">
     </div>
     <div>
@@ -55,7 +55,7 @@
 <script>
     function fillById() {
         const competitor_id = document.getElementById("input-id-{{id}}").value
-        htmx.ajax('GET', `/results_entering/{{id}}?competitor_id=${competitor_id}`, { target: '#result-form-{{id}}', swap: 'outerHTML' })
+        htmx.ajax('GET', `/results_entering/{{id}}?competitor_id=${competitor_id}`, { target: '#result-form-{{num}}', swap: 'outerHTML' })
     }
     function formate(input) {
         var num = input.value
